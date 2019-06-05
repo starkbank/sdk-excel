@@ -6,4 +6,4 @@ O arquivo contém três abas: a primeira é usada para consulta o extrato da con
 ----------------------------------------------------------------------------------------------------------------------------------
 Library to integrate with Stark Bank API
 
-The file consists in three tabs: the first one allows the user to get their account statement, the second one allows them to order new transfers, whereas the third one gets information about charges according to a certain status.
+The file consists in three tabs: the first one allows the user to get their account statement, the second one allows them to order new transfers, whereas the third one gets information about charges corresponding to a certain status.
