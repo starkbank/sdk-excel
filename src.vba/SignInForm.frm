@@ -1,0 +1,40 @@
+
+Private Sub UserForm_Initialize()
+    Me.EnvironmentBox.AddItem "Produção"
+    Me.EnvironmentBox.AddItem "Sandbox"
+    
+    Me.EmailBox.value = SessionGateway.getEmail()
+    Me.WorkspaceBox.value = SessionGateway.getWorkspace()
+    Me.EnvironmentBox.value = SessionGateway.getEnvironmentString()
+    
+End Sub
+
+Private Sub SendButton_Click()
+    On Error Resume Next
+    Dim workspace As String: workspace = WorkspaceBox.value
+    Dim email As String: email = EmailBox.value
+    Dim password As String: password = PasswordBox.value
+    Dim envString As String: envString = EnvironmentBox.value
+    Dim accessToken As String
+    Dim memberName As String
+    Dim response As Dictionary
+    
+    Call SessionGateway.saveSession(workspace, email, envString, "", "")
+    
+    Set response = AuthGateway.createNewSession(workspace, email, password)
+    
+    If response("error").Count <> 0 Then
+        MsgBox response("error")("message"), , "Erro"
+        Unload Me
+        Exit Sub
+    End If
+        
+    accessToken = response("success")("accessToken")
+    memberName = response("success")("member")("name")
+    
+    Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName)
+    Call SessionGateway.displayMemberInfo
+   
+    Unload Me
+     
+End Sub
