@@ -3,7 +3,7 @@ Private Sub AfterTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
+    AfterTextBox.text = Utils.formatDateInUserForm(AfterTextBox.text)
     reentry = False
 End Sub
 
@@ -12,7 +12,7 @@ Private Sub BeforeTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
+    BeforeTextBox.text = Utils.formatDateInUserForm(BeforeTextBox.text)
     reentry = False
 End Sub
 
@@ -26,7 +26,7 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SearchButton_Click()
-    'On Error Resume Next
+    On Error Resume Next
     Dim afterInput As String: afterInput = AfterTextBox.value
     Dim beforeInput As String: beforeInput = BeforeTextBox.value
     
@@ -37,6 +37,7 @@ Private Sub SearchButton_Click()
     Dim statusString As String: statusString = StatusComboBox.value
     Dim cursor As String
     Dim transfers As Collection
+    Dim transfer As Object
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     

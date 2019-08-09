@@ -46,3 +46,83 @@ Public Function getTransfers(cursor As String, optionalParam As Dictionary)
     End If
 
 End Function
+
+Public Function getTransfersFromSheet() As Collection
+    Dim transfers As New Collection
+    
+    For Each obj In SheetParser.dict
+        Dim amount As Long
+        Dim taxId As String
+        Dim name As String
+        Dim bankCode As String
+        Dim branchCode As String
+        Dim accountNumber As String
+        Dim tags() As String
+        Dim transfer As Dictionary
+        
+        If obj("Valor") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
+        End If
+        amount = Utils.IntegerFrom((obj("Valor")))
+        taxId = obj("CPF/CNPJ")
+        name = obj("Nome")
+        bankCode = obj("Código do Banco")
+        branchCode = obj("Agência")
+        accountNumber = obj("Conta")
+        tags = Split(obj("Tags"), ",")
+        
+        Set transfer = TransferGateway.transfer(amount, taxId, name, bankCode, branchCode, accountNumber, tags)
+        transfers.Add transfer
+        
+    Next
+    Set getTransfersFromSheet = transfers
+End Function
+
+Public Function transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
+    Dim dict As New Dictionary
+    
+    dict.Add "amount", amount
+    dict.Add "taxId", taxId
+    dict.Add "name", name
+    dict.Add "bankCode", bankCode
+    dict.Add "branchCode", branchCode
+    dict.Add "accountNumber", accountNumber
+    dict.Add "tags", tags
+    
+    Set transfer = dict
+    
+End Function
+
+Public Function createTransfers(payload As String, signature As String)
+    Dim resp As response
+    Dim headers As New Dictionary
+    
+    '--------------- Include signature in headers -----------------
+    headers.Add "Digital-Signature", signature
+    
+    '--------------- Send request -----------------
+    Set resp = StarkBankApi.postRequest("/v1/transfer", payload, headers)
+    
+    If resp.Status = 200 Then
+        createTransfers = resp.json()("message")
+        MsgBox resp.json()("message"), , "Sucesso"
+    'ElseIf
+    
+    Else
+        Dim errors As Collection: Set errors = resp.error()("errors")
+        Dim error As Dictionary
+        Dim errorList As String
+        Dim errorDescription As String
+        
+        For Each error In errors
+            errorDescription = Utils.correctErrorLine(error("message"), 10)
+            errorList = errorList & errorDescription & Chr(10)
+        Next
+        
+        Dim messageBox As String
+        messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+        MsgBox messageBox, , "Erro"
+        
+    End If
+    
+End Function

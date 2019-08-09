@@ -1,55 +1,46 @@
 Public Sub signIn()
-
-SignInForm.Show
-
+    SignInForm.Show
 End Sub
 
 Public Sub signOut()
-Dim response As Dictionary
-
-Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
-
-If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
-    MsgBox response("error")("message"), , "Erro"
-    Exit Sub
-End If
-
-Call SessionGateway.saveSession("", "", "", "", "")
-For Each ws In ThisWorkbook.Worksheets
-    If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-        ws.Cells(2, 1).value = ""
-        ws.Cells(3, 1).value = ""
-        ws.Cells(4, 1).value = ""
-        ws.Cells(5, 1).value = ""
+    On Error Resume Next
+    Dim response As Dictionary
+    
+    Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
+    
+    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
+        MsgBox response("error")("message"), , "Erro"
+        Exit Sub
     End If
-Next
-
-MsgBox response("success")("message"), , "Sucesso"
-
+    
+    Call SessionGateway.saveSession("", "", "", "", "")
+    For Each ws In ThisWorkbook.Worksheets
+        If ws.name <> "Credentials" And ws.name <> "InputLog" Then
+            ws.Cells(2, 1).value = ""
+            ws.Cells(3, 1).value = ""
+            ws.Cells(4, 1).value = ""
+            ws.Cells(5, 1).value = ""
+        End If
+    Next
+    
+    MsgBox response("success")("message"), , "Sucesso"
 End Sub
 
 Public Sub searchStatement()
-
-SearchForm.Show
-
+    SearchForm.Show
 End Sub
 
 Public Sub sendOrders()
-On Error Resume Next
-SendOrderForm.Show
-
+    On Error Resume Next
+    SendOrderForm.Show
 End Sub
 
 Public Sub searchCharges()
-
-ChargeForm.Show
-
+    ChargeForm.Show
 End Sub
 
 Public Sub searchTransfers()
-
-TransferForm.Show
-
+    TransferForm.Show
 End Sub
 
 Public Sub searchCustomers()
@@ -157,3 +148,6 @@ Public Sub createCharges()
      
 End Sub
 
+Public Sub executeTransfers()
+    ExecuteTransfersForm.Show
+End Sub

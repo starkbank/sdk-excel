@@ -187,7 +187,8 @@ Public Function createCharges(charges As Collection)
     If resp.Status = 200 Then
         createCharges = resp.json()("message")
         MsgBox resp.json()("message"), , "Sucesso"
-    Else
+        
+    ElseIf resp.error().Exists("errors") Then
         Dim errors As Collection: Set errors = resp.error()("errors")
         Dim error As Dictionary
         Dim errorList As String
@@ -201,6 +202,9 @@ Public Function createCharges(charges As Collection)
         Dim messageBox As String
         messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
         MsgBox messageBox, , "Erro"
+        
+    Else
+        MsgBox resp.error()("message"), , "Erro"
         
     End If
     

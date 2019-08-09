@@ -16,7 +16,7 @@ Public Function dict()
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).Text
+            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
         result.Add obj
     Next
