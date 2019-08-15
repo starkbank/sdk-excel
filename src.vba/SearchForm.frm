@@ -3,7 +3,7 @@ Private Sub AfterTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    AfterTextBox.text = Utils.formatDateInUserForm(AfterTextBox.text)
+    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
     reentry = False
 End Sub
 
@@ -12,14 +12,14 @@ Private Sub BeforeTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    BeforeTextBox.text = Utils.formatDateInUserForm(BeforeTextBox.text)
+    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
     reentry = False
 End Sub
 
 Private Sub DownloadButton_Click()
     On Error Resume Next
-    Dim afterInput As String: afterInput = AfterTextBox.value
-    Dim beforeInput As String: beforeInput = BeforeTextBox.value
+    Dim afterInput As String: afterInput = AfterTextBox.Value
+    Dim beforeInput As String: beforeInput = BeforeTextBox.Value
     
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
@@ -35,12 +35,12 @@ Private Sub DownloadButton_Click()
     ActiveSheet.Range("A10:F" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = "Data"
-    ActiveSheet.Cells(9, 2).value = "Valor"
-    ActiveSheet.Cells(9, 3).value = "Descrição"
-    ActiveSheet.Cells(9, 4).value = "Id da Transação"
-    ActiveSheet.Cells(9, 5).value = "Tarifa"
-    ActiveSheet.Cells(9, 6).value = "Tags"
+    ActiveSheet.Cells(9, 1).Value = "Data"
+    ActiveSheet.Cells(9, 2).Value = "Valor"
+    ActiveSheet.Cells(9, 3).Value = "Descrição"
+    ActiveSheet.Cells(9, 4).Value = "Id da Transação"
+    ActiveSheet.Cells(9, 5).Value = "Tarifa"
+    ActiveSheet.Cells(9, 6).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 6
@@ -71,15 +71,15 @@ Private Sub DownloadButton_Click()
             End If
             
             Dim created As String: created = Transaction("created")
-            ActiveSheet.Cells(row, 1).value = Utils.ISODATEZ(created)
+            ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
             
-            ActiveSheet.Cells(row, 2).value = Transaction("amount") / 100 * signal
-            ActiveSheet.Cells(row, 3).value = Transaction("description")
-            ActiveSheet.Cells(row, 4).value = Transaction("id")
-            ActiveSheet.Cells(row, 5).value = Transaction("fee") / 100
+            ActiveSheet.Cells(row, 2).Value = Transaction("amount") / 100 * signal
+            ActiveSheet.Cells(row, 3).Value = Transaction("description")
+            ActiveSheet.Cells(row, 4).Value = Transaction("id")
+            ActiveSheet.Cells(row, 5).Value = Transaction("fee") / 100
             
             Dim tags As Collection: Set tags = Transaction("tags")
-            ActiveSheet.Cells(row, 6).value = CollectionToString(tags, ",")
+            ActiveSheet.Cells(row, 6).Value = CollectionToString(tags, ",")
             
             row = row + 1
         Next
@@ -91,7 +91,7 @@ Private Sub DownloadButton_Click()
 End Sub
 
 Private Sub UserForm_Initialize()
-    Me.AfterTextBox.value = InputLogGateway.getAfterDate()
-    Me.BeforeTextBox.value = InputLogGateway.getBeforeDate()
+    Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
+    Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
     
 End Sub

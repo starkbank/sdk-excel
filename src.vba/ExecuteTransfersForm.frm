@@ -1,26 +1,27 @@
 Private Sub UserForm_Initialize()
-    Me.PathBox.text = InputLogGateway.getPath()
+    Me.PathBox.Text = InputLogGateway.getPath()
 End Sub
 
 Private Sub ConfirmButton_Click()
-    Dim myFile As String: myFile = PathBox.value
-    Dim externalId As String: externalId = ExternalIdBox.value
-    Dim description As String: description = DescriptionBox.value
+    On Error Resume Next
+    Dim myFile As String: myFile = PathBox.Value
+    Dim externalId As String: externalId = ExternalIdBox.Value
+    Dim description As String: description = DescriptionBox.Value
     
-    Dim privateKey As String, textLine As String
+    Dim privkeyStr As String, textLine As String
     Dim response As Dictionary
     
     Call InputLogGateway.savePath(myFile)
     Call Utils.applyStandardLayout("G")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = "Nome"
-    ActiveSheet.Cells(9, 2).value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 3).value = "Valor"
-    ActiveSheet.Cells(9, 4).value = "Código do Banco"
-    ActiveSheet.Cells(9, 5).value = "Agência"
-    ActiveSheet.Cells(9, 6).value = "Conta"
-    ActiveSheet.Cells(9, 7).value = "Tags"
+    ActiveSheet.Cells(9, 1).Value = "Nome"
+    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(9, 3).Value = "Valor"
+    ActiveSheet.Cells(9, 4).Value = "Código do Banco"
+    ActiveSheet.Cells(9, 5).Value = "Agência"
+    ActiveSheet.Cells(9, 6).Value = "Conta"
+    ActiveSheet.Cells(9, 7).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 7
@@ -28,11 +29,18 @@ Private Sub ConfirmButton_Click()
     End With
     ActiveWindow.FreezePanes = True
     
+    '----------- Validate mandatory inputs -----------
+    If externalId = vbNullString Then
+        MsgBox "Por favor, adicione um identificador único", , "Erro"
+        Unload Me
+        Exit Sub
+    End If
+    
     '--------------- Read privateKey -----------------
     Open myFile For Input As #1
     Do Until EOF(1)
         Line Input #1, textLine
-        privateKey = privateKey & textLine
+        privkeyStr = privkeyStr & textLine
     Loop
     
     Close #1
@@ -52,25 +60,19 @@ Private Sub ConfirmButton_Click()
     dict.Add "transfers", transfers
     
     payload = JsonConverter.ConvertToJson(dict)
+    Debug.Print "payload:"
+    Debug.Print payload
     
     '--------------- Sign body -----------------
-    Dim signatureResp As Dictionary
-    Set signatureResp = SignatureGateway.signMessage(privateKey, payload)
+    Dim pk As privateKey: Set pk = New privateKey
+    pk.fromPem (privkeyStr)
     
-    If signatureResp("error").Count <> 0 Then
-        MsgBox response("error")("message"), , "Erro"
-        Unload Me
-        Exit Sub
-    End If
-
-    Dim signature As String: signature = signatureResp("success")("signature")
-'    Debug.Print "signature:"
-'    Debug.Print Signature
-'    Debug.Print "********************************"
+    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(payload, pk)
+    Dim signature64 As String: signature64 = signature.toBase64()
     
     '--------------- Create transfers -----------------
     Dim respMessage As String
-    respMessage = TransferGateway.createTransfers(payload, signature)
+    respMessage = TransferGateway.createTransfers(payload, signature64)
     
     Unload Me
      
@@ -79,5 +81,5 @@ End Sub
 Private Sub BrowseButton_Click()
     Dim myFile As String
     myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
-    Me.PathBox.value = myFile
+    Me.PathBox.Value = myFile
 End Sub

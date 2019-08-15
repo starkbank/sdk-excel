@@ -25,19 +25,19 @@ Private Sub SendButton_Click()
     Dim teamId As String
     Dim orders As Collection
     Dim respMessage As String
-    Dim teamInfo As String: teamInfo = TeamBox.value
+    Dim teamInfo As String: teamInfo = TeamBox.Value
     
     Call Utils.applyStandardLayout("H")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = "Nome"
-    ActiveSheet.Cells(9, 2).value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 3).value = "Valor"
-    ActiveSheet.Cells(9, 4).value = "Código do Banco"
-    ActiveSheet.Cells(9, 5).value = "Agência"
-    ActiveSheet.Cells(9, 6).value = "Conta"
-    ActiveSheet.Cells(9, 7).value = "Tags"
-    ActiveSheet.Cells(9, 8).value = "Descrição"
+    ActiveSheet.Cells(9, 1).Value = "Nome"
+    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(9, 3).Value = "Valor"
+    ActiveSheet.Cells(9, 4).Value = "Código do Banco"
+    ActiveSheet.Cells(9, 5).Value = "Agência"
+    ActiveSheet.Cells(9, 6).Value = "Conta"
+    ActiveSheet.Cells(9, 7).Value = "Tags"
+    ActiveSheet.Cells(9, 8).Value = "Descrição"
     
     With ActiveWindow
         .SplitColumn = 8
@@ -48,8 +48,8 @@ Private Sub SendButton_Click()
     With CreateObject("VBScript.RegExp")
         .Pattern = "\= ([^)]+)\)"
         .Global = True
-        For Each m In .Execute(teamInfo)
-            teamId = m.SubMatches(0)
+        For Each M In .Execute(teamInfo)
+            teamId = M.SubMatches(0)
         Next
     End With
 

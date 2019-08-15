@@ -6,12 +6,12 @@ Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Vencidos"
     Me.StatusBox.AddItem "Cancelados"
     
-    Me.StatusBox.value = "Todos"
+    Me.StatusBox.Value = "Todos"
 End Sub
 
 Private Sub SearchButton_Click()
     On Error Resume Next
-    Dim statusString As String: statusString = StatusBox.value
+    Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String
     Dim charges As Collection
     Dim row As Integer
@@ -22,15 +22,15 @@ Private Sub SearchButton_Click()
     Range("A10:I" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = " Data de Emissão"
-    ActiveSheet.Cells(9, 2).value = "Valor"
-    ActiveSheet.Cells(9, 3).value = "Vencimento"
-    ActiveSheet.Cells(9, 4).value = "Status"
-    ActiveSheet.Cells(9, 5).value = "Nome"
-    ActiveSheet.Cells(9, 6).value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 7).value = "Linha Digitável"
-    ActiveSheet.Cells(9, 8).value = "Id da Transação"
-    ActiveSheet.Cells(9, 9).value = "Tags"
+    ActiveSheet.Cells(9, 1).Value = " Data de Emissão"
+    ActiveSheet.Cells(9, 2).Value = "Valor"
+    ActiveSheet.Cells(9, 3).Value = "Vencimento"
+    ActiveSheet.Cells(9, 4).Value = "Status"
+    ActiveSheet.Cells(9, 5).Value = "Nome"
+    ActiveSheet.Cells(9, 6).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(9, 7).Value = "Linha Digitável"
+    ActiveSheet.Cells(9, 8).Value = "Id da Transação"
+    ActiveSheet.Cells(9, 9).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 9
@@ -59,22 +59,22 @@ Private Sub SearchButton_Click()
         For Each charge In charges
 
             Dim issueDate As String: issueDate = charge("issueDate")
-            ActiveSheet.Cells(row, 1).value = Utils.ISODATEZ(issueDate)
+            ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
 
-            ActiveSheet.Cells(row, 2).value = charge("amount") / 100
+            ActiveSheet.Cells(row, 2).Value = charge("amount") / 100
 
             Dim dueDate As String: dueDate = charge("dueDate")
-            ActiveSheet.Cells(row, 3).value = Utils.ISODATEZ(dueDate)
+            ActiveSheet.Cells(row, 3).Value = Utils.ISODATEZ(dueDate)
 
             Dim chargeStatus As String: chargeStatus = charge("status")
-            ActiveSheet.Cells(row, 4).value = ChargeGateway.getStatusInPt(chargeStatus)
-            ActiveSheet.Cells(row, 5).value = charge("name")
-            ActiveSheet.Cells(row, 6).value = charge("taxId")
-            ActiveSheet.Cells(row, 7).value = charge("line")
-            ActiveSheet.Cells(row, 8).value = charge("id")
+            ActiveSheet.Cells(row, 4).Value = ChargeGateway.getStatusInPt(chargeStatus)
+            ActiveSheet.Cells(row, 5).Value = charge("name")
+            ActiveSheet.Cells(row, 6).Value = charge("taxId")
+            ActiveSheet.Cells(row, 7).Value = charge("line")
+            ActiveSheet.Cells(row, 8).Value = charge("id")
 
             Dim tags As Collection: Set tags = charge("tags")
-            ActiveSheet.Cells(row, 9).value = CollectionToString(tags, ",")
+            ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
 
             row = row + 1
         Next

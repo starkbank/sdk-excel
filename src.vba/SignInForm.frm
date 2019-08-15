@@ -3,18 +3,18 @@ Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Produção"
     Me.EnvironmentBox.AddItem "Sandbox"
     
-    Me.EmailBox.value = SessionGateway.getEmail()
-    Me.WorkspaceBox.value = SessionGateway.getWorkspace()
-    Me.EnvironmentBox.value = SessionGateway.getEnvironmentString()
+    Me.EmailBox.Value = SessionGateway.getEmail()
+    Me.WorkspaceBox.Value = SessionGateway.getWorkspace()
+    Me.EnvironmentBox.Value = SessionGateway.getEnvironmentString()
     
 End Sub
 
 Private Sub SendButton_Click()
     On Error Resume Next
-    Dim workspace As String: workspace = WorkspaceBox.value
-    Dim email As String: email = EmailBox.value
-    Dim password As String: password = PasswordBox.value
-    Dim envString As String: envString = EnvironmentBox.value
+    Dim workspace As String: workspace = WorkspaceBox.Value
+    Dim email As String: email = EmailBox.Value
+    Dim password As String: password = PasswordBox.Value
+    Dim envString As String: envString = EnvironmentBox.Value
     Dim accessToken As String
     Dim memberName As String
     Dim response As Dictionary

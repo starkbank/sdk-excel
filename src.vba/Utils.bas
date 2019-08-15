@@ -1,7 +1,7 @@
-Function CollectionToString(C As Collection, Optional Delimiter As String) As String
+Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
-    If C.Count <> 0 Then
-        For Each el In C
+    If c.Count <> 0 Then
+        For Each el In c
             elString = elString + el + Delimiter
         Next
         elString = Left(elString, Len(elString) - 1)
@@ -69,9 +69,9 @@ Function correctErrorLine(errorMessage As String, offset As Integer) As String
     With CreateObject("VBScript.RegExp")
         .Pattern = "(\w+) +(\d+):(.+)"
         .Global = True
-        For Each m In .Execute(errorMessage)
-            lineNumber = CInt(m.SubMatches(1))
-            message = m.SubMatches(2)
+        For Each M In .Execute(errorMessage)
+            lineNumber = CInt(M.SubMatches(1))
+            message = M.SubMatches(2)
         Next
     End With
     
@@ -79,9 +79,9 @@ Function correctErrorLine(errorMessage As String, offset As Integer) As String
     
 End Function
 
-Public Function IntegerFrom(value As String) As Long
+Public Function IntegerFrom(Value As String) As Long
     Dim temp As String
-    temp = value
+    temp = Value
     With CreateObject("VBScript.RegExp")
         .Pattern = "[^\d]+"
         .Global = True
@@ -95,13 +95,96 @@ Public Function DateToSendingFormat(dateInput As String) As String
     DateToSendingFormat = dateToSend
 End Function
 
-Public Function SingleFrom(value As String) As Single
+Public Function SingleFrom(Value As String) As Single
     Dim temp As String
-    temp = value
+    temp = Value
     With CreateObject("VBScript.RegExp")
         .Pattern = "%"
         .Global = True
         temp = .Replace(temp, "")
     End With
     SingleFrom = CSng(temp)
+End Function
+
+Public Function SHA256function(sMessage As String)
+
+    Dim clsX As CSHA256
+    Set clsX = New CSHA256
+
+    SHA256function = clsX.SHA256(sMessage)
+
+    Set clsX = Nothing
+
+End Function
+
+Public Function encodeBase64(ByRef arrData() As Byte) As String
+    Dim objXML As MSXML2.DOMDocument60
+    Dim objNode As MSXML2.IXMLDOMElement
+    
+    Set objXML = New MSXML2.DOMDocument60
+    
+    Set objNode = objXML.createElement("b64")
+    objNode.DataType = "bin.base64"
+    objNode.nodeTypedValue = arrData
+    encodeBase64 = Replace(objNode.Text, vbLf, "")
+ 
+    Set objNode = Nothing
+    Set objXML = Nothing
+End Function
+
+Public Function decodeBase64(ByVal strData As String) As Byte()
+    Dim objXML As MSXML2.DOMDocument60
+    Dim objNode As MSXML2.IXMLDOMElement
+    
+    Set objXML = New MSXML2.DOMDocument60
+    Set objNode = objXML.createElement("b64")
+    objNode.DataType = "bin.base64"
+    objNode.Text = strData
+    decodeBase64 = objNode.nodeTypedValue
+    
+    Set objNode = Nothing
+    Set objXML = Nothing
+End Function
+
+Public Function getSubByteArray(strHexa As String, indexI As Integer, indexF As Integer) As String
+    ' Index starts with zero
+    If indexF = -1 Or indexF > (Len(strHexa) + 1) / 3 - 1 Then
+        If indexI > (Len(strHexa) + 1) / 3 - 1 Then
+            getSubByteArray = vbNullString
+        Else
+            getSubByteArray = Right(strHexa, Len(strHexa) - (3 * indexI))
+        End If
+    Else
+        getSubByteArray = Mid(strHexa, 3 * indexI + 1, 3 * (indexF - indexI) + 2)
+    End If
+End Function
+
+Public Function bitwiseLeftShift(ByVal Value As String, ByVal Shift As Integer) As String
+    bitwiseLeftShift = Value
+    If Shift > 0 Then
+        Dim exp As String: exp = "1"
+        For i = 1 To Shift
+            exp = BigIntMath.multiply(exp, "2")
+        Next i
+        bitwiseLeftShift = BigIntMath.multiply(exp, Value)
+    End If
+End Function
+
+Public Function bitwiseRightShift(ByVal Value As String, ByVal Shift As Integer) As String
+    bitwiseRightShift = Value
+    If Shift > 0 Then
+        Dim exp As String: exp = "1"
+        For i = 1 To Shift
+            exp = BigIntMath.multiply(exp, "2")
+        Next i
+        bitwiseRightShift = BigIntMath.Divide(Value, exp)
+    End If
+End Function
+
+Public Function randrange(ByVal lowerbound As String, ByVal upperbound As String) As String
+    Dim randNumb As String, part1 As String, part2 As String, part3 As String
+    part1 = BigIntMath.Add(BigIntMath.Subtract(upperbound, lowerbound), "1")
+    part2 = BigIntMath.multiply(part1, CStr(Int(Rnd * 10000000)))
+    part3 = BigIntMath.Divide(part2, "10000000")
+    randrange = BigIntMath.Add(part3, lowerbound)
 End Function

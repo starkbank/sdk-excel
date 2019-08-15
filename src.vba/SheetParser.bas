@@ -1,7 +1,7 @@
 Public Function headers()
     Dim columns As New Collection
     For Each elem In ActiveSheet.UsedRange.columns
-        columns.Add ActiveSheet.Cells(9, elem.column).value
+        columns.Add ActiveSheet.Cells(9, elem.column).Value
     Next
     Set headers = columns
 End Function
@@ -16,7 +16,7 @@ Public Function dict()
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).Text
         Next
         result.Add obj
     Next

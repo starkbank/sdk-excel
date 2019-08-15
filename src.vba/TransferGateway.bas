@@ -62,6 +62,8 @@ Public Function getTransfersFromSheet() As Collection
         
         If obj("Valor") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
+            Unload ExecuteTransfersForm
+            End
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
         taxId = obj("CPF/CNPJ")
@@ -100,15 +102,14 @@ Public Function createTransfers(payload As String, signature As String)
     '--------------- Include signature in headers -----------------
     headers.Add "Digital-Signature", signature
     
-    '--------------- Send request -----------------
+    '--------------- Send request ---------------------------------
     Set resp = StarkBankApi.postRequest("/v1/transfer", payload, headers)
     
     If resp.Status = 200 Then
         createTransfers = resp.json()("message")
-        MsgBox resp.json()("message"), , "Sucesso"
-    'ElseIf
+        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
     
-    Else
+    ElseIf resp.error().Exists("errors") Then
         Dim errors As Collection: Set errors = resp.error()("errors")
         Dim error As Dictionary
         Dim errorList As String
@@ -122,6 +123,9 @@ Public Function createTransfers(payload As String, signature As String)
         Dim messageBox As String
         messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
         MsgBox messageBox, , "Erro"
+        
+    Else
+        MsgBox resp.error()("message"), , "Erro"
         
     End If
     

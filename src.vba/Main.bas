@@ -16,10 +16,10 @@ Public Sub signOut()
     Call SessionGateway.saveSession("", "", "", "", "")
     For Each ws In ThisWorkbook.Worksheets
         If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-            ws.Cells(2, 1).value = ""
-            ws.Cells(3, 1).value = ""
-            ws.Cells(4, 1).value = ""
-            ws.Cells(5, 1).value = ""
+            ws.Cells(2, 1).Value = ""
+            ws.Cells(3, 1).Value = ""
+            ws.Cells(4, 1).Value = ""
+            ws.Cells(5, 1).Value = ""
         End If
     Next
     
@@ -56,18 +56,18 @@ Public Sub searchCustomers()
     Range("A10:L" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = "Id do Cliente"
-    ActiveSheet.Cells(9, 2).value = "Nome"
-    ActiveSheet.Cells(9, 3).value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 4).value = "E-mail"
-    ActiveSheet.Cells(9, 5).value = "Telefone"
-    ActiveSheet.Cells(9, 6).value = "Logradouro"
-    ActiveSheet.Cells(9, 7).value = "Complemento"
-    ActiveSheet.Cells(9, 8).value = "Bairro"
-    ActiveSheet.Cells(9, 9).value = "Cidade"
-    ActiveSheet.Cells(9, 10).value = "Estado"
-    ActiveSheet.Cells(9, 11).value = "CEP"
-    ActiveSheet.Cells(9, 12).value = "Tags"
+    ActiveSheet.Cells(9, 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(9, 2).Value = "Nome"
+    ActiveSheet.Cells(9, 3).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(9, 4).Value = "E-mail"
+    ActiveSheet.Cells(9, 5).Value = "Telefone"
+    ActiveSheet.Cells(9, 6).Value = "Logradouro"
+    ActiveSheet.Cells(9, 7).Value = "Complemento"
+    ActiveSheet.Cells(9, 8).Value = "Bairro"
+    ActiveSheet.Cells(9, 9).Value = "Cidade"
+    ActiveSheet.Cells(9, 10).Value = "Estado"
+    ActiveSheet.Cells(9, 11).Value = "CEP"
+    ActiveSheet.Cells(9, 12).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 12
@@ -89,23 +89,23 @@ Public Sub searchCustomers()
 
         For Each customer In customers
 
-            ActiveSheet.Cells(row, 1).value = customer("id")
-            ActiveSheet.Cells(row, 2).value = customer("name")
-            ActiveSheet.Cells(row, 3).value = customer("taxId")
-            ActiveSheet.Cells(row, 4).value = customer("email")
-            ActiveSheet.Cells(row, 5).value = customer("phone")
+            ActiveSheet.Cells(row, 1).Value = customer("id")
+            ActiveSheet.Cells(row, 2).Value = customer("name")
+            ActiveSheet.Cells(row, 3).Value = customer("taxId")
+            ActiveSheet.Cells(row, 4).Value = customer("email")
+            ActiveSheet.Cells(row, 5).Value = customer("phone")
             
             Dim address As Dictionary: Set address = customer("address")
             
-            ActiveSheet.Cells(row, 6).value = address("streetLine1")
-            ActiveSheet.Cells(row, 7).value = address("streetLine2")
-            ActiveSheet.Cells(row, 8).value = address("district")
-            ActiveSheet.Cells(row, 9).value = address("city")
-            ActiveSheet.Cells(row, 10).value = address("stateCode")
-            ActiveSheet.Cells(row, 11).value = address("zipCode")
+            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
+            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
+            ActiveSheet.Cells(row, 8).Value = address("district")
+            ActiveSheet.Cells(row, 9).Value = address("city")
+            ActiveSheet.Cells(row, 10).Value = address("stateCode")
+            ActiveSheet.Cells(row, 11).Value = address("zipCode")
 
             Dim tags As Collection: Set tags = customer("tags")
-            ActiveSheet.Cells(row, 12).value = CollectionToString(tags, ",")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
 
             row = row + 1
         Next
@@ -123,18 +123,18 @@ Public Sub createCharges()
     Call Utils.applyStandardLayout("L")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).value = "Id do Cliente"
-    ActiveSheet.Cells(9, 2).value = "Valor"
-    ActiveSheet.Cells(9, 3).value = "Data de Vencimento"
-    ActiveSheet.Cells(9, 4).value = "Multa"
-    ActiveSheet.Cells(9, 5).value = "Juros ao Mês"
-    ActiveSheet.Cells(9, 6).value = "Dias para Baixa Automática"
-    ActiveSheet.Cells(9, 7).value = "Descrição 1"
-    ActiveSheet.Cells(9, 8).value = "Valor 1"
-    ActiveSheet.Cells(9, 9).value = "Descrição 2"
-    ActiveSheet.Cells(9, 10).value = "Valor 2"
-    ActiveSheet.Cells(9, 11).value = "Descrição 3"
-    ActiveSheet.Cells(9, 12).value = "Valor 3"
+    ActiveSheet.Cells(9, 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(9, 2).Value = "Valor"
+    ActiveSheet.Cells(9, 3).Value = "Data de Vencimento"
+    ActiveSheet.Cells(9, 4).Value = "Multa"
+    ActiveSheet.Cells(9, 5).Value = "Juros ao Mês"
+    ActiveSheet.Cells(9, 6).Value = "Dias para Baixa Automática"
+    ActiveSheet.Cells(9, 7).Value = "Descrição 1"
+    ActiveSheet.Cells(9, 8).Value = "Valor 1"
+    ActiveSheet.Cells(9, 9).Value = "Descrição 2"
+    ActiveSheet.Cells(9, 10).Value = "Valor 2"
+    ActiveSheet.Cells(9, 11).Value = "Descrição 3"
+    ActiveSheet.Cells(9, 12).Value = "Valor 3"
     
     With ActiveWindow
         .SplitColumn = 12

@@ -16,10 +16,10 @@ End Sub
 Public Function displayMemberInfo()
     For Each ws In ThisWorkbook.Worksheets
         If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-            ws.Cells(2, 1).value = "Olá " + SessionGateway.getMemberName() + "!"
-            ws.Cells(3, 1).value = "Workspace: " + SessionGateway.getWorkspace()
-            ws.Cells(4, 1).value = "E-mail: " + SessionGateway.getEmail()
-            ws.Cells(5, 1).value = "Ambiente: " + getEnvironmentString()
+            ws.Cells(2, 1).Value = "Olá " + SessionGateway.getMemberName() + "!"
+            ws.Cells(3, 1).Value = "Workspace: " + SessionGateway.getWorkspace()
+            ws.Cells(4, 1).Value = "E-mail: " + SessionGateway.getEmail()
+            ws.Cells(5, 1).Value = "Ambiente: " + getEnvironmentString()
         End If
     Next
 End Function
