@@ -2,29 +2,30 @@ Private Sub UserForm_Initialize()
     Me.PathBox.Text = InputLogGateway.getPath()
 End Sub
 
+Private Sub BrowseButton_Click()
+    Dim myFile As String
+    myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
+    Me.PathBox.Value = myFile
+End Sub
+
 Private Sub ConfirmButton_Click()
     On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
-    Dim externalId As String: externalId = ExternalIdBox.Value
-    Dim description As String: description = DescriptionBox.Value
     
     Dim privkeyStr As String, textLine As String
     Dim response As Dictionary
     
     Call InputLogGateway.savePath(myFile)
-    Call Utils.applyStandardLayout("G")
+    Call Utils.applyStandardLayout("D")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Nome"
-    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 3).Value = "Valor"
-    ActiveSheet.Cells(9, 4).Value = "Código do Banco"
-    ActiveSheet.Cells(9, 5).Value = "Agência"
-    ActiveSheet.Cells(9, 6).Value = "Conta"
-    ActiveSheet.Cells(9, 7).Value = "Tags"
+    ActiveSheet.Cells(9, 1).Value = "Linha Digitável ou Código de Barras"
+    ActiveSheet.Cells(9, 2).Value = "Data de Agendamento"
+    ActiveSheet.Cells(9, 3).Value = "Descrição"
+    ActiveSheet.Cells(9, 4).Value = "Tags"
     
     With ActiveWindow
-        .SplitColumn = 7
+        .SplitColumn = 4
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
@@ -44,13 +45,6 @@ Private Sub ConfirmButton_Click()
     Dim accessToken As String: accessToken = response("success")("accessToken")
     Call SessionGateway.saveAccessToken(accessToken)
     
-    '----------- Validate mandatory inputs -----------
-    If externalId = vbNullString Then
-        MsgBox "Por favor, adicione um identificador único", , "Erro"
-        Unload Me
-        Exit Sub
-    End If
-    
     '--------------- Read privateKey -----------------
     Open myFile For Input As #1
     Do Until EOF(1)
@@ -62,21 +56,14 @@ Private Sub ConfirmButton_Click()
     
     '--------------- Create body -----------------
     Dim payload As String, tags() As String
-    Dim dict As New Dictionary, transactionDict As New Dictionary
-    Dim transfers As Collection
+    Dim dict As New Dictionary
+    Dim payments As Collection
     
-    Set transfers = TransferGateway.getTransfersFromSheet()
+    Set payments = ChargePaymentGateway.getChargePaymentsFromSheet()
     
-    transactionDict.Add "externalId", externalId
-    transactionDict.Add "description", description
-    transactionDict.Add "tags", tags
-    
-    dict.Add "transaction", transactionDict
-    dict.Add "transfers", transfers
+    dict.Add "payments", payments
     
     payload = JsonConverter.ConvertToJson(dict)
-    Debug.Print "payload:"
-    Debug.Print payload
     
     '--------------- Sign body -----------------
     Dim pk As privateKey: Set pk = New privateKey
@@ -87,14 +74,8 @@ Private Sub ConfirmButton_Click()
     
     '--------------- Create transfers -----------------
     Dim respMessage As String
-    respMessage = TransferGateway.createTransfers(payload, signature64)
+    respMessage = ChargePaymentGateway.createPayments(payload, signature64)
     
     Unload Me
      
-End Sub
-
-Private Sub BrowseButton_Click()
-    Dim myFile As String
-    myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
-    Me.PathBox.Value = myFile
 End Sub

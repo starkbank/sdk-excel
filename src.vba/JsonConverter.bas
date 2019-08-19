@@ -223,7 +223,9 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
     json_UBound2D = -1
     json_IsFirstItem2D = True
     json_PrettyPrint = Not IsMissing(Whitespace)
-
+    
+    JsonOptions.UseDoubleForLargeNumbers = False
+    
     Select Case VBA.VarType(JsonValue)
     Case VBA.vbNull
         ConvertToJson = "null"
@@ -234,7 +236,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
         ConvertToJson = """" & json_DateStr & """"
     Case VBA.vbString
         ' String (or large number encoded as string)
-        If Not JsonOptions.UseDoubleForLargeNumbers And json_StringIsLargeNumber(JsonValue) Then
+        If JsonOptions.UseDoubleForLargeNumbers And json_StringIsLargeNumber(JsonValue) Then
             ConvertToJson = JsonValue
         Else
             ConvertToJson = """" & json_Encode(JsonValue) & """"
@@ -748,7 +750,7 @@ Private Sub json_SkipSpaces(json_String As String, ByRef json_Index As Long)
     Loop
 End Sub
 
-Private Function json_StringIsLargeNumber(json_String As Variant) As Boolean
+Private Function json_StringIsLargeNumber(ByVal json_String As Variant) As Boolean
     ' Check if the given string is considered a "large number"
     ' (See json_ParseNumber)
 

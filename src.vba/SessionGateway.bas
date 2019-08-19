@@ -13,6 +13,12 @@ Public Sub saveSession(workspace As String, email As String, envString As String
        
 End Sub
 
+Public Sub saveAccessToken(accessToken As String)
+    Sheets("Credentials").Cells(4, 1) = "AccessToken"
+    Sheets("Credentials").Cells(4, 2) = accessToken
+       
+End Sub
+
 Public Function displayMemberInfo()
     For Each ws In ThisWorkbook.Worksheets
         If ws.name <> "Credentials" And ws.name <> "InputLog" Then

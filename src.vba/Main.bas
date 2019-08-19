@@ -151,3 +151,11 @@ End Sub
 Public Sub executeTransfers()
     ExecuteTransfersForm.Show
 End Sub
+
+Public Sub payCharges()
+    PayChargesForm.Show
+End Sub
+
+Public Sub searchChargePayments()
+    ChargePaymentForm.Show
+End Sub
