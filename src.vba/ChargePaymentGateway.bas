@@ -57,6 +57,7 @@ Public Function getChargePaymentsFromSheet() As Collection
     
     For Each obj In SheetParser.dict
         Dim lineOrBarCode As String
+        Dim taxId As String
         Dim scheduled As String
         Dim description As String
         Dim tags() As String
@@ -68,18 +69,19 @@ Public Function getChargePaymentsFromSheet() As Collection
             End
         End If
         lineOrBarCode = obj("Linha Digitável ou Código de Barras")
+        taxId = obj("CPF/CNPJ do Beneficiário")
         scheduled = Utils.DateToSendingFormat((obj("Data de Agendamento")))
         description = obj("Descrição")
         tags = Split(obj("Tags"), ",")
         
-        Set payment = ChargePaymentGateway.payment(lineOrBarCode, scheduled, description, tags)
+        Set payment = ChargePaymentGateway.payment(lineOrBarCode, taxId, scheduled, description, tags)
         payments.Add payment
         
     Next
     Set getChargePaymentsFromSheet = payments
 End Function
 
-Public Function payment(lineOrBarCode As String, scheduled As String, description As String, tags() As String) As Dictionary
+Public Function payment(lineOrBarCode As String, taxId As String, scheduled As String, description As String, tags() As String) As Dictionary
     Dim dict As New Dictionary
     
     If Len(lineOrBarCode) = 44 Then
@@ -87,6 +89,7 @@ Public Function payment(lineOrBarCode As String, scheduled As String, descriptio
     Else
         dict.Add "line", lineOrBarCode
     End If
+    dict.Add "taxId", taxId
     dict.Add "scheduled", scheduled
     dict.Add "description", description
     dict.Add "tags", tags

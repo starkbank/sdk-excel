@@ -16,16 +16,17 @@ Private Sub ConfirmButton_Click()
     Dim response As Dictionary
     
     Call InputLogGateway.savePath(myFile)
-    Call Utils.applyStandardLayout("D")
+    Call Utils.applyStandardLayout("E")
     
     'Headers definition
     ActiveSheet.Cells(9, 1).Value = "Linha Digitável ou Código de Barras"
-    ActiveSheet.Cells(9, 2).Value = "Data de Agendamento"
-    ActiveSheet.Cells(9, 3).Value = "Descrição"
-    ActiveSheet.Cells(9, 4).Value = "Tags"
+    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ do Beneficiário"
+    ActiveSheet.Cells(9, 3).Value = "Data de Agendamento"
+    ActiveSheet.Cells(9, 4).Value = "Descrição"
+    ActiveSheet.Cells(9, 5).Value = "Tags"
     
     With ActiveWindow
-        .SplitColumn = 4
+        .SplitColumn = 5
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
