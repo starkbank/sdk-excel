@@ -102,7 +102,7 @@ Public Function getOrders() As Collection
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
-        customerId = obj("Id do Cliente")
+        customerId = Trim(obj("Id do Cliente"))
         dueDate = Utils.DateToSendingFormat((obj("Data de Vencimento")))
         
         If obj("Multa") <> "" Then

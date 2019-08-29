@@ -68,8 +68,8 @@ Public Function getChargePaymentsFromSheet() As Collection
             Unload PayChargesForm
             End
         End If
-        lineOrBarCode = obj("Linha Digitável ou Código de Barras")
-        taxId = obj("CPF/CNPJ do Beneficiário")
+        lineOrBarCode = Trim(obj("Linha Digitável ou Código de Barras"))
+        taxId = Trim(obj("CPF/CNPJ do Beneficiário"))
         scheduled = Utils.DateToSendingFormat((obj("Data de Agendamento")))
         description = obj("Descrição")
         tags = Split(obj("Tags"), ",")

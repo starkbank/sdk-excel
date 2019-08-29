@@ -55,7 +55,7 @@ Private Sub ConfirmButton_Click()
     Open myFile For Input As #1
     Do Until EOF(1)
         Line Input #1, textLine
-        privkeyStr = privkeyStr & textLine
+        privkeyStr = privkeyStr & textLine & vbLf
     Loop
     
     Close #1

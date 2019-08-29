@@ -9,7 +9,7 @@ Private Sub BrowseButton_Click()
 End Sub
 
 Private Sub ConfirmButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
     
     Dim privkeyStr As String, textLine As String
@@ -50,7 +50,7 @@ Private Sub ConfirmButton_Click()
     Open myFile For Input As #1
     Do Until EOF(1)
         Line Input #1, textLine
-        privkeyStr = privkeyStr & textLine
+        privkeyStr = privkeyStr & textLine & vbLf
     Loop
     
     Close #1
@@ -65,6 +65,8 @@ Private Sub ConfirmButton_Click()
     dict.Add "payments", payments
     
     payload = JsonConverter.ConvertToJson(dict)
+    Debug.Print "payload:"
+    Debug.Print payload
     
     '--------------- Sign body -----------------
     Dim pk As privateKey: Set pk = New privateKey

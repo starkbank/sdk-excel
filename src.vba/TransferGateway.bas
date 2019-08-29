@@ -66,11 +66,11 @@ Public Function getTransfersFromSheet() As Collection
             End
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
-        taxId = obj("CPF/CNPJ")
-        name = obj("Nome")
-        bankCode = obj("Código do Banco")
-        branchCode = obj("Agência")
-        accountNumber = obj("Conta")
+        taxId = Trim(obj("CPF/CNPJ"))
+        name = Trim(obj("Nome"))
+        bankCode = Trim(obj("Código do Banco"))
+        branchCode = Trim(obj("Agência"))
+        accountNumber = Trim(obj("Conta"))
         tags = Split(obj("Tags"), ",")
         
         Set transfer = TransferGateway.transfer(amount, taxId, name, bankCode, branchCode, accountNumber, tags)
