@@ -1,21 +1,3 @@
-Private Sub AfterTextBox_Change()
-    Static reentry As Boolean
-    If reentry Then Exit Sub
-    
-    reentry = True
-    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
-    reentry = False
-End Sub
-
-Private Sub BeforeTextBox_Change()
-    Static reentry As Boolean
-    If reentry Then Exit Sub
-    
-    reentry = True
-    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
-    reentry = False
-End Sub
-
 Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Todos"
     Me.StatusBox.AddItem "Criados"
@@ -28,12 +10,6 @@ End Sub
 
 Private Sub SearchButton_Click()
     On Error Resume Next
-'    Dim afterInput As String: afterInput = AfterTextBox.Value
-'    Dim beforeInput As String: beforeInput = BeforeTextBox.Value
-'
-'    Dim after As String: after = Utils.DateToSendingFormat(afterInput)
-'    Dim before As String: before = Utils.DateToSendingFormat(beforeInput)
-    
     Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String
     Dim payments As Collection
@@ -65,12 +41,6 @@ Private Sub SearchButton_Click()
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
-'    If after <> "--" Then
-'        optionalParam.Add "after", after
-'    End If
-'    If before <> "--" Then
-'        optionalParam.Add "before", before
-'    End If
     
     row = 10
 

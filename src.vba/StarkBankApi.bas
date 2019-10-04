@@ -25,8 +25,8 @@ End Function
 Public Function getRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     
-    For Each Key In defaultHeaders().keys()
-        headers.Add Key, defaultHeaders()(Key)
+    For Each key In defaultHeaders().keys()
+        headers.Add key, defaultHeaders()(key)
     Next
     
     Set getRequest = Request.fetch(url, "GET", headers, "")
@@ -35,8 +35,8 @@ End Function
 Public Function postRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     
-    For Each Key In defaultHeaders().keys()
-        headers.Add Key, defaultHeaders()(Key)
+    For Each key In defaultHeaders().keys()
+        headers.Add key, defaultHeaders()(key)
     Next
     
     Set postRequest = Request.fetch(url, "POST", headers, payload)
@@ -45,8 +45,8 @@ End Function
 Public Function deleteRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     
-    For Each Key In defaultHeaders().keys()
-        headers.Add Key, defaultHeaders()(Key)
+    For Each key In defaultHeaders().keys()
+        headers.Add key, defaultHeaders()(key)
     Next
     
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")

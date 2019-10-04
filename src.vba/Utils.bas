@@ -1,8 +1,8 @@
 Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
     If c.Count <> 0 Then
-        For Each el In c
-            elString = elString + el + Delimiter
+        For Each El In c
+            elString = elString + El + Delimiter
         Next
         elString = Left(elString, Len(elString) - 1)
     End If

@@ -1,4 +1,4 @@
-Public Function randomPointOnCurve(px As String, py As String, N As String, A As String, P As String)
+Public Function randomPointOnCurve(px As String, py As String, n As String, A As String, P As String)
     Dim resp As response
     Dim payload As String
     Dim dict As New Dictionary
@@ -8,7 +8,7 @@ Public Function randomPointOnCurve(px As String, py As String, N As String, A As
     dict.Add "Gy", py
     dict.Add "A", A
     dict.Add "P", P
-    dict.Add "N", N
+    dict.Add "N", n
     
     payload = JsonConverter.ConvertToJson(dict)
     
@@ -29,8 +29,8 @@ End Function
 
 
 
-Public Function multiply(px As String, py As String, nn As String, N As String, A As String, P As String) As String
-    multiply = fromJacobian(jacobianMultiply(toJacobian(px, py), nn, N, A, P), P)
+Public Function multiply(px As String, py As String, nn As String, n As String, A As String, P As String) As String
+    multiply = fromJacobian(jacobianMultiply(toJacobian(px, py), nn, n, A, P), P)
 End Function
 
 Public Function toJacobian(x As String, y As String) As point
@@ -49,15 +49,15 @@ Public Function fromJacobian(point As point, P As String) As String
     fromJacobian = x & ";" & y
 End Function
 
-Public Function inv(x As String, N As String) As String
+Public Function inv(x As String, n As String) As String
     If BigIntMath.Compare(x, "0") = 0 Then
         inv = "0"
     Else
         Dim lm As String, hm As String, high As String, low As String
         lm = "1"
         hm = "0"
-        high = N
-        low = BigIntMath.Modulus(x, N)
+        high = n
+        low = BigIntMath.Modulus(x, n)
         Dim r As String, nm As String, nw As String
         While BigIntMath.Compare(low, "1") = 1
             r = BigIntMath.Divide(high, low)
@@ -68,7 +68,7 @@ Public Function inv(x As String, N As String) As String
             low = nw
             lm = nm
         Wend
-        inv = BigIntMath.Modulus(lm, N)
+        inv = BigIntMath.Modulus(lm, n)
     End If
 End Function
 
@@ -109,7 +109,7 @@ Public Function jacobianAdd(pointP As point, pointQ As point, A As String, P As 
     End If
 End Function
 
-Public Function jacobianMultiply(point As point, nn As String, N As String, A As String, P As String) As point
+Public Function jacobianMultiply(point As point, nn As String, n As String, A As String, P As String) As point
     Dim pp As point: Set pp = New point
     If BigIntMath.Compare("0", point.y) = 0 Or BigIntMath.Compare("0", nn) = 0 Then
         Call pp.setCoordinates("0", "0", "1")
@@ -118,14 +118,14 @@ Public Function jacobianMultiply(point As point, nn As String, N As String, A As
     ElseIf BigIntMath.Compare("1", nn) = 0 Then
         Set jacobianMultiply = point
         
-    ElseIf BigIntMath.Compare(nn, "0") = -1 Or BigIntMath.Compare(nn, N) <> -1 Then
-        Set jacobianMultiply = jacobianMultiply(point, BigIntMath.Modulus(nn, N), N, A, P)
+    ElseIf BigIntMath.Compare(nn, "0") = -1 Or BigIntMath.Compare(nn, n) <> -1 Then
+        Set jacobianMultiply = jacobianMultiply(point, BigIntMath.Modulus(nn, n), n, A, P)
         
     ElseIf BigIntMath.Compare(BigIntMath.Modulus(nn, 2), "0") = 0 Then
-        Set jacobianMultiply = jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), N, A, P), A, P)
+        Set jacobianMultiply = jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), n, A, P), A, P)
     
     ElseIf BigIntMath.Compare(BigIntMath.Modulus(nn, 2), "1") = 0 Then
-        Set jacobianMultiply = jacobianAdd(jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), N, A, P), A, P), point, A, P)
+        Set jacobianMultiply = jacobianAdd(jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), n, A, P), A, P), point, A, P)
     
     End If
     

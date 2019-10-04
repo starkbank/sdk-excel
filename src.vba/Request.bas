@@ -2,8 +2,8 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     
-    For Each Key In headers.keys()
-        objHTTP.setRequestHeader Key, headers(Key)
+    For Each key In headers.keys()
+        objHTTP.setRequestHeader key, headers(key)
     Next
     
     objHTTP.send payload

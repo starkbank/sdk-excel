@@ -31,8 +31,9 @@ Private Sub SendButton_Click()
         
     accessToken = response("success")("accessToken")
     memberName = response("success")("member")("name")
+    workspaceId = response("success")("member")("workspaceId")
     
-    Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName)
+    Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName, workspaceId)
     Call SessionGateway.displayMemberInfo
    
     Unload Me

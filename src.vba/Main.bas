@@ -13,7 +13,7 @@ Public Sub signOut()
         Exit Sub
     End If
     
-    Call SessionGateway.saveSession("", "", "", "", "")
+    Call SessionGateway.saveSession("", "", "", "", "", "")
     For Each ws In ThisWorkbook.Worksheets
         If ws.name <> "Credentials" And ws.name <> "InputLog" Then
             ws.Cells(2, 1).Value = ""
@@ -158,41 +158,4 @@ End Sub
 
 Public Sub searchChargePayments()
     ChargePaymentForm.Show
-End Sub
-
-Public Sub testeGetOrders()
-    Dim teamId As String
-    Dim listId As String
-    Dim transferId As String
-    Dim cursor As String
-
-    tag = "team/5710855106723840/list/5635698069602304/transfer/5701325169885184"
-    result = Split(tag, "/")
-    teamId = result(1)
-    listId = result(3)
-    transferId = result(5)
-    Debug.Print teamId
-    Debug.Print listId
-    Debug.Print transferId
-    
-    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
-    Dim orders As Collection
-    'Optional parameters
-    optionalParam.Add "teamId", teamId
-    optionalParam.Add "listId", listId
-    optionalParam.Add "transferId", transferId
-    
-    
-    Set respJson = TeamGateway.getOrdersByTransfer(cursor, optionalParam)
-    Debug.Print "----------"
-    Set orders = respJson("orders")
-    For Each orderEl In orders
-        For Each Key In orderEl
-            Debug.Print Key
-            Debug.Print orderEl(Key)
-        Next
-        Debug.Print "----------"
-    Next
-    
-    
 End Sub

@@ -42,8 +42,8 @@ Private Sub SearchButton_Click()
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     
     'Table layout
-    Utils.applyStandardLayout ("I")
-    Range("A10:I" & Rows.Count).ClearContents
+    Utils.applyStandardLayout ("J")
+    Range("A10:J" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(9, 1).Value = "Data de Criação"
@@ -55,9 +55,10 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(9, 7).Value = "Agência"
     ActiveSheet.Cells(9, 8).Value = "Número de Conta"
     ActiveSheet.Cells(9, 9).Value = "Id da Transação"
+    ActiveSheet.Cells(9, 10).Value = "Tags"
     
     With ActiveWindow
-        .SplitColumn = 9
+        .SplitColumn = 10
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
@@ -68,6 +69,8 @@ Private Sub SearchButton_Click()
     End If
     
     '--------------- If status and dates have been defined ------------------
+    Debug.Print "after: "
+    Debug.Print after
     Dim Status As String: Status = TransferGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
@@ -106,6 +109,9 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 7).Value = transfer("branchCode")
             ActiveSheet.Cells(row, 8).Value = transfer("accountNumber")
             ActiveSheet.Cells(row, 9).Value = transfer("transactionId")
+
+            Dim tags As Collection: Set tags = transfer("tags")
+            ActiveSheet.Cells(row, 10).Value = CollectionToString(tags, ",")
 
             row = row + 1
         Next

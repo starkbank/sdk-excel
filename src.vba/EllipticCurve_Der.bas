@@ -23,7 +23,7 @@ Public Function removeObject(strHexa As String) As String
     Dim body As String: body = Utils.getSubByteArray(strHexa, 1 + CInt(lenghts(1)), CInt(endseq) - 1)
     Dim rest As String: rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
     
-    Dim N As String, ll As Integer, numbers() As String, numbersRead() As String, i As Integer: i = 0
+    Dim n As String, ll As Integer, numbers() As String, numbersRead() As String, i As Integer: i = 0
     While body <> vbNullString
         numbersRead = Split(readNumber(body), ",")
         

@@ -8,11 +8,11 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each Key In optionalParam
+        For Each key In optionalParam
             If query = "" Then
-                query = "?" + Key + "=" + CStr(optionalParam(Key))
+                query = "?" + key + "=" + CStr(optionalParam(key))
             Else
-                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
             End If
         Next
     End If
@@ -24,8 +24,7 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
     If resp.Status = 200 Then
         Set getTransaction = resp.json()
     Else
-        MsgBox resp.error()("message"), , "Erro"
-        Set getTransaction = New Dictionary
+         MsgBox resp.error()("message"), , "Erro"
     End If
 
 End Function

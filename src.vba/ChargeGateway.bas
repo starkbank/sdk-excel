@@ -31,11 +31,11 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each Key In optionalParam
+        For Each key In optionalParam
             If query = "" Then
-                query = "?" + Key + "=" + CStr(optionalParam(Key))
+                query = "?" + key + "=" + CStr(optionalParam(key))
             Else
-                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
             End If
         Next
     End If
@@ -62,11 +62,11 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each Key In optionalParam
+        For Each key In optionalParam
             If query = "" Then
-                query = "?" + Key + "=" + CStr(optionalParam(Key))
+                query = "?" + key + "=" + CStr(optionalParam(key))
             Else
-                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
             End If
         Next
     End If
@@ -74,7 +74,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Debug.Print "query: " + query
     
     Set resp = StarkBankApi.getRequest("/v1/charge/customer", query, New Dictionary)
-    
+
     If resp.Status = 200 Then
         Set getCustomers = resp.json()
     Else
@@ -208,4 +208,36 @@ Public Function createCharges(charges As Collection)
         
     End If
     
+End Function
+
+Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
+    Dim query As String '
+    Dim resp As response
+    Dim elem As Variant
+    
+    query = ""
+    If chargeId <> "" Then
+        query = "?chargeId=" + chargeId
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
+    
+    If resp.Status = 200 Then
+        Set logArray = resp.json()
+    Else
+        MsgBox resp.error()("message"), , "Erro"
+    End If
+    
+    Set getChargeLog = logArray
+
 End Function

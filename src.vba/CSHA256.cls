@@ -401,8 +401,8 @@ End Function
 ' SHA-256 function (rotate right)
 '*******************************************************************************
 Private Function s(ByVal x As Long, _
-                   ByVal N As Long) As Long
-    s = (RShift(x, (N And m_lOnBits(4))) Or LShift(x, (32 - (N And m_lOnBits(4)))))
+                   ByVal n As Long) As Long
+    s = (RShift(x, (n And m_lOnBits(4))) Or LShift(x, (32 - (n And m_lOnBits(4)))))
 End Function
 
 
@@ -413,8 +413,8 @@ End Function
 ' SHA-256 function (just a right shift)
 '*******************************************************************************
 Private Function r(ByVal x As Long, _
-                   ByVal N As Long) As Long
-    r = RShift(x, CInt(N And m_lOnBits(4)))
+                   ByVal n As Long) As Long
+    r = RShift(x, CInt(n And m_lOnBits(4)))
 End Function
 
 
