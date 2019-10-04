@@ -21,7 +21,7 @@ End Sub
 
 Public Function displayMemberInfo()
     For Each ws In ThisWorkbook.Worksheets
-        If ws.name <> "Credentials" And ws.name <> "InputLog" Then
+        If ws.name <> "Credentials" And ws.name <> "InputLog" And ws.name <> "Principal" Then
             ws.Cells(2, 1).Value = "Olá " + SessionGateway.getMemberName() + "!"
             ws.Cells(3, 1).Value = "Workspace: " + SessionGateway.getWorkspace()
             ws.Cells(4, 1).Value = "E-mail: " + SessionGateway.getEmail()
