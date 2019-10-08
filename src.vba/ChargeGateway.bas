@@ -40,8 +40,6 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Debug.Print "query: " + query
-    
     Set resp = StarkBankApi.getRequest("/v1/charge", query, New Dictionary)
     
     If resp.Status = 200 Then
@@ -71,10 +69,8 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Debug.Print "query: " + query
-    
     Set resp = StarkBankApi.getRequest("/v1/charge/customer", query, New Dictionary)
-
+    
     If resp.Status = 200 Then
         Set getCustomers = resp.json()
     Else
@@ -180,7 +176,6 @@ Public Function createCharges(charges As Collection)
     dict.Add "charges", charges
     
     payload = JsonConverter.ConvertToJson(dict)
-    Debug.Print payload
     
     Set resp = StarkBankApi.postRequest("/v1/charge", payload, New Dictionary)
     
@@ -241,3 +236,4 @@ Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
     Set getChargeLog = logArray
 
 End Function
+

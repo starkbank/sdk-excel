@@ -39,8 +39,6 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Debug.Print "query: " + query
-    
     Set resp = StarkBankApi.getRequest("/v1/charge-payment", query, New Dictionary)
     
     If resp.Status = 200 Then

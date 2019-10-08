@@ -1,3 +1,21 @@
+Private Sub AfterTextBox_Change()
+    Static reentry As Boolean
+    If reentry Then Exit Sub
+    
+    reentry = True
+    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
+    reentry = False
+End Sub
+
+Private Sub BeforeTextBox_Change()
+    Static reentry As Boolean
+    If reentry Then Exit Sub
+    
+    reentry = True
+    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
+    reentry = False
+End Sub
+
 Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Todos"
     Me.StatusBox.AddItem "Criados"
@@ -10,6 +28,7 @@ End Sub
 
 Private Sub SearchButton_Click()
     On Error Resume Next
+
     Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String
     Dim payments As Collection

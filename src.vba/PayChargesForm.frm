@@ -65,8 +65,6 @@ Private Sub ConfirmButton_Click()
     dict.Add "payments", payments
     
     payload = JsonConverter.ConvertToJson(dict)
-    Debug.Print "payload:"
-    Debug.Print payload
     
     '--------------- Sign body -----------------
     Dim pk As privateKey: Set pk = New privateKey

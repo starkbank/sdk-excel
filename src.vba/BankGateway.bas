@@ -17,14 +17,13 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Debug.Print "query: " + query
-    
     Set resp = StarkBankApi.getRequest("/v1/bank/transaction", query, New Dictionary)
     
     If resp.Status = 200 Then
         Set getTransaction = resp.json()
     Else
-         MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.error()("message"), , "Erro"
+        Set getTransaction = New Dictionary
     End If
 
 End Function

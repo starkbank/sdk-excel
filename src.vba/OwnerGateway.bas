@@ -17,7 +17,6 @@ Public Function getOwnerName(workspaceId As String, optionalParam As Dictionary)
     Else
         MsgBox resp.error()("message"), , "Erro" + " Response status: " + CStr(resp.Status)
     End If
-    Debug.Print logArray("owner")("name")
     getOwnerName = logArray("owner")("name")
 
 End Function

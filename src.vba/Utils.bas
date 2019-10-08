@@ -1,8 +1,8 @@
 Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
     If c.Count <> 0 Then
-        For Each El In c
-            elString = elString + El + Delimiter
+        For Each el In c
+            elString = elString + el + Delimiter
         Next
         elString = Left(elString, Len(elString) - 1)
     End If
@@ -187,4 +187,19 @@ Public Function randrange(ByVal lowerbound As String, ByVal upperbound As String
     part2 = BigIntMath.multiply(part1, CStr(Int(Rnd * 10000000)))
     part3 = BigIntMath.Divide(part2, "10000000")
     randrange = BigIntMath.Add(part3, lowerbound)
+End Function
+
+Public Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean
+Dim element As Variant
+On Error GoTo IsInArrayError:
+    For Each element In arr
+        If element = valToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next element
+Exit Function
+IsInArrayError:
+On Error GoTo 0
+IsInArray = False
 End Function

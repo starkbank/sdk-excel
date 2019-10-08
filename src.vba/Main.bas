@@ -6,6 +6,17 @@ Public Sub signOut()
     On Error Resume Next
     Dim response As Dictionary
     
+    message1 = "Você quer mesmo encerrar a sessão? "
+    message2 = "Dados que não foram salvos serão apagados."
+    
+    confirmationMessage = message1 + message2
+    signOutAnswer = MsgBox(confirmationMessage, vbQuestion + vbYesNo, "Confirmação de encerramento")
+    
+    If signOutAnswer = vbNo Then
+        Exit Sub
+    End If
+    
+    Application.ScreenUpdating = False
     Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
     
     If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
@@ -23,7 +34,17 @@ Public Sub signOut()
         End If
     Next
     
+    clearAll
+    Application.ScreenUpdating = True
     MsgBox response("success")("message"), , "Sucesso"
+End Sub
+
+Public Sub clearAll()
+    For Each ws In ThisWorkbook.Worksheets
+        ws.Cells.UnMerge
+        ' Call Utils.applyStandardLayout("F")
+        ws.Range("A10:Z" & Rows.Count).ClearContents
+    Next
 End Sub
 
 Public Sub searchStatement()

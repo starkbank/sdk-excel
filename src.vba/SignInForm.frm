@@ -18,14 +18,14 @@ Private Sub SendButton_Click()
     Dim accessToken As String
     Dim memberName As String
     Dim response As Dictionary
+    Dim workspaceId As String
     
-    Call SessionGateway.saveSession(workspace, email, envString, "", "")
+    Call SessionGateway.saveSession(workspace, email, envString, "", "", "")
     
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
     If response("error").Count <> 0 Then
         MsgBox response("error")("message"), , "Erro"
-        Unload Me
         Exit Sub
     End If
         

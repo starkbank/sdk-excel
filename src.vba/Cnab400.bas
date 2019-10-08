@@ -20,7 +20,6 @@ Public Sub ExportFile()
     today = Mid(today, 1, 2) & Mid(today, 4, 2) & Mid(today, 9, 2)
     
     lastRow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
-    Debug.Print "The last row is: " + CStr(lastRow)
     
     outputFileName = "CNAB400_" & CStr(today) & ".RET"
     outputPath = Application.DefaultFilePath & outputFileName
@@ -65,11 +64,6 @@ Private Sub CanceledExportMessage(dialog As Variant)
     End If
 End Sub
 Public Function TaxIdFormatting(taxId As String) As String
-    ' Verify and validade taxId
-    If taxId = "" Then
-        Debug.Print "No taxId to check"
-    End If
-        
     taxId = Replace(taxId, ".", "")
     taxId = Replace(taxId, "/", "")
     taxId = Replace(taxId, "-", "")
@@ -80,7 +74,6 @@ End Function
 Public Function GetTaxIdType(taxId As String) As String
     ' Only works with TaxIds containing punctuation
     lenTaxId = Len(taxId)
-    Debug.Print taxId
     Select Case Len(taxId)
         Case 14
             idType = "01"
@@ -128,7 +121,6 @@ Private Sub DebugDict()
 End Sub
 
 Private Function GetAmountLong(amount As Variant)
-    Debug.Print "Amount: " + amount
     amount = FormatCurrency(amount, 2)
     amount = Replace(amount, ",", "")
     amount = Replace(amount, ".", "")
@@ -225,7 +217,6 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     amountInt = GetAmountLong(amount)
     amountDict(occurrenceId) = amountDict(occurrenceId) + amountInt
     
-    Debug.Print "chargeId", chargeId, CStr(VarType(chargeId))
     occurrenceDate = GetLogOccurrenceDate(statusCode, chargeId)
     
     If occurrenceId = "06" Then
@@ -242,8 +233,8 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     accountNumber = ZeroPad(StarkData.GetAccountNumber(), 9)
     companySubscription = "0" & wallet & branch & accountNumber
     formattedAmount = ZeroPad(amountInt, 13)
-    If occurenceId = "06" Then
-        formattedPaidAmount = formmattedAmount
+    If occurrenceId = "06" Then
+        formattedPaidAmount = formattedAmount
     Else
         formattedPaidAmount = ZeroPad("0", 13)
     End If
@@ -269,8 +260,8 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     Print #outputFile, Tab(108); StarkData.GetWallet(); ' Carteira
     Print #outputFile, Tab(109); occurrenceId; ' Identificacao ocorrencia: Obs Pag 45
     Print #outputFile, Tab(111); occurrenceDate; ' Data ocorrencia no banco
-    Print #outputFile, Tab(117); Right(chargeId, 10); ' Numero do documento
-    Print #outputFile, Tab(127); ZeroPad(documentNumber, 20); ' TODO: Obs Pag 46
+    Print #outputFile, Tab(117); ZeroPad("0", 10); ' Numero do documento
+    Print #outputFile, Tab(127); ZeroPad(chargeId, 20); ' TODO: Obs Pag 46
     Print #outputFile, Tab(147); formattedDueDate;
     Print #outputFile, Tab(153); formattedAmount;
     Print #outputFile, Tab(166); "341"; ' Codigo do Banco, Camara de Compensacao

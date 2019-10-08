@@ -47,15 +47,15 @@ Private Sub SearchButton_Click()
     
     'Headers definition
     ActiveSheet.Cells(9, 1).Value = "Data de Criação"
-    ActiveSheet.Cells(9, 2).Value = "Valor"
-    ActiveSheet.Cells(9, 3).Value = "Status"
-    ActiveSheet.Cells(9, 4).Value = "Nome"
-    ActiveSheet.Cells(9, 5).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 6).Value = "Código do Banco"
-    ActiveSheet.Cells(9, 7).Value = "Agência"
-    ActiveSheet.Cells(9, 8).Value = "Número de Conta"
-    ActiveSheet.Cells(9, 9).Value = "Id da Transação"
-    ActiveSheet.Cells(9, 10).Value = "Tags"
+    ActiveSheet.Cells(9, 2).Value = "Id da Transferência"
+    ActiveSheet.Cells(9, 3).Value = "Valor"
+    ActiveSheet.Cells(9, 4).Value = "Status"
+    ActiveSheet.Cells(9, 5).Value = "Nome"
+    ActiveSheet.Cells(9, 6).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(9, 7).Value = "Código do Banco"
+    ActiveSheet.Cells(9, 8).Value = "Agência"
+    ActiveSheet.Cells(9, 9).Value = "Número de Conta"
+    ActiveSheet.Cells(9, 10).Value = "Id da Transação"
     
     With ActiveWindow
         .SplitColumn = 10
@@ -69,8 +69,6 @@ Private Sub SearchButton_Click()
     End If
     
     '--------------- If status and dates have been defined ------------------
-    Debug.Print "after: "
-    Debug.Print after
     Dim Status As String: Status = TransferGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
@@ -98,21 +96,18 @@ Private Sub SearchButton_Click()
 
             Dim created As String: created = transfer("created")
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
-
-            ActiveSheet.Cells(row, 2).Value = transfer("amount") / 100
+            ActiveSheet.Cells(row, 2).Value = transfer("id")
+            ActiveSheet.Cells(row, 3).Value = transfer("amount") / 100
 
             Dim transferStatus As String: transferStatus = transfer("status")
-            ActiveSheet.Cells(row, 3).Value = TransferGateway.getStatusInPt(transferStatus)
-            ActiveSheet.Cells(row, 4).Value = transfer("name")
-            ActiveSheet.Cells(row, 5).Value = transfer("taxId")
-            ActiveSheet.Cells(row, 6).Value = transfer("bankCode")
-            ActiveSheet.Cells(row, 7).Value = transfer("branchCode")
-            ActiveSheet.Cells(row, 8).Value = transfer("accountNumber")
-            ActiveSheet.Cells(row, 9).Value = transfer("transactionId")
-
-            Dim tags As Collection: Set tags = transfer("tags")
-            ActiveSheet.Cells(row, 10).Value = CollectionToString(tags, ",")
-
+            ActiveSheet.Cells(row, 4).Value = TransferGateway.getStatusInPt(transferStatus)
+            ActiveSheet.Cells(row, 5).Value = transfer("name")
+            ActiveSheet.Cells(row, 6).Value = transfer("taxId")
+            ActiveSheet.Cells(row, 7).Value = transfer("bankCode")
+            ActiveSheet.Cells(row, 8).Value = transfer("branchCode")
+            ActiveSheet.Cells(row, 9).Value = transfer("accountNumber")
+            ActiveSheet.Cells(row, 10).Value = transfer("transactionId")
+            
             row = row + 1
         Next
 
