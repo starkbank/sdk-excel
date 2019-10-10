@@ -7,62 +7,70 @@ Private bankCode As String
 Private totalNumber As Long
 Private totalAmount As Long
 
+Private occurrenceDateDict As Dictionary
 Private numberDict As Dictionary
 Private amountDict As Dictionary
 
 Public Sub ExportFile()
     Dim outputFile As Integer
+    Dim lastrow As Integer
     Dim i As Integer
     
-    InitializeOccurrences
-    
+    initializeOccurrences
     today = Date
-    today = Mid(today, 1, 2) & Mid(today, 4, 2) & Mid(today, 9, 2)
+    today = dateFormatter(today, 1, 4, 9)
     
-    lastRow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
+    lastrow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
     
-    outputFileName = "CNAB400_" & CStr(today) & ".RET"
+    outputFileName = "CNAB400_" & "20" & dateFormatter(today, 5, 3, 1, "-") & ".RET"
     outputPath = Application.DefaultFilePath & outputFileName
     
     dialog = Application.GetSaveAsFilename(outputFileName, FileFilter:="Text Files (*.ret), *.RET")
-    Call CanceledExportMessage(dialog)
+    Call exportMessageCanceled(dialog)
+    
     outputFile = 1
-    Open dialog For Output As #outputFile
+    
+    Set occurrenceDateDict = getLogOccurrenceDates(lastrow)
     
     registerNumber = 1
     
-    OutputPrintHeader (outputFile)
-    For i = 10 To lastRow
+    Open dialog For Output As #outputFile
+    
+    outputPrintHeader (outputFile)
+    
+    For i = 10 To lastrow
         registerNumber = registerNumber + 1
-        Call OutputPrintTransactionOne(outputFile, i)
+        Call outputPrintTransactionOne(outputFile, i)
     Next
+    
     For Each key In numberDict
         totalNumber = totalNumber + numberDict(key)
         totalAmount = totalAmount + amountDict(key)
     Next
+    
     registerNumber = registerNumber + 1
-    OutputPrintTrailler (outputFile)
+    outputPrintTrailler (outputFile)
     
     Close #outputFile
-    Call SuccessExportMessage(dialog)
+    Call exportMessageSuccess(dialog)
     DebugDict
 End Sub
 
-Private Sub SuccessExportMessage(dialog As Variant)
+Private Sub exportMessageSuccess(dialog As Variant)
     If dialog <> False Then
-        Cells(2, 1) = dialog
         MsgBox "Arquivo exportado com sucesso...", , "Sucesso"
     Else
         MsgBox "Arquivo não foi salvo", , "Erro ao salvar"
     End If
 End Sub
 
-Private Sub CanceledExportMessage(dialog As Variant)
+Private Sub exportMessageCanceled(dialog As Variant)
     If dialog = False Then
         MsgBox "Arquivo não foi salvo", , "Erro ao salvar"
         End
     End If
 End Sub
+
 Public Function TaxIdFormatting(taxId As String) As String
     taxId = Replace(taxId, ".", "")
     taxId = Replace(taxId, "/", "")
@@ -71,8 +79,7 @@ Public Function TaxIdFormatting(taxId As String) As String
     TaxIdFormatting = taxId
 End Function
 
-Public Function GetTaxIdType(taxId As String) As String
-    ' Only works with TaxIds containing punctuation
+Public Function getTaxIdType(taxId As String) As String
     lenTaxId = Len(taxId)
     Select Case Len(taxId)
         Case 14
@@ -83,10 +90,10 @@ Public Function GetTaxIdType(taxId As String) As String
             Debug.Print "Error to verify taxId type: " & taxId
             idType = "99"
     End Select
-    GetTaxIdType = idType
+    getTaxIdType = idType
 End Function
 
-Public Function GetOccurrenceId(statusCode As String)
+Public Function getOccurrenceId(statusCode As String)
     Select Case statusCode
         Case "pendente de registro"
             occurrenceId = "00"
@@ -103,7 +110,7 @@ Public Function GetOccurrenceId(statusCode As String)
         Case Else
             occurrenceId = "99"
     End Select
-    GetOccurrenceId = occurrenceId
+    getOccurrenceId = occurrenceId
 End Function
 
 Public Function ZeroPad(s As Variant, n As Integer) As String
@@ -120,16 +127,16 @@ Private Sub DebugDict()
     Debug.Print "Total Amount:", totalAmount
 End Sub
 
-Private Function GetAmountLong(amount As Variant)
+Private Function getAmountLong(amount As Variant)
     amount = FormatCurrency(amount, 2)
     amount = Replace(amount, ",", "")
     amount = Replace(amount, ".", "")
     amount = Replace(amount, "R$", "")
     amount = CLng(amount)
-    GetAmountLong = amount
+    getAmountLong = amount
 End Function
 
-Private Function GetLogOccurrenceDate(statusCode As String, chargeId As String) As String
+Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) As String
     Dim respMessage As Variant
     Dim logEvent As String
     Set respMessage = ChargeGateway.getChargeLog(chargeId, New Dictionary)
@@ -137,14 +144,61 @@ Private Function GetLogOccurrenceDate(statusCode As String, chargeId As String) 
     For Each elem In respMessage("logs")
         logEvent = elem("event")
         If (statusCode = ChargeGateway.getStatusInPt(logEvent)) Then
-            GetLogOccurrenceDate = elem("created")
+            getLogOccurrenceDate = elem("created")
             Exit Function
         End If
     Next
     
 End Function
 
-Private Sub InitializeOccurrences()
+Private Function getLogOccurrenceDates(lastrow As Integer) As Dictionary
+    Dim chunk As String
+    Dim respMessage As Variant
+    Dim i As Integer
+    Dim j As Integer
+    Dim statusCode As String
+    Dim dictOccurrenceDate As Dictionary
+    Set dictOccurrenceDate = New Dictionary
+    
+    chunk = ""
+    j = 0
+    For i = 10 To lastrow
+        statusCode = Cells(i, "D").Value
+        chargeId = CStr(Cells(i, "H").Value)
+        
+        occurrenceId = getOccurrenceId(statusCode)
+        If occurrenceId = "06" Then
+            j = j + 1
+            chunk = chunk & chargeId & ","
+            If j >= 100 Then
+                Debug.Print CStr(j), chunk
+                Set respMessage = ChargeGateway.getChargeLog(chunk, New Dictionary)
+                
+                For Each elem In respMessage("logs")
+                    dictOccurrenceDate.Add elem("id"), elem("created")
+                Next
+                
+                chunk = ""
+                j = 0
+            End If
+        End If
+    Next
+    Debug.Print CStr(j), chunk
+    
+    Set respMessage = ChargeGateway.getChargeLog(chunk, New Dictionary)
+    
+    For Each elem In respMessage("logs")
+        dictOccurrenceDate.Add elem("id"), elem("created")
+    Next
+    
+    Set getLogOccurrenceDates = dictOccurrenceDate
+End Function
+
+Public Function dateFormatter(inputDate As String, p1 As Integer, p2 As Integer, p3 As Integer, Optional sep As String = "") As String
+    dateFormatter = Mid(inputDate, p1, 2) & sep & Mid(inputDate, p2, 2) & sep & Mid(inputDate, p3, 2)
+End Function
+
+Private Sub initializeOccurrences()
     Dim key As String
     Set numberDict = New Dictionary
     Set amountDict = New Dictionary
@@ -158,7 +212,7 @@ Private Sub InitializeOccurrences()
     Next
 End Sub
 
-Private Sub OutputPrintHeader(outputFile As Integer)
+Private Sub outputPrintHeader(outputFile As Integer)
     ' Registro Header do lote
     
     Dim workspaceId As String
@@ -170,8 +224,7 @@ Private Sub OutputPrintHeader(outputFile As Integer)
     companyName = OwnerGateway.getOwnerName(workspaceId, New Dictionary)
     companyName = Left(UCase(companyName), 30)
     
-    creditDate = "000000" ' TODO: ????
-    ' creditDate = Application.WorkDay(Date, 1) ' TODO: ????
+    creditDate = "000000"
     formattedCreditDate = CStr(creditDate)
     
     Print #outputFile, Tab(1); "02RETORNO01COBRANCA";
@@ -188,8 +241,10 @@ Private Sub OutputPrintHeader(outputFile As Integer)
     Print #outputFile, Tab(394); ZeroPad(registerNumber, 6)
 End Sub
 
-Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
+Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     Dim issueDate As String
+    Dim creditDate As String
+    Dim occurrenceDate As String
     Dim amount As String
     Dim dueDate As String
     Dim statusCode As String
@@ -207,25 +262,20 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     chargeId = CStr(Cells(i, "H").Value)
     
     taxId = CStr(taxId)
-    typeTaxId = GetTaxIdType(taxId)
+    typeTaxId = getTaxIdType(taxId)
     taxId = TaxIdFormatting(taxId)
     
-    occurrenceId = GetOccurrenceId(statusCode)
+    occurrenceId = getOccurrenceId(statusCode)
     
     numberDict(occurrenceId) = numberDict(occurrenceId) + 1
     
-    amountInt = GetAmountLong(amount)
+    amountInt = getAmountLong(amount)
     amountDict(occurrenceId) = amountDict(occurrenceId) + amountInt
     
-    occurrenceDate = GetLogOccurrenceDate(statusCode, chargeId)
-    
-    If occurrenceId = "06" Then
-        creditDate = occurrenceDate
-        creditDate = Mid(creditDate, 9, 2) & Mid(creditDate, 6, 2) & Mid(creditDate, 3, 2)
-        bankCode = "0000"
+    If occurrenceDateDict.Exists(chargeId) Then
+        occurrenceDate = dateFormatter(occurrenceDateDict(chargeId), 9, 6, 3)
     Else
-        creditDate = "      "
-        bankCode = "    "
+        occurrenceDate = "      "
     End If
     
     wallet = ZeroPad(StarkData.GetWallet(), 3)
@@ -233,16 +283,20 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     accountNumber = ZeroPad(StarkData.GetAccountNumber(), 9)
     companySubscription = "0" & wallet & branch & accountNumber
     formattedAmount = ZeroPad(amountInt, 13)
-    If occurrenceId = "06" Then
-        formattedPaidAmount = formattedAmount
-    Else
-        formattedPaidAmount = ZeroPad("0", 13)
-    End If
+    Select Case occurrenceId
+        Case "06"
+            formattedPaidAmount = formattedAmount
+            creditDate = occurrenceDate
+            bankCode = "0000"
+        Case Else
+            formattedPaidAmount = ZeroPad("0", 13)
+            creditDate = "      "
+            bankCode = "    "
+    End Select
     registeredAmount = ZeroPad(amountInt, 12)
     
-    formattedIssueDate = Mid(issueDate, 1, 2) & Mid(issueDate, 4, 2) & Mid(issueDate, 9, 2)
-    formattedDueDate = Mid(dueDate, 1, 2) & Mid(dueDate, 4, 2) & Mid(dueDate, 9, 2)
-    occurrenceDate = Mid(occurrenceDate, 9, 2) & Mid(occurrenceDate, 6, 2) & Mid(occurrenceDate, 3, 2)
+    formattedIssueDate = dateFormatter(issueDate, 1, 4, 9)
+    formattedDueDate = dateFormatter(dueDate, 1, 4, 9)
     
     ' Registro de Transação
     Print #outputFile, Tab(1); "1";
@@ -265,7 +319,7 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     Print #outputFile, Tab(147); formattedDueDate;
     Print #outputFile, Tab(153); formattedAmount;
     Print #outputFile, Tab(166); "341"; ' Codigo do Banco, Camara de Compensacao
-    Print #outputFile, Tab(169); ZeroPad(branch, 5); ' TODO: ???? Codigo da Agencia do banco cobrador";
+    Print #outputFile, Tab(169); ZeroPad(branch, 5); ' TODO: Codigo da Agencia do banco cobrador";
     Print #outputFile, Tab(176); "0000000000000"; ' Despesas de coranca Tarifa de registro
     Print #outputFile, Tab(189); "0000000000000";
     Print #outputFile, Tab(202); "0000000000000"; ' Juros operacao em atraso
@@ -284,26 +338,26 @@ Private Sub OutputPrintTransactionOne(outputFile As Integer, i As Integer)
     Print #outputFile, Tab(319); "0000000000"; ' Motivo das rejeicoes Obs pag 47
     ' Em Branco: 329 a 368
     'Print #outputFile, Tab(369); "00"; ' Numero do cartorio
-    'Print #outputFile, Tab(371); ZeroPad("0", 10); ' TODO: ????
+    'Print #outputFile, Tab(371); ZeroPad("0", 10); ' TODO
     Print #outputFile, Tab(394); ZeroPad(registerNumber, 6)
 End Sub
 
-Private Sub OutputPrintTrailler(outputFile As Integer)
+Private Sub outputPrintTrailler(outputFile As Integer)
     ' Registro Trailler
     Print #outputFile, Tab(1); "9";
     Print #outputFile, Tab(2); "2";
     Print #outputFile, Tab(3); "01";
     Print #outputFile, Tab(5); ZeroPad(StarkData.GetBankNumber(), 3);
     ' Em Branco: 008 a 017
-    Print #outputFile, Tab(18); ZeroPad(totalNumber, 8); ' TODO: ???? Quantidade de Titulos de cobranca
-    Print #outputFile, Tab(26); ZeroPad(totalAmount, 14); ' TODO: ???? Valor total em cobranca
-    Print #outputFile, Tab(40); ZeroPad("360", 8); ; ' TODO: ???? Aviso Bancário
+    Print #outputFile, Tab(18); ZeroPad(totalNumber, 8); ' TODO: Quantidade de Titulos de cobranca
+    Print #outputFile, Tab(26); ZeroPad(totalAmount, 14); ' TODO: Valor total em cobranca
+    Print #outputFile, Tab(40); ZeroPad("360", 8); ; ' TODO: Aviso Bancário
     ' Em Branco: 048 a 057
     Print #outputFile, Tab(58); ZeroPad(numberDict("02"), 5); ' Quantidade de registros 02
     Print #outputFile, Tab(63); ZeroPad(amountDict("02"), 12); ' Valor dos registros ocorrencia 02
     Print #outputFile, Tab(75); ZeroPad(amountDict("06"), 12); ' Valor dos registros ocorrencia 06
     Print #outputFile, Tab(87); ZeroPad(numberDict("06"), 5); ' Quantidade de registros ocorrencia 06
-    Print #outputFile, Tab(92); ZeroPad(amountDict("06"), 12); ; ' ???? Valor dos registros ocorrencia 06
+    Print #outputFile, Tab(92); ZeroPad(amountDict("06"), 12); ; ' Valor dos registros ocorrencia 06
     Print #outputFile, Tab(104); ZeroPad(numberDict("09") + numberDict("10"), 5); ' Quantidade de registros 09 e 10
     Print #outputFile, Tab(109); ZeroPad(amountDict("09") + amountDict("10"), 12); ' Valor dos registros ocorrencia 09 e 10
     Print #outputFile, Tab(121); ZeroPad(numberDict("13"), 5); ' Quantidade de registros 13
@@ -315,7 +369,7 @@ Private Sub OutputPrintTrailler(outputFile As Integer)
     Print #outputFile, Tab(172); ZeroPad(numberDict("19"), 5); ' Quantidade de registros 19
     Print #outputFile, Tab(177); ZeroPad(amountDict("19"), 12); ' Valor dos registros ocorrencia 19
     ' Em Branco: 189 a 362
-    Print #outputFile, Tab(363); ZeroPad("0", 15); ' TODO: ???? Valor Total Rateios
-    Print #outputFile, Tab(378); ZeroPad("0", 8); ' TODO: ???? Quantidade Total Rateios
+    Print #outputFile, Tab(363); ZeroPad("0", 15); ' TODO: Valor Total Rateios
+    Print #outputFile, Tab(378); ZeroPad("0", 8); ' TODO: Quantidade Total Rateios
     Print #outputFile, Tab(394); Format(CStr(registerNumber), "000000");
 End Sub

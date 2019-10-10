@@ -212,7 +212,7 @@ Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
     
     query = ""
     If chargeId <> "" Then
-        query = "?chargeId=" + chargeId
+        query = "?chargeIds=" + chargeId
     End If
     
     If optionalParam.Count > 0 Then
@@ -224,7 +224,7 @@ Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
             End If
         Next
     End If
-    
+    Debug.Print query
     Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
     
     If resp.Status = 200 Then
