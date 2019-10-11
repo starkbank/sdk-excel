@@ -32,7 +32,6 @@ Public Sub ExportFile()
     Set occurrenceDateDict = New Dictionary
     Call getLogOccurrenceDates(lastrow, "paid")
     Call getLogOccurrenceDates(lastrow, "canceled")
-    Debug.Print "Dict count:", occurrenceDateDict.Count()
     
     registerNumber = 1
     
@@ -55,7 +54,7 @@ Public Sub ExportFile()
     
     Close #outputFile
     Call exportMessageSuccess(dialog)
-    Debug.Print "Dict count:", occurrenceDateDict.Count()
+    
     DebugDict
 End Sub
 
@@ -167,7 +166,6 @@ Private Sub getLogOccurrenceDates(lastrow As Integer, logevent As String)
 End Sub
 
 Private Sub insertOccurrenceDict(chunk As String, logevent As String)
-    Debug.Print occurrenceDateDict.Count()
     Set respMessage = ChargeGateway.getEventLog(chunk, logevent, New Dictionary)
     
     For Each elem In respMessage("logs")
@@ -199,9 +197,6 @@ Private Sub outputPrintHeader(outputFile As Integer)
     Dim workspaceId As String
     Dim companyName As String
     
-    For Each key In occurrenceDateDict
-        Debug.Print "#", key, occurrenceDateDict(key)
-    Next
     workspaceId = SessionGateway.getWorkspaceId()
     companyId = ZeroPad(workspaceId, 20)
     
@@ -266,7 +261,7 @@ Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     formattedPaidAmount = ZeroPad("0", 13)
     creditDate = "      "
     bankCode = "    "
-    ' Debug.Print "---", issueDate, "----", occurrenceDate
+    
     If occurrenceId = "06" Or occurrenceId = "09" Then
         occurrenceDate = dateFormatter(occurrenceDateDict(chargeId), 9, 6, 3)
         If occurrenceId = "06" Then

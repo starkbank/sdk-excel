@@ -244,7 +244,6 @@ Public Function getEventLog(chargeId As String, logevent As String, optionalPara
     If chargeId <> "" Then
         query = "?events=" + logevent + "&chargeIds=" + chargeId
     End If
-    Debug.Print query
     If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
@@ -254,12 +253,9 @@ Public Function getEventLog(chargeId As String, logevent As String, optionalPara
             End If
         Next
     End If
-    Debug.Print query
     Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
-    Debug.Print resp.Status
     If resp.Status = 200 Then
         Set logArray = resp.json()
-        Debug.Print logArray("logs").Count()
     Else
         MsgBox resp.error()("message"), , "Erro"
     End If

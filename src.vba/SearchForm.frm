@@ -95,8 +95,6 @@ Private Sub DownloadButton_Click()
 
         Set transactions = respJson("transactions")
 
-        Debug.Print "transactions", transactions.Count()
-
         For Each transact In transactions
 
             Dim initialRow As Integer
@@ -158,7 +156,6 @@ Private Function getOrdersInTransaction(path As String, transactionCreated As St
     Dim listId As String
     Dim initialRow As Integer
     Dim getOrderParam As Dictionary: Set getOrderParam = New Dictionary
-    Debug.Print path
     splitPath = Split(path, "/")
     teamId = splitPath(1)
     listId = splitPath(3)

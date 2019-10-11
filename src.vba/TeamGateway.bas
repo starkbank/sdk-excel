@@ -132,8 +132,6 @@ Public Function getOrdersByTransfer(cursor As String, optionalParam As Dictionar
         Next
     End If
     
-    Debug.Print query
-    
     Set resp = StarkBankApi.getRequest("/v1/team/order", query, New Dictionary)
     
     If resp.Status = 200 Then
