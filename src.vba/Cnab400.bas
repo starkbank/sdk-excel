@@ -29,8 +29,10 @@ Public Sub ExportFile()
     Call exportMessageCanceled(dialog)
     
     outputFile = 1
-    
-    Set occurrenceDateDict = getLogOccurrenceDates(lastrow)
+    Set occurrenceDateDict = New Dictionary
+    Call getLogOccurrenceDates(lastrow, "paid")
+    Call getLogOccurrenceDates(lastrow, "canceled")
+    Debug.Print "Dict count:", occurrenceDateDict.Count()
     
     registerNumber = 1
     
@@ -53,6 +55,7 @@ Public Sub ExportFile()
     
     Close #outputFile
     Call exportMessageSuccess(dialog)
+    Debug.Print "Dict count:", occurrenceDateDict.Count()
     DebugDict
 End Sub
 
@@ -93,26 +96,6 @@ Public Function getTaxIdType(taxId As String) As String
     getTaxIdType = idType
 End Function
 
-Public Function getOccurrenceId(statusCode As String)
-    Select Case statusCode
-        Case "pendente de registro"
-            occurrenceId = "00"
-        Case "registrado"
-            occurrenceId = "02"
-        Case "vencido"
-            occurrenceId = "02"
-        Case "falha"
-            occurrenceId = "03"
-        Case "pago"
-            occurrenceId = "06"
-        Case "cancelado"
-            occurrenceId = "09"
-        Case Else
-            occurrenceId = "99"
-    End Select
-    getOccurrenceId = occurrenceId
-End Function
-
 Public Function ZeroPad(s As Variant, n As Integer) As String
     ZeroPad = Format(CStr(s), String(n, "0"))
 End Function
@@ -138,12 +121,12 @@ End Function
 
 Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) As String
     Dim respMessage As Variant
-    Dim logEvent As String
+    Dim logevent As String
     Set respMessage = ChargeGateway.getChargeLog(chargeId, New Dictionary)
     
     For Each elem In respMessage("logs")
-        logEvent = elem("event")
-        If (statusCode = ChargeGateway.getStatusInPt(logEvent)) Then
+        logevent = elem("event")
+        If (statusCode = ChargeGateway.getStatusInPt(logevent)) Then
             getLogOccurrenceDate = elem("created")
             Exit Function
         End If
@@ -151,11 +134,12 @@ Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) 
     
 End Function
 
-Private Function getLogOccurrenceDates(lastrow As Integer) As Dictionary
+Private Sub getLogOccurrenceDates(lastrow As Integer, logevent As String)
     Dim chunk As String
-    Dim respMessage As Variant
+    Dim respMessage As Dictionary
     Dim i As Integer
     Dim j As Integer
+    Dim occurrenceId As String
     Dim statusCode As String
     Dim dictOccurrenceDate As Dictionary
     Set dictOccurrenceDate = New Dictionary
@@ -166,33 +150,30 @@ Private Function getLogOccurrenceDates(lastrow As Integer) As Dictionary
         statusCode = Cells(i, "D").Value
         chargeId = CStr(Cells(i, "H").Value)
         
-        occurrenceId = getOccurrenceId(statusCode)
-        If occurrenceId = "06" Then
+        occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
+        If ChargeGateway.getStatusFromId(occurrenceId) = logevent Then
             j = j + 1
             chunk = chunk & chargeId & ","
             If j >= 100 Then
-                Debug.Print CStr(j), chunk
-                Set respMessage = ChargeGateway.getChargeLog(chunk, New Dictionary)
-                
-                For Each elem In respMessage("logs")
-                    dictOccurrenceDate.Add elem("id"), elem("created")
-                Next
-                
+                insertOccurrenceDict chunk, logevent
                 chunk = ""
                 j = 0
             End If
         End If
     Next
-    Debug.Print CStr(j), chunk
-    
-    Set respMessage = ChargeGateway.getChargeLog(chunk, New Dictionary)
+    If chunk <> "" Then
+        insertOccurrenceDict chunk, logevent
+    End If
+End Sub
+
+Private Sub insertOccurrenceDict(chunk As String, logevent As String)
+    Debug.Print occurrenceDateDict.Count()
+    Set respMessage = ChargeGateway.getEventLog(chunk, logevent, New Dictionary)
     
     For Each elem In respMessage("logs")
-        dictOccurrenceDate.Add elem("id"), elem("created")
+        occurrenceDateDict.Add CStr(elem("charge")("id")), elem("created")
     Next
-    
-    Set getLogOccurrenceDates = dictOccurrenceDate
-End Function
+End Sub
 
 Public Function dateFormatter(inputDate As String, p1 As Integer, p2 As Integer, p3 As Integer, Optional sep As String = "") As String
     dateFormatter = Mid(inputDate, p1, 2) & sep & Mid(inputDate, p2, 2) & sep & Mid(inputDate, p3, 2)
@@ -218,6 +199,9 @@ Private Sub outputPrintHeader(outputFile As Integer)
     Dim workspaceId As String
     Dim companyName As String
     
+    For Each key In occurrenceDateDict
+        Debug.Print "#", key, occurrenceDateDict(key)
+    Next
     workspaceId = SessionGateway.getWorkspaceId()
     companyId = ZeroPad(workspaceId, 20)
     
@@ -265,34 +249,32 @@ Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     typeTaxId = getTaxIdType(taxId)
     taxId = TaxIdFormatting(taxId)
     
-    occurrenceId = getOccurrenceId(statusCode)
+    occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
     
     numberDict(occurrenceId) = numberDict(occurrenceId) + 1
     
     amountInt = getAmountLong(amount)
     amountDict(occurrenceId) = amountDict(occurrenceId) + amountInt
     
-    If occurrenceDateDict.Exists(chargeId) Then
-        occurrenceDate = dateFormatter(occurrenceDateDict(chargeId), 9, 6, 3)
-    Else
-        occurrenceDate = "      "
-    End If
-    
     wallet = ZeroPad(StarkData.GetWallet(), 3)
     branch = ZeroPad(StarkData.GetBranch(), 4)
     accountNumber = ZeroPad(StarkData.GetAccountNumber(), 9)
     companySubscription = "0" & wallet & branch & accountNumber
     formattedAmount = ZeroPad(amountInt, 13)
-    Select Case occurrenceId
-        Case "06"
+    
+    occurrenceDate = dateFormatter(issueDate, 1, 4, 9)
+    formattedPaidAmount = ZeroPad("0", 13)
+    creditDate = "      "
+    bankCode = "    "
+    ' Debug.Print "---", issueDate, "----", occurrenceDate
+    If occurrenceId = "06" Or occurrenceId = "09" Then
+        occurrenceDate = dateFormatter(occurrenceDateDict(chargeId), 9, 6, 3)
+        If occurrenceId = "06" Then
             formattedPaidAmount = formattedAmount
             creditDate = occurrenceDate
             bankCode = "0000"
-        Case Else
-            formattedPaidAmount = ZeroPad("0", 13)
-            creditDate = "      "
-            bankCode = "    "
-    End Select
+        End If
+    End If
     registeredAmount = ZeroPad(amountInt, 12)
     
     formattedIssueDate = dateFormatter(issueDate, 1, 4, 9)

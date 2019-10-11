@@ -21,6 +21,36 @@ Public Function getStatusInPt(Status As String)
     End Select
 End Function
 
+Public Function getStatusFromId(id As String)
+    Select Case id
+        Case "00":  getStatusFromId = "register"
+        Case "02":  getStatusFromId = "registered"
+        Case "03":  getStatusFromId = "failed"
+        Case "06":  getStatusFromId = "paid"
+        Case "09":  getStatusFromId = "canceled"
+        Case Else:  getStatusFromId = "unknown"
+    End Select
+End Function
+
+Public Function getOccurrenceId(statusCode As String)
+    Select Case statusCode
+        Case "pendente de registro"
+            getOccurrenceId = "00"
+        Case "registrado"
+            getOccurrenceId = "02"
+        Case "vencido"
+            getOccurrenceId = "02"
+        Case "falha"
+            getOccurrenceId = "03"
+        Case "pago"
+            getOccurrenceId = "06"
+        Case "cancelado"
+            getOccurrenceId = "09"
+        Case Else
+            getOccurrenceId = "99"
+    End Select
+End Function
+
 Public Function getCharges(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
@@ -205,16 +235,16 @@ Public Function createCharges(charges As Collection)
     
 End Function
 
-Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
-    Dim query As String '
+Public Function getEventLog(chargeId As String, logevent As String, optionalParam As Dictionary)
+    Dim query As String
     Dim resp As response
     Dim elem As Variant
     
     query = ""
     If chargeId <> "" Then
-        query = "?chargeIds=" + chargeId
+        query = "?events=" + logevent + "&chargeIds=" + chargeId
     End If
-    
+    Debug.Print query
     If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
@@ -226,14 +256,15 @@ Public Function getChargeLog(chargeId As String, optionalParam As Dictionary)
     End If
     Debug.Print query
     Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
-    
+    Debug.Print resp.Status
     If resp.Status = 200 Then
         Set logArray = resp.json()
+        Debug.Print logArray("logs").Count()
     Else
         MsgBox resp.error()("message"), , "Erro"
     End If
     
-    Set getChargeLog = logArray
+    Set getEventLog = logArray
 
 End Function
 

@@ -53,7 +53,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(9, 5).Value = "Nome"
     ActiveSheet.Cells(9, 6).Value = "CPF/CNPJ"
     ActiveSheet.Cells(9, 7).Value = "Linha Digitável"
-    ActiveSheet.Cells(9, 8).Value = "Id da Transação"
+    ActiveSheet.Cells(9, 8).Value = "Id do Boleto"
     ActiveSheet.Cells(9, 9).Value = "Tags"
     
     With ActiveWindow
