@@ -21,16 +21,29 @@ Public Sub saveAccessToken(accessToken As String)
        
 End Sub
 
-Public Function displayMemberInfo()
+Public Sub displayMemberInfo()
+    Dim helloMessage As String
+    Dim workspaceMessage As String
+    Dim emailMessage As String
+    Dim envMessage As String
+    Dim balanceMessage As String
+    
+    helloMessage = "Olá " + SessionGateway.getMemberName() + "!"
+    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace()
+    emailMessage = "E-mail: " + SessionGateway.getEmail()
+    envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
+    balanceMessage = "Saldo: " + SessionGateway.getBalance()
+    
     For Each ws In ThisWorkbook.Worksheets
         If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-            ws.Cells(2, 1).Value = "Olá " + SessionGateway.getMemberName() + "!"
-            ws.Cells(3, 1).Value = "Workspace: " + SessionGateway.getWorkspace()
-            ws.Cells(4, 1).Value = "E-mail: " + SessionGateway.getEmail()
-            ws.Cells(5, 1).Value = "Ambiente: " + getEnvironmentString()
+            ws.Cells(2, 1).Value = helloMessage
+            ws.Cells(3, 1).Value = workspaceMessage
+            ws.Cells(4, 1).Value = emailMessage
+            ws.Cells(5, 1).Value = envMessage
+            ws.Cells(6, 1).Value = balanceMessage
         End If
     Next
-End Function
+End Sub
 
 Public Function getAccessToken()
     Dim accessToken As String: accessToken = CStr(Sheets("Credentials").Cells(4, 2))
@@ -68,4 +81,18 @@ End Function
 
 Public Function getWorkspaceId()
     getWorkspaceId = CStr(Sheets("Credentials").Cells(6, 2))
+End Function
+
+Public Function getBalance()
+    Dim AccountInfo As Dictionary
+    Dim balanceMessage As String
+    
+    Set AccountInfo = BankGateway.getAccount()
+    balanceMessage = "-"
+    If AccountInfo.Count > 0 Then
+        Dim balance As Long
+        balance = AccountInfo("account")("balance")
+        balanceMessage = Utils.MoneyStringFrom(balance)
+    End If
+    getBalance = balanceMessage
 End Function

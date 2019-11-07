@@ -55,7 +55,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(9, 7).Value = "Código do Banco"
     ActiveSheet.Cells(9, 8).Value = "Agência"
     ActiveSheet.Cells(9, 9).Value = "Número de Conta"
-    ActiveSheet.Cells(9, 10).Value = "Id da Transação"
+    ActiveSheet.Cells(9, 10).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 10
@@ -63,12 +63,10 @@ Private Sub SearchButton_Click()
     End With
     ActiveWindow.FreezePanes = True
     
-    '--------------- If transactionId has been defined ------------------
     If transactionId <> "" Then
-        optionalParam.Add "transactionId", transactionId
+        optionalParam.Add "transactionIds", transactionId
     End If
     
-    '--------------- If status and dates have been defined ------------------
     Dim Status As String: Status = TransferGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
@@ -106,7 +104,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 7).Value = transfer("bankCode")
             ActiveSheet.Cells(row, 8).Value = transfer("branchCode")
             ActiveSheet.Cells(row, 9).Value = transfer("accountNumber")
-            ActiveSheet.Cells(row, 10).Value = transfer("transactionId")
+            ActiveSheet.Cells(row, 10).Value = Utils.CollectionToString(Utils.correctTransferTags(transfer("tags")), ",")
             
             row = row + 1
         Next

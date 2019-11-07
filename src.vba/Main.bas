@@ -31,6 +31,7 @@ Public Sub signOut()
             ws.Cells(3, 1).Value = ""
             ws.Cells(4, 1).Value = ""
             ws.Cells(5, 1).Value = ""
+            ws.Cells(6, 1).Value = ""
         End If
     Next
     
@@ -42,7 +43,6 @@ End Sub
 Public Sub clearAll()
     For Each ws In ThisWorkbook.Worksheets
         ws.Cells.UnMerge
-        ' Call Utils.applyStandardLayout("F")
         ws.Range("A10:Z" & Rows.Count).ClearContents
     Next
 End Sub

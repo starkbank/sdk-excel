@@ -36,6 +36,12 @@ Private Sub SearchButton_Click()
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     
+    Dim afterInput As String: afterInput = AfterTextBox.Value
+    Dim beforeInput As String: beforeInput = BeforeTextBox.Value
+    
+    Dim after As String: after = Utils.DateToSendingFormat(afterInput)
+    Dim before As String: before = Utils.DateToSendingFormat(beforeInput)
+    
     'Table layout
     Utils.applyStandardLayout ("G")
     Range("A10:G" & Rows.Count).ClearContents
@@ -60,6 +66,12 @@ Private Sub SearchButton_Click()
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
+    If after <> "--" Then
+        optionalParam.Add "after", after
+    End If
+    If before <> "--" Then
+        optionalParam.Add "before", before
+    End If
     
     row = 10
 
@@ -77,7 +89,7 @@ Private Sub SearchButton_Click()
 
             Dim created As String: created = payment("created")
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
-
+            
             ActiveSheet.Cells(row, 2).Value = payment("amount") / 100
             
             Dim paymentStatus As String: paymentStatus = payment("status")

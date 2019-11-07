@@ -138,16 +138,16 @@ Public Function jacobianDouble(point As point, A As String, P As String) As poin
         Set jacobianDouble = pp
     Else
         Dim ysq As String: ysq = BigIntMath.Modulus(BigIntMath.multiply(point.y, point.y), P)
-        Dim s As String: s = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(point.x, ysq)), P)
+        Dim S As String: S = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(point.x, ysq)), P)
         Dim z4 As String: z4 = BigIntMath.multiply(point.z, BigIntMath.multiply(point.z, BigIntMath.multiply(point.z, point.z)))
         Dim M As String: M = BigIntMath.Modulus(BigIntMath.Add(BigIntMath.multiply("3", BigIntMath.multiply(point.x, point.x)), BigIntMath.multiply(A, z4)), P)
-        Dim nx As String: nx = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, M), BigIntMath.multiply("2", s)), P)
+        Dim nx As String: nx = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, M), BigIntMath.multiply("2", S)), P)
         
-        Dim part1 As String: part1 = BigIntMath.multiply(M, BigIntMath.Subtract(s, nx))
+        Dim part1 As String: part1 = BigIntMath.multiply(M, BigIntMath.Subtract(S, nx))
         Dim part2 As String: part2 = BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))
         Dim part3 As String: part3 = BigIntMath.Subtract(part1, part2)
         Dim part4 As String: part4 = BigIntMath.Modulus(part3, P)
-        Dim ny As String: ny = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, BigIntMath.Subtract(s, nx)), BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))), P)
+        Dim ny As String: ny = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, BigIntMath.Subtract(S, nx)), BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))), P)
         Dim nz As String: nz = BigIntMath.Modulus(BigIntMath.multiply("2", BigIntMath.multiply(point.y, point.z)), P)
         
         Call pp.setCoordinates(nx, ny, nz)

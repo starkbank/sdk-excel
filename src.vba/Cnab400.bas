@@ -95,8 +95,8 @@ Public Function getTaxIdType(taxId As String) As String
     getTaxIdType = idType
 End Function
 
-Public Function ZeroPad(s As Variant, n As Integer) As String
-    ZeroPad = Format(CStr(s), String(n, "0"))
+Public Function ZeroPad(S As Variant, n As Integer) As String
+    ZeroPad = Format(CStr(S), String(n, "0"))
 End Function
 
 Private Sub DebugDict()

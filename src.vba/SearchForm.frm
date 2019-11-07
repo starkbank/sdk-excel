@@ -22,26 +22,14 @@ Private Sub UserForm_Initialize()
     
 End Sub
 
-'Private Sub DownloadButton_Click()
-'
-'    Dim beforeInput As String: beforeInput = BeforeTextBox.Value
-'    Dim afterInput As String: afterInput = AfterTextBox.Value
-'
-'    Call Statement.getStatement(beforeInput, afterInput)
-'
-'    Unload Me
-'End Sub
-
 Private Sub DownloadButton_Click()
     On Error Resume Next
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
 
-    Call InputLogGateway.saveDates(afterInput, beforeInput)
-
-    Dim after As String: after = Utils.DateToSendingFormat(afterInput)
-    Dim before As String: before = Utils.DateToSendingFormat(beforeInput)
-
+    Dim after As String
+    Dim before As String
+    
     Dim cursor As String
     Dim transact As Dictionary
     Dim transactions As Collection
@@ -54,10 +42,29 @@ Private Sub DownloadButton_Click()
     Dim transactionId As String
     Dim transactionFee As Double
 
-    Dim searchedLists() As String
-    ReDim Preserve searchedLists(0)
-    searchedLists(0) = ""
-
+    Call InputLogGateway.saveDates(afterInput, beforeInput)
+    
+    If beforeInput = "" Then
+        beforeInput = Date
+        If afterInput = "" Then
+            afterInput = DateAdd("d", -30, Date)
+        End If
+    ElseIf afterInput = "" Then
+        afterInput = "01/01/2018"
+    End If
+    
+    ' Debug.Print "After: " + after, afterInput
+    ' Debug.Print "Before: " + before, beforeInput
+    
+    after = Utils.DateToSendingFormat(afterInput)
+    before = Utils.DateToSendingFormat(beforeInput)
+    
+    If DateDiff("d", after, before) > 30 Then
+        If MsgBox("O período selecionado é superior a 30 dias. A operação pode demorar. Continuar?", vbOKCancel) = vbCancel Then
+            Exit Sub
+        End If
+    End If
+    
     ActiveSheet.Cells.UnMerge
     Call Utils.applyStandardLayout("F")
     ActiveSheet.Range("A10:F" & Rows.Count).ClearContents
@@ -77,8 +84,12 @@ Private Sub DownloadButton_Click()
     ActiveWindow.FreezePanes = True
 
     'Optional parameters
-    optionalParam.Add "after", after
-    optionalParam.Add "before", before
+    If after <> "--" Then
+        optionalParam.Add "after", after
+    End If
+    If before <> "--" Then
+        optionalParam.Add "before", before
+    End If
 
     row = 10
 
@@ -111,20 +122,10 @@ Private Sub DownloadButton_Click()
 
             conditionTeam = (splitPath(0) = "team")
             conditionTransferRequest = (splitPath(0) = "transfer-request")
-
-            If (conditionTeam) And DetailedCheckBox.Value = True And (Not isChargeBack(splitPath)) Then
-                If (Not Utils.IsInArray(path, searchedLists)) Then
-                    initialRow = row
-                    row = getOrdersInTransaction(path, transactionCreated, transactionId, transactionFee, row)
-
-                    ReDim Preserve searchedLists(UBound(searchedLists) + 1)
-                    searchedLists(UBound(searchedLists)) = path
-                End If
-
-            ElseIf conditionTransferRequest And DetailedCheckBox.Value = True And (Not isChargeBack(splitPath)) Then
+            If (conditionTeam Or conditionTransferRequest) And DetailedCheckBox.Value = True Then
                 initialRow = row
                 row = getTransfersInTransaction(path, transactionCreated, transactionId, transactionFee, row)
-
+                
             Else
                 sign = transactionSign(transact("flow"))
                 ActiveSheet.Cells(row, 1).Value = transactionCreated
@@ -145,55 +146,6 @@ Private Sub DownloadButton_Click()
 
 End Sub
 
-Private Function getOrdersInTransaction(path As String, transactionCreated As String, transactionId As String, transactionFee As Double, row As Integer) As Integer
-    Dim orders As Collection
-    Dim cursor As String
-    Dim orderTags As Collection
-    Dim order As Object
-    Dim orderTagsStr As String
-    Dim orderDescription As String
-    Dim teamId As String
-    Dim listId As String
-    Dim initialRow As Integer
-    Dim getOrderParam As Dictionary: Set getOrderParam = New Dictionary
-    splitPath = Split(path, "/")
-    teamId = splitPath(1)
-    listId = splitPath(3)
-
-    getOrderParam.Add "teamId", teamId
-    getOrderParam.Add "listId", listId
-
-    Do
-        Set orderRespJson = TransferGateway.getOrders(cursor, getOrderParam)
-
-        cursor = ""
-        If orderRespJson("cursor") <> "" Then
-            cursor = orderRespJson("cursor")
-        End If
-
-        Set orders = orderRespJson("orders")
-
-        numberOfOrders = orders.Count()
-        orderFee = transactionFee / numberOfOrders
-
-        For Each order In orders
-            If order("status") <> "disapproved" Then
-                Set orderTags = order("tags")
-                ActiveSheet.Cells(row, 1).Value = transactionCreated
-                ActiveSheet.Cells(row, 2).Value = order("amount") / 100 * (-1)
-                ActiveSheet.Cells(row, 3).Value = createDescription(order("name"), order("taxId"))
-                ActiveSheet.Cells(row, 4).Value = transactionId
-                ActiveSheet.Cells(row, 5).Value = orderFee
-                ActiveSheet.Cells(row, 6).Value = CollectionToString(orderTags, ",")
-
-                row = row + 1
-            End If
-        Next
-    Loop While cursor <> ""
-
-    getOrdersInTransaction = row
-End Function
-
 Private Function getTransfersInTransaction(path As String, transactionCreated As String, transactionId As String, transactionFee As Double, row As Integer) As Integer
     Dim transfers As Collection
     Dim cursor As String
@@ -205,11 +157,19 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
     Dim transferTags As Collection
     Dim getTransferParam As Dictionary: Set getTransferParam = New Dictionary
     Dim splitPath() As String
+    Dim sign As Integer
+    Dim chargebackBool As Boolean
 
+    sign = -1
     splitPath = Split(path, "/")
     requestId = splitPath(1)
-
-    getTransferParam.Add "requestId", requestId
+    chargebackBool = False
+    getTransferParam.Add "transactionIds", transactionId
+    If isChargeback(splitPath) Then
+        sign = 1
+        getTransferParam.Add "status", "failed"
+        chargebackBool = True
+    End If
 
     Do
         Set transferRespJson = TransferGateway.getTransfers(cursor, getTransferParam)
@@ -226,11 +186,14 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
 
         For Each transfer In transfers
             Set transferTags = transfer("tags")
+            If transferTags.Count() <> 0 Then
+                Set transferTags = correctTransferTags(transferTags)
+            End If
             transferTagsStr = CollectionToString(transferTags, ",")
-            transferDescription = createDescription(transfer("name"), transfer("taxId"))
+            transferDescription = createDescription(transfer("name"), transfer("taxId"), chargebackBool)
 
             ActiveSheet.Cells(row, 1).Value = transactionCreated
-            ActiveSheet.Cells(row, 2).Value = transfer("amount") / 100 * (-1)
+            ActiveSheet.Cells(row, 2).Value = transfer("amount") / 100 * sign
             ActiveSheet.Cells(row, 3).Value = transferDescription
             ActiveSheet.Cells(row, 4).Value = transactionId
             ActiveSheet.Cells(row, 5).Value = transferFee
@@ -244,8 +207,11 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
     getTransfersInTransaction = row
 End Function
 
-Private Function createDescription(name As String, taxId As String) As String
+Private Function createDescription(name As String, taxId As String, isChargeback As Boolean) As String
     createDescription = "Transferência para " & name & ". CPF/CNPJ: " & taxId & "."
+    If isChargeback Then
+        createDescription = "Estorno de saldo por falha de " + createDescription
+    End If
 End Function
 
 Private Function transactionSign(flow As String) As Integer
@@ -256,22 +222,14 @@ Private Function transactionSign(flow As String) As Integer
     End If
 End Function
 
-Private Function transferSign(isChargeBack As Boolean) As Integer
-    transferSign = -1
-
-    If isChargeBack Then
-        transferSign = 1
-    End If
-End Function
-
-Private Function isChargeBack(splitPath() As String) As Boolean
-    isChargeBack = False
+Private Function isChargeback(splitPath() As String) As Boolean
+    isChargeback = False
 
     splitLen = UBound(splitPath, 1) - LBound(splitPath, 1) + 1
 
     If splitLen > 2 Then
         If splitPath(UBound(splitPath, 1)) = "chargeback" Then
-            isChargeBack = True
+            isChargeback = True
         End If
     End If
 End Function

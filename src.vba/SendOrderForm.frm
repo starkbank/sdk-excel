@@ -49,7 +49,7 @@ Private Sub SendButton_Click()
         .Pattern = "\= ([^)]+)\)"
         .Global = True
         For Each M In .Execute(teamInfo)
-            teamId = M.SubMatches(0)
+            teamId = M.submatches(0)
         Next
     End With
 

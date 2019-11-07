@@ -70,8 +70,8 @@ Function correctErrorLine(errorMessage As String, offset As Integer) As String
         .Pattern = "(\w+) +(\d+):(.+)"
         .Global = True
         For Each M In .Execute(errorMessage)
-            lineNumber = CInt(M.SubMatches(1))
-            message = M.SubMatches(2)
+            lineNumber = CInt(M.submatches(1))
+            message = M.submatches(2)
         Next
     End With
     
@@ -104,6 +104,10 @@ Public Function SingleFrom(Value As String) As Single
         temp = .Replace(temp, "")
     End With
     SingleFrom = CSng(temp)
+End Function
+
+Public Function MoneyStringFrom(Value As Long) As String
+    MoneyStringFrom = Format(Value / 100, "Currency")
 End Function
 
 Public Function SHA256function(sMessage As String)
@@ -187,6 +191,36 @@ Public Function randrange(ByVal lowerbound As String, ByVal upperbound As String
     part2 = BigIntMath.multiply(part1, CStr(Int(Rnd * 10000000)))
     part3 = BigIntMath.Divide(part2, "10000000")
     randrange = BigIntMath.Add(part3, lowerbound)
+End Function
+
+Public Function correctTransferTags(tags As Collection)
+    Dim pathBool As Boolean
+    Dim allMatches As Object
+    Dim index As Integer
+    Dim tag As Variant
+    
+    index = 0
+    
+    With CreateObject("VBScript.RegExp")
+        .Pattern = "team/\d+/list/\d+"
+        .Global = True
+        .IgnoreCase = True
+        
+        For Each tag In tags
+            index = index + 1
+            pathBool = False
+            Set allMatches = .Execute(tag)
+            If allMatches.Count <> 0 Then
+                pathBool = True
+            End If
+            If pathBool = True Then
+                tags.Remove index
+                index = index - 1
+            End If
+        Next
+    End With
+    
+    Set correctTransferTags = tags
 End Function
 
 Public Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean

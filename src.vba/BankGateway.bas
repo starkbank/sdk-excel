@@ -27,3 +27,23 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
     End If
 
 End Function
+
+Public Function getAccount()
+    Dim resp As response
+    Dim baseUrl As String
+    Dim workspaceId As String
+    
+    workspaceId = SessionGateway.getWorkspaceId()
+    
+    baseUrl = "/v1/bank/account/" + workspaceId
+    
+    Set resp = StarkBankApi.getRequest(baseUrl, "", New Dictionary)
+    
+    If resp.Status = 200 Then
+        Set getAccount = resp.json()
+    Else
+        MsgBox resp.error()("message"), , "Erro"
+        Set getAccount = New Dictionary
+    End If
+
+End Function
