@@ -25,13 +25,13 @@ Public Sub signOut()
     End If
     
     Call SessionGateway.saveSession("", "", "", "", "", "")
-    For Each ws In ThisWorkbook.Worksheets
-        If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-            ws.Cells(2, 1).Value = ""
-            ws.Cells(3, 1).Value = ""
-            ws.Cells(4, 1).Value = ""
-            ws.Cells(5, 1).Value = ""
-            ws.Cells(6, 1).Value = ""
+    For Each WS In ThisWorkbook.Worksheets
+        If WS.name <> "Credentials" And WS.name <> "InputLog" Then
+            WS.Cells(2, 1).Value = ""
+            WS.Cells(3, 1).Value = ""
+            WS.Cells(4, 1).Value = ""
+            WS.Cells(5, 1).Value = ""
+            WS.Cells(6, 1).Value = ""
         End If
     Next
     
@@ -41,9 +41,9 @@ Public Sub signOut()
 End Sub
 
 Public Sub clearAll()
-    For Each ws In ThisWorkbook.Worksheets
-        ws.Cells.UnMerge
-        ws.Range("A10:Z" & Rows.Count).ClearContents
+    For Each WS In ThisWorkbook.Worksheets
+        WS.Cells.UnMerge
+        WS.Range("A10:Z" & Rows.Count).ClearContents
     Next
 End Sub
 

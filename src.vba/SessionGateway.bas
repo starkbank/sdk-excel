@@ -34,13 +34,13 @@ Public Sub displayMemberInfo()
     envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
     balanceMessage = "Saldo: " + SessionGateway.getBalance()
     
-    For Each ws In ThisWorkbook.Worksheets
-        If ws.name <> "Credentials" And ws.name <> "InputLog" Then
-            ws.Cells(2, 1).Value = helloMessage
-            ws.Cells(3, 1).Value = workspaceMessage
-            ws.Cells(4, 1).Value = emailMessage
-            ws.Cells(5, 1).Value = envMessage
-            ws.Cells(6, 1).Value = balanceMessage
+    For Each WS In ThisWorkbook.Worksheets
+        If WS.name <> "Credentials" And WS.name <> "InputLog" Then
+            WS.Cells(2, 1).Value = helloMessage
+            WS.Cells(3, 1).Value = workspaceMessage
+            WS.Cells(4, 1).Value = emailMessage
+            WS.Cells(5, 1).Value = envMessage
+            WS.Cells(6, 1).Value = balanceMessage
         End If
     Next
 End Sub
