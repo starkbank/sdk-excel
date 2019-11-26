@@ -1,3 +1,9 @@
+
+
+
+
+
+
 Private Sub UserForm_Initialize()
     Me.PathBox.Text = InputLogGateway.getPath()
 End Sub
@@ -77,7 +83,7 @@ Private Sub ConfirmButton_Click()
     payload = JsonConverter.ConvertToJson(dict)
     
     '--------------- Sign body -----------------
-    Dim pk As privateKey: Set pk = New privateKey
+    Dim pk As PrivateKey: Set pk = New PrivateKey
     pk.fromPem (privkeyStr)
     
     Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(payload, pk)

@@ -33,18 +33,18 @@ Public Function multiply(px As String, py As String, nn As String, n As String, 
     multiply = fromJacobian(jacobianMultiply(toJacobian(px, py), nn, n, A, P), P)
 End Function
 
-Public Function toJacobian(x As String, y As String) As point
-    Dim pp As point: Set pp = New point
+Public Function toJacobian(x As String, y As String) As Point
+    Dim pp As Point: Set pp = New Point
     Call pp.setCoordinates(x, y, "1")
     Set toJacobian = pp
 End Function
 
-Public Function fromJacobian(point As point, P As String) As String
-    Dim z As String: z = inv(point.z, P)
+Public Function fromJacobian(Point As Point, P As String) As String
+    Dim z As String: z = inv(Point.z, P)
     Dim z2 As String: z2 = BigIntMath.multiply(z, z)
     Dim z3 As String: z3 = BigIntMath.multiply(z2, z)
-    Dim x As String: x = BigIntMath.Modulus(BigIntMath.multiply(point.x, z2), P)
-    Dim y As String: y = BigIntMath.Modulus(BigIntMath.multiply(point.y, z3), P)
+    Dim x As String: x = BigIntMath.Modulus(BigIntMath.multiply(Point.x, z2), P)
+    Dim y As String: y = BigIntMath.Modulus(BigIntMath.multiply(Point.y, z3), P)
 
     fromJacobian = x & ";" & y
 End Function
@@ -72,8 +72,8 @@ Public Function inv(x As String, n As String) As String
     End If
 End Function
 
-Public Function jacobianAdd(pointP As point, pointQ As point, A As String, P As String) As point
-    Dim pp As point: Set pp = New point
+Public Function jacobianAdd(pointP As Point, pointQ As Point, A As String, P As String) As Point
+    Dim pp As Point: Set pp = New Point
     If pointP.y = vbNullString Or BigIntMath.Compare(pointP.y, "0") = 0 Then
         Set jacobianAdd = pointQ
         
@@ -109,38 +109,38 @@ Public Function jacobianAdd(pointP As point, pointQ As point, A As String, P As 
     End If
 End Function
 
-Public Function jacobianMultiply(point As point, nn As String, n As String, A As String, P As String) As point
-    Dim pp As point: Set pp = New point
-    If BigIntMath.Compare("0", point.y) = 0 Or BigIntMath.Compare("0", nn) = 0 Then
+Public Function jacobianMultiply(Point As Point, nn As String, n As String, A As String, P As String) As Point
+    Dim pp As Point: Set pp = New Point
+    If BigIntMath.Compare("0", Point.y) = 0 Or BigIntMath.Compare("0", nn) = 0 Then
         Call pp.setCoordinates("0", "0", "1")
         Set jacobianMultiply = pp
         
     ElseIf BigIntMath.Compare("1", nn) = 0 Then
-        Set jacobianMultiply = point
+        Set jacobianMultiply = Point
         
     ElseIf BigIntMath.Compare(nn, "0") = -1 Or BigIntMath.Compare(nn, n) <> -1 Then
-        Set jacobianMultiply = jacobianMultiply(point, BigIntMath.Modulus(nn, n), n, A, P)
+        Set jacobianMultiply = jacobianMultiply(Point, BigIntMath.Modulus(nn, n), n, A, P)
         
     ElseIf BigIntMath.Compare(BigIntMath.Modulus(nn, 2), "0") = 0 Then
-        Set jacobianMultiply = jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), n, A, P), A, P)
+        Set jacobianMultiply = jacobianDouble(jacobianMultiply(Point, BigIntMath.Divide(nn, "2"), n, A, P), A, P)
     
     ElseIf BigIntMath.Compare(BigIntMath.Modulus(nn, 2), "1") = 0 Then
-        Set jacobianMultiply = jacobianAdd(jacobianDouble(jacobianMultiply(point, BigIntMath.Divide(nn, "2"), n, A, P), A, P), point, A, P)
+        Set jacobianMultiply = jacobianAdd(jacobianDouble(jacobianMultiply(Point, BigIntMath.Divide(nn, "2"), n, A, P), A, P), Point, A, P)
     
     End If
     
 End Function
 
-Public Function jacobianDouble(point As point, A As String, P As String) As point
-    Dim pp As point: Set pp = New point
-    If point.y = vbNullString Or BigIntMath.Compare(point.y, "0") = 0 Then
+Public Function jacobianDouble(Point As Point, A As String, P As String) As Point
+    Dim pp As Point: Set pp = New Point
+    If Point.y = vbNullString Or BigIntMath.Compare(Point.y, "0") = 0 Then
         Call pp.setCoordinates("0", "0", "0")
         Set jacobianDouble = pp
     Else
-        Dim ysq As String: ysq = BigIntMath.Modulus(BigIntMath.multiply(point.y, point.y), P)
-        Dim S As String: S = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(point.x, ysq)), P)
-        Dim z4 As String: z4 = BigIntMath.multiply(point.z, BigIntMath.multiply(point.z, BigIntMath.multiply(point.z, point.z)))
-        Dim M As String: M = BigIntMath.Modulus(BigIntMath.Add(BigIntMath.multiply("3", BigIntMath.multiply(point.x, point.x)), BigIntMath.multiply(A, z4)), P)
+        Dim ysq As String: ysq = BigIntMath.Modulus(BigIntMath.multiply(Point.y, Point.y), P)
+        Dim S As String: S = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(Point.x, ysq)), P)
+        Dim z4 As String: z4 = BigIntMath.multiply(Point.z, BigIntMath.multiply(Point.z, BigIntMath.multiply(Point.z, Point.z)))
+        Dim M As String: M = BigIntMath.Modulus(BigIntMath.Add(BigIntMath.multiply("3", BigIntMath.multiply(Point.x, Point.x)), BigIntMath.multiply(A, z4)), P)
         Dim nx As String: nx = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, M), BigIntMath.multiply("2", S)), P)
         
         Dim part1 As String: part1 = BigIntMath.multiply(M, BigIntMath.Subtract(S, nx))
@@ -148,7 +148,7 @@ Public Function jacobianDouble(point As point, A As String, P As String) As poin
         Dim part3 As String: part3 = BigIntMath.Subtract(part1, part2)
         Dim part4 As String: part4 = BigIntMath.Modulus(part3, P)
         Dim ny As String: ny = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, BigIntMath.Subtract(S, nx)), BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))), P)
-        Dim nz As String: nz = BigIntMath.Modulus(BigIntMath.multiply("2", BigIntMath.multiply(point.y, point.z)), P)
+        Dim nz As String: nz = BigIntMath.Modulus(BigIntMath.multiply("2", BigIntMath.multiply(Point.y, Point.z)), P)
         
         Call pp.setCoordinates(nx, ny, nz)
         Set jacobianDouble = pp

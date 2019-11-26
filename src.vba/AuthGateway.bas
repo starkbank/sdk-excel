@@ -11,9 +11,7 @@ Public Function createNewSession(workspace As String, email As String, password 
     
     payload = JsonConverter.ConvertToJson(dict)
     
-    Debug.Print "Attemping POST Request..."
     Set resp = StarkBankApi.postRequest("/v1/auth/access-token", payload, New Dictionary)
-    Debug.Print "POST Request done"
     
     If resp.Status = 200 Then
         result.Add "success", resp.json()
