@@ -10,7 +10,7 @@ O arquivo contém nove abas com diversas funcionalidades:
 5) Consulta pagamentos de boleto por status;
 6) Executa pagamentos de boleto sem passar por aprovação;
 7) Consulta a lista de clientes cadastrados como pagadores de boleto;
-8) Consulta boletos por status;
+8) Consulta boletos por status, incluindo geração de arquivo CNAB400;
 9) Emissão de boletos;
 
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -25,5 +25,5 @@ The file consists in nine tabs with different features:
 5) Gets charge payments by status;
 6) Executes charge payments without approval;
 7) Gets list of customers registered as charge payers;
-8) Gets charges by status;
+8) Gets charges by status, including generation of CNAB400 file;
 9) Issues new charges;
