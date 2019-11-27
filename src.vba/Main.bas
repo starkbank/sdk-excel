@@ -34,7 +34,7 @@ Public Sub signOut()
             WS.Cells(6, 1).Value = ""
         End If
     Next
-    
+    clearDates
     clearAll
     Application.ScreenUpdating = True
     MsgBox response("success")("message"), , "Sucesso"

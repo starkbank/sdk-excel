@@ -1,9 +1,4 @@
 
-
-
-
-
-
 Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Produção"
     Me.EnvironmentBox.AddItem "Sandbox"

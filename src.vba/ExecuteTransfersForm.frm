@@ -1,9 +1,3 @@
-
-
-
-
-
-
 Private Sub UserForm_Initialize()
     Me.PathBox.Text = InputLogGateway.getPath()
 End Sub
@@ -100,5 +94,7 @@ End Sub
 Private Sub BrowseButton_Click()
     Dim myFile As String
     myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
-    Me.PathBox.Value = myFile
+    If CStr(myFile) <> "False" Then
+        Me.PathBox.Value = myFile
+    End If
 End Sub
