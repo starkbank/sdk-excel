@@ -52,6 +52,12 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
 End Function
 
+Public Function downloadRequest(path As String, filePath As String) As Boolean
+    Dim url As String: url = baseUrl() + path
+    
+    downloadRequest = Request.download(url, filePath)
+End Function
+
 Public Function externalPostRequest(url As String, payload As String)
     Dim headers As Dictionary: Set headers = New Dictionary
     headers.Add "Content-Type", "Application/json"

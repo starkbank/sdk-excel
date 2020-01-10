@@ -17,3 +17,23 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Set fetch = resp
 
 End Function
+
+Public Function download(url As String, path As String) As Boolean
+    Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
+    Debug.Print url
+    objHTTP.Open "GET", url, False
+    
+    objHTTP.send
+    
+    If objHTTP.Status = 200 Then
+        Set oStream = CreateObject("ADODB.Stream")
+        oStream.Open
+        oStream.Type = 1
+        oStream.Write objHTTP.responseBody
+        oStream.SaveToFile path, 2 ' 1 = no overwrite, 2 = overwrite
+        oStream.Close
+        download = True
+    Else
+        download = False
+    End If
+End Function

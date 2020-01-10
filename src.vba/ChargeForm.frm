@@ -1,9 +1,4 @@
 
-
-
-
-
-
 Private Sub AfterTextBox_Change()
     Static reentry As Boolean
     If reentry Then Exit Sub
@@ -46,10 +41,12 @@ Private Sub SearchButton_Click()
     Dim charges As Collection
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
+    Dim rng As Range
     
     'Table layout
-    Utils.applyStandardLayout ("I")
-    Range("A10:I" & Rows.Count).ClearContents
+    Utils.applyStandardLayout ("J")
+    ActiveSheet.Hyperlinks.Delete
+    Range("A10:J" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(9, 1).Value = " Data de Emissão"
@@ -61,9 +58,10 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(9, 7).Value = "Linha Digitável"
     ActiveSheet.Cells(9, 8).Value = "Id do Boleto"
     ActiveSheet.Cells(9, 9).Value = "Tags"
+    ActiveSheet.Cells(9, 10).Value = "Link PDF"
     
     With ActiveWindow
-        .SplitColumn = 9
+        .SplitColumn = 10
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
@@ -111,6 +109,11 @@ Private Sub SearchButton_Click()
 
             Dim tags As Collection: Set tags = charge("tags")
             ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
+            
+            ActiveSheet.Cells(row, 10).Value = "Link"
+            
+            Set rng = ActiveSheet.Range("J" + CStr(row))
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:="https://sandbox.api.starkbank.com/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             row = row + 1
         Next
