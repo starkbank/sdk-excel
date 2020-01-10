@@ -3,7 +3,7 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub ConfirmButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
     Dim externalId As String: externalId = ExternalIdBox.Value
     Dim description As String: description = DescriptionBox.Value

@@ -13,7 +13,7 @@ Public Function randomPointOnCurve(px As String, py As String, n As String, A As
     payload = JsonConverter.ConvertToJson(dict)
     
     Set resp = StarkBankApi.externalPostRequest("https://us-central1-api-ms-auth-sbx.cloudfunctions.net/ellipticCurveMath", payload)
-
+    
     If resp.Status = 200 Then
         result.Add "success", resp.json()
         result.Add "error", New Dictionary
@@ -138,16 +138,16 @@ Public Function jacobianDouble(Point As Point, A As String, P As String) As Poin
         Set jacobianDouble = pp
     Else
         Dim ysq As String: ysq = BigIntMath.Modulus(BigIntMath.multiply(Point.y, Point.y), P)
-        Dim S As String: S = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(Point.x, ysq)), P)
+        Dim s As String: s = BigIntMath.Modulus(BigIntMath.multiply("4", BigIntMath.multiply(Point.x, ysq)), P)
         Dim z4 As String: z4 = BigIntMath.multiply(Point.z, BigIntMath.multiply(Point.z, BigIntMath.multiply(Point.z, Point.z)))
         Dim M As String: M = BigIntMath.Modulus(BigIntMath.Add(BigIntMath.multiply("3", BigIntMath.multiply(Point.x, Point.x)), BigIntMath.multiply(A, z4)), P)
-        Dim nx As String: nx = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, M), BigIntMath.multiply("2", S)), P)
+        Dim nx As String: nx = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, M), BigIntMath.multiply("2", s)), P)
         
-        Dim part1 As String: part1 = BigIntMath.multiply(M, BigIntMath.Subtract(S, nx))
+        Dim part1 As String: part1 = BigIntMath.multiply(M, BigIntMath.Subtract(s, nx))
         Dim part2 As String: part2 = BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))
         Dim part3 As String: part3 = BigIntMath.Subtract(part1, part2)
         Dim part4 As String: part4 = BigIntMath.Modulus(part3, P)
-        Dim ny As String: ny = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, BigIntMath.Subtract(S, nx)), BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))), P)
+        Dim ny As String: ny = BigIntMath.Modulus(BigIntMath.Subtract(BigIntMath.multiply(M, BigIntMath.Subtract(s, nx)), BigIntMath.multiply("8", BigIntMath.multiply(ysq, ysq))), P)
         Dim nz As String: nz = BigIntMath.Modulus(BigIntMath.multiply("2", BigIntMath.multiply(Point.y, Point.z)), P)
         
         Call pp.setCoordinates(nx, ny, nz)

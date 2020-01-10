@@ -12,15 +12,16 @@ Private numberDict As Dictionary
 Private amountDict As Dictionary
 
 Public Sub ExportFile()
+    On Error GoTo ExportFail
     Dim outputFile As Integer
-    Dim lastrow As Integer
+    Dim lastRow As Integer
     Dim i As Integer
     
     initializeOccurrences
     today = Date
     today = dateFormatter(today, 1, 4, 9)
     
-    lastrow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
+    lastRow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
     
     outputFileName = "CNAB400_" & "20" & dateFormatter(today, 5, 3, 1, "-") & ".RET"
     outputPath = Application.DefaultFilePath & outputFileName
@@ -30,8 +31,8 @@ Public Sub ExportFile()
     
     outputFile = 1
     Set occurrenceDateDict = New Dictionary
-    Call getLogOccurrenceDates(lastrow, "paid")
-    Call getLogOccurrenceDates(lastrow, "canceled")
+    Call getLogOccurrenceDates(lastRow, "paid")
+    Call getLogOccurrenceDates(lastRow, "canceled")
     
     registerNumber = 1
     
@@ -39,7 +40,7 @@ Public Sub ExportFile()
     
     outputPrintHeader (outputFile)
     
-    For i = 10 To lastrow
+    For i = 10 To lastRow
         registerNumber = registerNumber + 1
         Call outputPrintTransactionOne(outputFile, i)
     Next
@@ -56,11 +57,14 @@ Public Sub ExportFile()
     Call exportMessageSuccess(dialog)
     
     DebugDict
+    Exit Sub
+ExportFail:
+    Call exportMessageCanceled(False)
 End Sub
 
 Private Sub exportMessageSuccess(dialog As Variant)
     If dialog <> False Then
-        MsgBox "Arquivo exportado com sucesso...", , "Sucesso"
+        MsgBox "Arquivo exportado com sucesso!", , "Sucesso"
     Else
         MsgBox "Arquivo não foi salvo", , "Erro ao salvar"
     End If
@@ -68,7 +72,7 @@ End Sub
 
 Private Sub exportMessageCanceled(dialog As Variant)
     If dialog = False Then
-        MsgBox "Arquivo não foi salvo", , "Erro ao salvar"
+        MsgBox "Falha ao salvar o arquivo!", vbExclamation, "Erro ao salvar"
         End
     End If
 End Sub
@@ -89,14 +93,13 @@ Public Function getTaxIdType(taxId As String) As String
         Case 18
             idType = "02"
         Case Else
-            Debug.Print "Error to verify taxId type: " & taxId
             idType = "99"
     End Select
     getTaxIdType = idType
 End Function
 
-Public Function ZeroPad(S As Variant, n As Integer) As String
-    ZeroPad = Format(CStr(S), String(n, "0"))
+Public Function ZeroPad(s As Variant, n As Integer) As String
+    ZeroPad = Format(CStr(s), String(n, "0"))
 End Function
 
 Private Sub DebugDict()
@@ -133,7 +136,7 @@ Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) 
     
 End Function
 
-Private Sub getLogOccurrenceDates(lastrow As Integer, logevent As String)
+Private Sub getLogOccurrenceDates(lastRow As Integer, logevent As String)
     Dim chunk As String
     Dim respMessage As Dictionary
     Dim i As Integer
@@ -145,7 +148,7 @@ Private Sub getLogOccurrenceDates(lastrow As Integer, logevent As String)
     
     chunk = ""
     j = 0
-    For i = 10 To lastrow
+    For i = 10 To lastRow
         statusCode = Cells(i, "D").Value
         chargeId = CStr(Cells(i, "H").Value)
         
@@ -217,7 +220,7 @@ Private Sub outputPrintHeader(outputFile As Integer)
     ' Em Branco: 114 a 379
     Print #outputFile, Tab(380); creditDate; ' TODO: Data do crédito
     ' Em Branco: 386 a 394
-    Print #outputFile, Tab(394); ZeroPad(registerNumber, 6)
+    Print #outputFile, Tab(395); ZeroPad(registerNumber, 6)
 End Sub
 
 Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
@@ -316,7 +319,7 @@ Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     ' Em Branco: 329 a 368
     'Print #outputFile, Tab(369); "00"; ' Numero do cartorio
     'Print #outputFile, Tab(371); ZeroPad("0", 10); ' TODO
-    Print #outputFile, Tab(394); ZeroPad(registerNumber, 6)
+    Print #outputFile, Tab(395); ZeroPad(registerNumber, 6)
 End Sub
 
 Private Sub outputPrintTrailler(outputFile As Integer)
@@ -348,5 +351,5 @@ Private Sub outputPrintTrailler(outputFile As Integer)
     ' Em Branco: 189 a 362
     Print #outputFile, Tab(363); ZeroPad("0", 15); ' TODO: Valor Total Rateios
     Print #outputFile, Tab(378); ZeroPad("0", 8); ' TODO: Quantidade Total Rateios
-    Print #outputFile, Tab(394); Format(CStr(registerNumber), "000000");
+    Print #outputFile, Tab(395); Format(CStr(registerNumber), "000000");
 End Sub

@@ -16,13 +16,11 @@ Public Function createNewSession(workspace As String, email As String, password 
     If resp.Status = 200 Then
         result.Add "success", resp.json()
         result.Add "error", New Dictionary
-        Set createNewSession = result
     Else
         result.Add "success", New Dictionary
         result.Add "error", resp.error()
-        Set createNewSession = result
     End If
-
+    Set createNewSession = result
 End Function
 
 Public Function deleteSession(accessToken As String)
@@ -34,11 +32,9 @@ Public Function deleteSession(accessToken As String)
     If resp.Status = 200 Then
         result.Add "success", resp.json()
         result.Add "error", New Dictionary
-        Set deleteSession = result
     Else
         result.Add "success", New Dictionary
         result.Add "error", resp.error()
-        Set deleteSession = result
     End If
-
+    Set deleteSession = result
 End Function

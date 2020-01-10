@@ -1,3 +1,8 @@
+Public Sub BotaoAssinatura()
+    name = "Assinatura Digital"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoExtrato()
     name = "Extrato"
     ThisWorkbook.Sheets(name).Activate

@@ -108,12 +108,12 @@ Private Function RenameCurrent()
     
     baseName = fso.GetBaseName(ThisWorkbook.name)
     overwriteLatest = vbYes
-    Debug.Print Dir(ThisWorkbook.path & "/starkbank-sdk.xlsm")
+    Debug.Print dir(ThisWorkbook.path & "/starkbank-sdk.xlsm")
     If baseName = "starkbank-sdk" Then
         newName = baseName + "_OLD.xlsm"
         ThisWorkbook.SaveAs ThisWorkbook.path & "/" & newName
         Kill oldName
-    ElseIf Dir(ThisWorkbook.path & "/starkbank-sdk.xlsm") <> "" Then
+    ElseIf dir(ThisWorkbook.path & "/starkbank-sdk.xlsm") <> "" Then
         overwriteMessage = "O arquivo starkbank-sdk.xlsm será sobrescrito. Dados na planilha serão excluídos. Continuar?"
         overwriteLatest = MsgBox(overwriteMessage, vbYesNo)
     End If
@@ -230,7 +230,6 @@ End Function
 
 Public Function getRepoRequest(base As String, path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseRepoUrl(base) + path + query
-    Debug.Print url
     Set getRepoRequest = updateFetch(url, "GET", headers, "")
 End Function
 
@@ -290,7 +289,6 @@ End Sub
 Public Sub ImportedTest(moduleName As String)
     Dim zero As Integer
     zero = SimpleTest()
-    Debug.Print zero
     ActiveWorkbook.VBProject.VBComponents.Remove ActiveWorkbook.VBProject.VBComponents(moduleName)
 End Sub
 
@@ -354,7 +352,7 @@ Function CopyModule(moduleName As String, _
     Dim VBComp As VBIDE.VBComponent
     Dim FName As String
     Dim CompName As String
-    Dim S As String
+    Dim s As String
     Dim SlashPos As Long
     Dim ExtPos As Long
     Dim TempVBComp As VBIDE.VBComponent
@@ -406,7 +404,7 @@ Function CopyModule(moduleName As String, _
         ' the existing VBComponent from the
         ' ToVBProject.
         ''''''''''''''''''''''''''''''''''''''
-        If Dir(FName, vbNormal + vbHidden + vbSystem) <> vbNullString Then
+        If dir(FName, vbNormal + vbHidden + vbSystem) <> vbNullString Then
             Err.Clear
             Kill FName
             If Err.number <> 0 Then
@@ -469,8 +467,8 @@ Function CopyModule(moduleName As String, _
             ' TempVBComp is source module
             With VBComp.CodeModule
                 .DeleteLines 1, .CountOfLines
-                S = TempVBComp.CodeModule.Lines(1, TempVBComp.CodeModule.CountOfLines)
-                .InsertLines 1, S
+                s = TempVBComp.CodeModule.Lines(1, TempVBComp.CodeModule.CountOfLines)
+                .InsertLines 1, s
             End With
             On Error GoTo 0
             ToVBProject.VBComponents.Remove TempVBComp

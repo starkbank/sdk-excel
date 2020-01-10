@@ -13,9 +13,9 @@ Public Function sign(message As String, PrivateKey As PrivateKey) As signature
     
     Dim s1 As String: s1 = BigIntMath.Add(numberMessage, BigIntMath.multiply(r, PrivateKey.secret))
     Dim s2 As String: s2 = EllipticCurve_Math.inv(randNum, PrivateKey.curve.n)
-    Dim S As String: S = BigIntMath.Modulus(BigIntMath.multiply(s1, s2), PrivateKey.curve.n)
+    Dim s As String: s = BigIntMath.Modulus(BigIntMath.multiply(s1, s2), PrivateKey.curve.n)
     
     Dim sig As signature: Set sig = New signature
-    Call sig.setProperties(r, S)
+    Call sig.setProperties(r, s)
     Set sign = sig
 End Function

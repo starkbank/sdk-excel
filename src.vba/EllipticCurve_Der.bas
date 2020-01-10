@@ -163,15 +163,15 @@ Public Function readLength(strHexa As String) As String
     readLength = respArray
 End Function
 
-Public Function encodeSequence(r() As Byte, S() As Byte) As Byte()
+Public Function encodeSequence(r() As Byte, s() As Byte) As Byte()
     rLen = UBound(r, 1) - LBound(r, 1) + 1
-    sLen = UBound(S, 1) - LBound(S, 1) + 1
+    sLen = UBound(s, 1) - LBound(s, 1) + 1
     Dim totalLen As Integer: totalLen = rLen + sLen
     
     Dim encodedLength() As Byte: encodedLength = encodeLength(totalLen)
     encodedLengthInHexa = BytesToHex(encodedLength)
     
-    encodeSequence = HexToBytes("30" & encodedLengthInHexa & BytesToHex(r) & BytesToHex(S))
+    encodeSequence = HexToBytes("30" & encodedLengthInHexa & BytesToHex(r) & BytesToHex(s))
 
 End Function
 
@@ -232,23 +232,23 @@ Public Function HexToBytes(ByVal HexString As String) As Byte()
     '   "H HH H"
     '   "HH,HH,     HH" and so on.
 
-    Dim Bytes() As Byte
+    Dim bytes() As Byte
     Dim HexPos As Integer
     Dim HexDigit As Integer
     Dim BytePos As Integer
     Dim Digits As Integer
 
-    ReDim Bytes(Len(HexString) \ 2)  'Initial estimate.
+    ReDim bytes(Len(HexString) \ 2)  'Initial estimate.
     For HexPos = 1 To Len(HexString)
         HexDigit = InStr("0123456789ABCDEF", _
                          UCase$(Mid$(HexString, HexPos, 1))) - 1
         If HexDigit >= 0 Then
-            If BytePos > UBound(Bytes) Then
+            If BytePos > UBound(bytes) Then
                 'Add some room, we'll add room for 4 more to decrease
                 'how often we end up doing this expensive step:
-                ReDim Preserve Bytes(UBound(Bytes) + 4)
+                ReDim Preserve bytes(UBound(bytes) + 4)
             End If
-            Bytes(BytePos) = Bytes(BytePos) * &H10 + HexDigit
+            bytes(BytePos) = bytes(BytePos) * &H10 + HexDigit
             Digits = Digits + 1
         End If
         If Digits = 2 Or HexDigit < 0 Then
@@ -258,14 +258,14 @@ Public Function HexToBytes(ByVal HexString As String) As Byte()
     Next
     If Digits = 0 Then BytePos = BytePos - 1
     If BytePos < 0 Then
-        Bytes = "" 'Empty.
+        bytes = "" 'Empty.
     Else
-        ReDim Preserve Bytes(BytePos)
+        ReDim Preserve bytes(BytePos)
     End If
-    HexToBytes = Bytes
+    HexToBytes = bytes
 End Function
 
-Public Function BytesToHex(ByRef Bytes() As Byte) As String
+Public Function BytesToHex(ByRef bytes() As Byte) As String
     'Quick and dirty Byte array to hex String, format:
     '
     '   "HH HH HH"
@@ -274,12 +274,12 @@ Public Function BytesToHex(ByRef Bytes() As Byte) As String
     Dim ByteCount As Long
     Dim BytePos As Integer
 
-    LB = LBound(Bytes)
-    ByteCount = UBound(Bytes) - LB + 1
+    LB = LBound(bytes)
+    ByteCount = UBound(bytes) - LB + 1
     If ByteCount < 1 Then Exit Function
     BytesToHex = Space$(3 * (ByteCount - 1) + 2)
-    For BytePos = LB To UBound(Bytes)
+    For BytePos = LB To UBound(bytes)
         Mid$(BytesToHex, 3 * (BytePos - LB) + 1, 2) = _
-            Right$("0" & Hex$(Bytes(BytePos)), 2)
+            Right$("0" & Hex$(bytes(BytePos)), 2)
     Next
 End Function

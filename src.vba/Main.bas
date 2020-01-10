@@ -8,7 +8,6 @@ Public Sub signOut()
     
     message1 = "Você quer mesmo encerrar a sessão? "
     message2 = "Dados que não foram salvos serão apagados."
-    
     confirmationMessage = message1 + message2
     signOutAnswer = MsgBox(confirmationMessage, vbQuestion + vbYesNo, "Confirmação de encerramento")
     
@@ -27,6 +26,7 @@ Public Sub signOut()
     Call SessionGateway.saveSession("", "", "", "", "", "")
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Credentials" And WS.name <> "InputLog" Then
+        
             WS.Cells(2, 1).Value = ""
             WS.Cells(3, 1).Value = ""
             WS.Cells(4, 1).Value = ""
@@ -42,9 +42,18 @@ End Sub
 
 Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
-        WS.Cells.UnMerge
-        WS.Range("A10:Z" & Rows.Count).ClearContents
+        If WS.name <> "Principal" Then
+            WS.Cells.UnMerge
+            WS.Range("A10:Z" & Rows.Count).ClearContents
+        End If
     Next
+End Sub
+
+Public Sub openHelp()
+    With HelpForm
+        .MultiPage1.Value = 0
+        .Show
+    End With
 End Sub
 
 Public Sub searchStatement()
@@ -62,6 +71,14 @@ End Sub
 
 Public Sub searchTransfers()
     TransferForm.Show
+End Sub
+
+Public Sub keyGeneration()
+    KeyGenerationForm.Show
+End Sub
+
+Public Sub keyUpload()
+    SendKeyForm.Show
 End Sub
 
 Public Sub searchCustomers()

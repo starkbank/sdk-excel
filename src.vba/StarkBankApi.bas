@@ -52,6 +52,23 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
 End Function
 
+Public Function downloadRequest(path As String, filepath As String) As Boolean
+    Dim url As String: url = baseUrl() + path
+    
+    downloadRequest = Request.download(url, filepath)
+End Function
+
+Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)
+    Dim url As String: url = baseUrl() + path + query
+    
+    For Each key In defaultHeaders().keys()
+        headers.Add key, defaultHeaders()(key)
+    Next
+    headers("Content-Type") = "multipart/form-data; boundary=" + boundary
+    
+    Set uploadRequest = Request.fetch(url, "POST", headers, payload)
+End Function
+
 Public Function externalPostRequest(url As String, payload As String)
     Dim headers As Dictionary: Set headers = New Dictionary
     headers.Add "Content-Type", "Application/json"

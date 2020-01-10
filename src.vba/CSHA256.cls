@@ -400,9 +400,9 @@ End Function
 ' DESCRIPTION:
 ' SHA-256 function (rotate right)
 '*******************************************************************************
-Private Function S(ByVal x As Long, _
+Private Function s(ByVal x As Long, _
                    ByVal n As Long) As Long
-    S = (RShift(x, (n And m_lOnBits(4))) Or LShift(x, (32 - (n And m_lOnBits(4)))))
+    s = (RShift(x, (n And m_lOnBits(4))) Or LShift(x, (32 - (n And m_lOnBits(4)))))
 End Function
 
 
@@ -425,7 +425,7 @@ End Function
 ' SHA-256 function
 '*******************************************************************************
 Private Function Sigma0(ByVal x As Long) As Long
-    Sigma0 = (S(x, 2) Xor S(x, 13) Xor S(x, 22))
+    Sigma0 = (s(x, 2) Xor s(x, 13) Xor s(x, 22))
 End Function
 
 
@@ -436,7 +436,7 @@ End Function
 ' SHA-256 function
 '*******************************************************************************
 Private Function Sigma1(ByVal x As Long) As Long
-    Sigma1 = (S(x, 6) Xor S(x, 11) Xor S(x, 25))
+    Sigma1 = (s(x, 6) Xor s(x, 11) Xor s(x, 25))
 End Function
 
 
@@ -447,7 +447,7 @@ End Function
 ' SHA-256 function
 '*******************************************************************************
 Private Function Gamma0(ByVal x As Long) As Long
-    Gamma0 = (S(x, 7) Xor S(x, 18) Xor r(x, 3))
+    Gamma0 = (s(x, 7) Xor s(x, 18) Xor r(x, 3))
 End Function
 
 
@@ -458,7 +458,7 @@ End Function
 ' SHA-256 function
 '*******************************************************************************
 Private Function Gamma1(ByVal x As Long) As Long
-    Gamma1 = (S(x, 17) Xor S(x, 19) Xor r(x, 10))
+    Gamma1 = (s(x, 17) Xor s(x, 19) Xor r(x, 10))
 End Function
 
 

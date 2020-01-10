@@ -10,7 +10,6 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SendButton_Click()
-    Debug.Print "SendButton_Click started"
     ' On Error Resume Next
     Dim workspace As String: workspace = WorkspaceBox.Value
     Dim email As String: email = EmailBox.Value
@@ -21,7 +20,6 @@ Private Sub SendButton_Click()
     Dim response As Dictionary
     Dim workspaceId As String
     Dim role As String
-    Debug.Print "Variables declared"
     
     Call SessionGateway.saveSession(workspace, email, envString, "", "", "")
     Debug.Print "Session cleared"
@@ -42,9 +40,7 @@ Private Sub SendButton_Click()
     Debug.Print "New session data saved"
     
     Call SessionGateway.displayMemberInfo
-    Debug.Print "Information printed"
     
     Unload Me
-    
 End Sub
 
