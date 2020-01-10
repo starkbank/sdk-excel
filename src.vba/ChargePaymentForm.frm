@@ -1,8 +1,4 @@
 
-
-
-
-
 Private Sub AfterTextBox_Change()
     Static reentry As Boolean
     If reentry Then Exit Sub
