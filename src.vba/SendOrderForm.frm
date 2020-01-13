@@ -1,9 +1,4 @@
 
-
-
-
-
-
 Private Sub UserForm_Initialize()
     Dim cursor As String
     Dim teams As Collection
@@ -36,18 +31,18 @@ Private Sub SendButton_Click()
     Call Utils.applyStandardLayout("H")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Nome"
-    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 3).Value = "Valor"
-    ActiveSheet.Cells(9, 4).Value = "Código do Banco"
-    ActiveSheet.Cells(9, 5).Value = "Agência"
-    ActiveSheet.Cells(9, 6).Value = "Conta"
-    ActiveSheet.Cells(9, 7).Value = "Tags"
-    ActiveSheet.Cells(9, 8).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Código do Banco"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Agência"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Conta"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição"
     
     With ActiveWindow
         .SplitColumn = 8
-        .SplitRow = 9
+        .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
     

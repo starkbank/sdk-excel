@@ -68,20 +68,20 @@ Private Sub DownloadButton_Click()
     
     ActiveSheet.Cells.UnMerge
     Call Utils.applyStandardLayout("F")
-    ActiveSheet.Range("A10:G" & Rows.Count).ClearContents
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Data"
-    ActiveSheet.Cells(9, 2).Value = "Tipo de transação"
-    ActiveSheet.Cells(9, 3).Value = "Valor"
-    ActiveSheet.Cells(9, 4).Value = "Descrição"
-    ActiveSheet.Cells(9, 5).Value = "Id da Transação"
-    ActiveSheet.Cells(9, 6).Value = "Tarifa"
-    ActiveSheet.Cells(9, 7).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Tipo de transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Id da Transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Tarifa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
 
     With ActiveWindow
         .SplitColumn = 7
-        .SplitRow = 9
+        .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
 
@@ -93,7 +93,7 @@ Private Sub DownloadButton_Click()
         optionalParam.Add "before", before
     End If
 
-    row = 10
+    row = TableFormat.HeaderRow() + 1
     
     Set teams = getTeams("", New Dictionary)("teams")
     

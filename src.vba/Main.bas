@@ -94,18 +94,18 @@ Public Sub searchCustomers()
     Range("A10:L" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(9, 2).Value = "Nome"
-    ActiveSheet.Cells(9, 3).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 4).Value = "E-mail"
-    ActiveSheet.Cells(9, 5).Value = "Telefone"
-    ActiveSheet.Cells(9, 6).Value = "Logradouro"
-    ActiveSheet.Cells(9, 7).Value = "Complemento"
-    ActiveSheet.Cells(9, 8).Value = "Bairro"
-    ActiveSheet.Cells(9, 9).Value = "Cidade"
-    ActiveSheet.Cells(9, 10).Value = "Estado"
-    ActiveSheet.Cells(9, 11).Value = "CEP"
-    ActiveSheet.Cells(9, 12).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 12
@@ -161,18 +161,18 @@ Public Sub createCharges()
     Call Utils.applyStandardLayout("L")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(9, 2).Value = "Valor"
-    ActiveSheet.Cells(9, 3).Value = "Data de Vencimento"
-    ActiveSheet.Cells(9, 4).Value = "Multa"
-    ActiveSheet.Cells(9, 5).Value = "Juros ao Mês"
-    ActiveSheet.Cells(9, 6).Value = "Dias para Baixa Automática"
-    ActiveSheet.Cells(9, 7).Value = "Descrição 1"
-    ActiveSheet.Cells(9, 8).Value = "Valor 1"
-    ActiveSheet.Cells(9, 9).Value = "Descrição 2"
-    ActiveSheet.Cells(9, 10).Value = "Valor 2"
-    ActiveSheet.Cells(9, 11).Value = "Descrição 3"
-    ActiveSheet.Cells(9, 12).Value = "Valor 3"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Data de Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Multa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Juros ao Mês"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Dias para Baixa Automática"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Descrição 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Valor 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Descrição 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Valor 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Descrição 3"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Valor 3"
     
     With ActiveWindow
         .SplitColumn = 12

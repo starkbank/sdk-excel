@@ -21,11 +21,11 @@ Private Sub ConfirmButton_Click()
     Call Utils.applyStandardLayout("E")
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Linha Digitável ou Código de Barras"
-    ActiveSheet.Cells(9, 2).Value = "CPF/CNPJ do Beneficiário"
-    ActiveSheet.Cells(9, 3).Value = "Data de Agendamento"
-    ActiveSheet.Cells(9, 4).Value = "Descrição"
-    ActiveSheet.Cells(9, 5).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Linha Digitável ou Código de Barras"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ do Beneficiário"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Data de Agendamento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 5

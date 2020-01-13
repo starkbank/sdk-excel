@@ -1,7 +1,7 @@
 Public Function headers()
     Dim columns As New Collection
     For Each elem In ActiveSheet.UsedRange.columns
-        columns.Add ActiveSheet.Cells(9, elem.column).Value
+        columns.Add ActiveSheet.Cells(TableFormat.HeaderRow(), elem.column).Value
     Next
     Set headers = columns
 End Function

@@ -43,23 +43,23 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("J")
-    Range("A10:J" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Data de Criação"
-    ActiveSheet.Cells(9, 2).Value = "Id da Transferência"
-    ActiveSheet.Cells(9, 3).Value = "Valor"
-    ActiveSheet.Cells(9, 4).Value = "Status"
-    ActiveSheet.Cells(9, 5).Value = "Nome"
-    ActiveSheet.Cells(9, 6).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 7).Value = "Código do Banco"
-    ActiveSheet.Cells(9, 8).Value = "Agência"
-    ActiveSheet.Cells(9, 9).Value = "Número de Conta"
-    ActiveSheet.Cells(9, 10).Value = "Ids de Transação (Saída, Estorno)"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Id da Transferência"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Status"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Código do Banco"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Agência"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Número de Conta"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Ids de Transação (Saída, Estorno)"
     
     With ActiveWindow
         .SplitColumn = 10
-        .SplitRow = 9
+        .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
     
@@ -80,7 +80,7 @@ Private Sub SearchButton_Click()
         optionalParam.Add "before", before
     End If
 
-    row = 10
+    row = TableFormat.HeaderRow() + 1
 
     Do
         Set respJson = getTransfers(cursor, optionalParam)

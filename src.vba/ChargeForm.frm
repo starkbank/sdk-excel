@@ -46,23 +46,23 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("J")
     ActiveSheet.Hyperlinks.Delete
-    Range("A10:J" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = " Data de Emissão"
-    ActiveSheet.Cells(9, 2).Value = "Valor"
-    ActiveSheet.Cells(9, 3).Value = "Vencimento"
-    ActiveSheet.Cells(9, 4).Value = "Status"
-    ActiveSheet.Cells(9, 5).Value = "Nome"
-    ActiveSheet.Cells(9, 6).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(9, 7).Value = "Linha Digitável"
-    ActiveSheet.Cells(9, 8).Value = "Id do Boleto"
-    ActiveSheet.Cells(9, 9).Value = "Tags"
-    ActiveSheet.Cells(9, 10).Value = "Link PDF"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = " Data de Emissão"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Status"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Linha Digitável"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Id do Boleto"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Link PDF"
     
     With ActiveWindow
         .SplitColumn = 10
-        .SplitRow = 9
+        .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
     
@@ -78,7 +78,7 @@ Private Sub SearchButton_Click()
         optionalParam.Add "before", before
     End If
     
-    row = 10
+    row = TableFormat.HeaderRow() + 1
 
     Do
         Set respJson = getCharges(cursor, optionalParam)
@@ -113,7 +113,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 10).Value = "Link"
             
             Set rng = ActiveSheet.Range("J" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:="https://sandbox.api.starkbank.com/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             row = row + 1
         Next

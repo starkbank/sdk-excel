@@ -45,20 +45,20 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("G")
-    Range("A10:G" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
     
     'Headers definition
-    ActiveSheet.Cells(9, 1).Value = "Data de Criação"
-    ActiveSheet.Cells(9, 2).Value = "Valor"
-    ActiveSheet.Cells(9, 3).Value = "Status"
-    ActiveSheet.Cells(9, 4).Value = "Data de Agendamento"
-    ActiveSheet.Cells(9, 5).Value = "Linha Digitável"
-    ActiveSheet.Cells(9, 6).Value = "Descrição"
-    ActiveSheet.Cells(9, 7).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Status"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Data de Agendamento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Linha Digitável"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 7
-        .SplitRow = 9
+        .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
     
@@ -74,7 +74,7 @@ Private Sub SearchButton_Click()
         optionalParam.Add "before", before
     End If
     
-    row = 10
+    row = TableFormat.HeaderRow() + 1
 
     Do
         Set respJson = ChargePaymentGateway.getChargePayments(cursor, optionalParam)
