@@ -113,7 +113,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 10).Value = "Link"
             
             Set rng = ActiveSheet.Range("J" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:="https://sandbox.api.starkbank.com/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             row = row + 1
         Next
