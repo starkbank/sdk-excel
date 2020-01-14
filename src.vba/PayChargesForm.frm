@@ -11,7 +11,7 @@ Private Sub BrowseButton_Click()
 End Sub
 
 Private Sub ConfirmButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
     
     Dim privkeyStr As String, textLine As String

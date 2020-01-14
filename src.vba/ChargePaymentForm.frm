@@ -28,7 +28,7 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SearchButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
 
     Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String

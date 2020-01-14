@@ -3,7 +3,7 @@ Public Function downloadChargePdf(chargeId As String, folder As String)
     Dim path As String
     Dim filepath As String
     
-    path = "/charge/" + chargeId + "/pdf"
+    path = "/v1/charge/" + chargeId + "/pdf"
     filepath = folder + "/boleto-" + chargeId + ".pdf"
     
     downloadChargePdf = StarkBankApi.downloadRequest(path, filepath)
