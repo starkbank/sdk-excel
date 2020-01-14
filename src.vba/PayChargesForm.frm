@@ -41,7 +41,6 @@ Private Sub ConfirmButton_Click()
     
     If response("error").Count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
-        Unload Me
         Exit Sub
     End If
         

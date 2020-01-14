@@ -143,7 +143,7 @@ Public Function createTransfers(payload As String, signature As String)
         Dim errorDescription As String
         
         For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), 10)
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
             errorList = errorList & errorDescription & Chr(10)
         Next
         

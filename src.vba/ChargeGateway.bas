@@ -126,6 +126,7 @@ Public Function getOrders() As Collection
         
         If obj("Valor") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
+            End
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
         customerId = Trim(obj("Id do Cliente"))
@@ -220,7 +221,7 @@ Public Function createCharges(charges As Collection)
         Dim errorDescription As String
         
         For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), 9)
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow())
             errorList = errorList & errorDescription & Chr(10)
         Next
         

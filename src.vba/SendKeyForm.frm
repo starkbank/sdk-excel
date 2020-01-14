@@ -17,6 +17,7 @@ Private Sub RequestToken_Click()
 End Sub
 
 Private Sub SendPublic_Click()
+    Dim keyPath As String: keyPath = Me.FileBox.Value
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
@@ -26,14 +27,20 @@ Private Sub SendPublic_Click()
     
     If response("error").Count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
-        Unload Me
         Exit Sub
     End If
         
     Dim accessToken As String: accessToken = response("success")("accessToken")
+    Dim memberId As String: memberId = response("success")("member")("id")
     Call SessionGateway.saveAccessToken(accessToken)
     
-    Set response = DigitalSignature.sendPublicKey(SessionGateway.getWorkspaceId(), Me.TokenBox.Value, Me.FileBox.Value)
+    '----------- Validate mandatory inputs -----------
+    If keyPath = vbNullString Then
+        MsgBox "Por favor, adicione uma chave pública", , "Erro"
+        Exit Sub
+    End If
+    
+    Set response = DigitalSignature.sendPublicKey(SessionGateway.getWorkspaceId(), memberId, Me.TokenBox.Value, keyPath)
     
     If response("error").Count <> 0 Then
         MsgBox response("error")("message"), , "Erro"

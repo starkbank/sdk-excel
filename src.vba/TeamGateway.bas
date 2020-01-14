@@ -50,7 +50,7 @@ Public Function createOrders(teamId As String, orders As Collection)
         Dim errorDescription As String
         
         For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), 10)
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
             errorList = errorList & errorDescription & Chr(10)
         Next
         
@@ -81,6 +81,8 @@ Public Function getOrders() As Collection
         
         If obj("Valor") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
+            Unload SendOrderForm
+            End
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
         taxId = Trim(obj("CPF/CNPJ"))

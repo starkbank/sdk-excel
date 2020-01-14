@@ -37,7 +37,6 @@ Private Sub ConfirmButton_Click()
     
     If response("error").Count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
-        Unload Me
         Exit Sub
     End If
         
@@ -47,7 +46,11 @@ Private Sub ConfirmButton_Click()
     '----------- Validate mandatory inputs -----------
     If externalId = vbNullString Then
         MsgBox "Por favor, adicione um identificador único", , "Erro"
-        Unload Me
+        Exit Sub
+    End If
+    
+    If myFile = vbNullString Then
+        MsgBox "Por favor, adicione sua chave privada", , "Erro"
         Exit Sub
     End If
     

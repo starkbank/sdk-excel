@@ -15,7 +15,7 @@ Public Function mailToken()
     Set mailToken = result
 End Function
 
-Public Function sendPublicKey(workspaceId As String, token As String, keyPath As String)
+Public Function sendPublicKey(workspaceId As String, memberId As String, token As String, keyPath As String)
     Dim resp As response
     Dim boundary As String
     Dim payload As String
@@ -36,6 +36,7 @@ Public Function sendPublicKey(workspaceId As String, token As String, keyPath As
     publicKeyContent = oStream.ReadText
     
     dict.Add "workspaceId", workspaceId
+    dict.Add "memberId", memberId
     dict.Add "token", token
     dict.Add "publicKey", publicKeyContent
     
@@ -47,7 +48,6 @@ Public Function sendPublicKey(workspaceId As String, token As String, keyPath As
         payload = payload & dict(sName) & vbCrLf
     Next
     payload = payload & "--" & boundary & "--"
-    ' payload = Replace(payload, vbNewLine, "\n")
     Set resp = StarkBankApi.uploadRequest("/v1/auth/public-key", payload, headers, boundary)
     
     If resp.Status = 200 Then
