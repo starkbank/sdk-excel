@@ -74,7 +74,7 @@ Public Sub searchTransfers()
 End Sub
 
 Public Sub keyGeneration()
-    KeyGenerationForm.Show
+    GenerateKeyForm.Show
 End Sub
 
 Public Sub keyUpload()

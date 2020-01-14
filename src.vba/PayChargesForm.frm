@@ -47,6 +47,12 @@ Private Sub ConfirmButton_Click()
     Dim accessToken As String: accessToken = response("success")("accessToken")
     Call SessionGateway.saveAccessToken(accessToken)
     
+    '----------- Validate mandatory inputs -----------
+    If myFile = vbNullString Then
+        MsgBox "Por favor, adicione sua chave privada", , "Erro"
+        Exit Sub
+    End If
+    
     '--------------- Read privateKey -----------------
     If dir(myFile) <> "" Then
         Open myFile For Input As #1
