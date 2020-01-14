@@ -24,7 +24,7 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub DownloadButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
 

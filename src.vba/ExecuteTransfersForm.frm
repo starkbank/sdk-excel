@@ -50,18 +50,23 @@ Private Sub ConfirmButton_Click()
     End If
     
     If myFile = vbNullString Then
-        MsgBox "Por favor, adicione sua chave privada", , "Erro"
+        MsgBox "Nenhum arquivo selecionado", vbExclamation, "Erro"
         Exit Sub
     End If
     
     '--------------- Read privateKey -----------------
-    Open myFile For Input As #1
-    Do Until EOF(1)
-        Line Input #1, textLine
-        privkeyStr = privkeyStr & textLine & vbLf
-    Loop
-    
-    Close #1
+    If dir(myFile) <> vbNullString Then
+        Open myFile For Input As #1
+        Do Until EOF(1)
+            Line Input #1, textLine
+            privkeyStr = privkeyStr & textLine & vbLf
+        Loop
+        
+        Close #1
+    Else
+        MsgBox "Arquivo não encontrado", vbExclamation
+        Exit Sub
+    End If
     
     '--------------- Create body -----------------
     Dim payload As String, tags() As String
@@ -90,6 +95,10 @@ Private Sub ConfirmButton_Click()
     Dim respMessage As String
     respMessage = TransferGateway.createTransfers(payload, signature64)
     
+        If respJson.Exists("error") Then
+            Unload Me
+            Exit Sub
+        End If
     Unload Me
      
 End Sub

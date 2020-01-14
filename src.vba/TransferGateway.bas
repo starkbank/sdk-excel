@@ -150,10 +150,10 @@ Public Function createTransfers(payload As String, signature As String)
         Dim messageBox As String
         messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
         MsgBox messageBox, , "Erro"
-        
+        createTransfers = resp.json()
     Else
-        MsgBox resp.error()("message"), , "Erro"
-        
+        MsgBox resp.error()("message"), vbExclamation, "Erro"
+        createTransfers = resp.json()
     End If
     
 End Function

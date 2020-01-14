@@ -49,12 +49,12 @@ Private Sub ConfirmButton_Click()
     
     '----------- Validate mandatory inputs -----------
     If myFile = vbNullString Then
-        MsgBox "Por favor, adicione sua chave privada", , "Erro"
+        MsgBox "Nenhum arquivo selecionado", vbExclamation, "Erro"
         Exit Sub
     End If
     
     '--------------- Read privateKey -----------------
-    If dir(myFile) <> "" Then
+    If dir(myFile) <> vbNullString Then
         Open myFile For Input As #1
         Do Until EOF(1)
             Line Input #1, textLine

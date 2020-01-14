@@ -41,6 +41,8 @@ Private Sub SearchButton_Click()
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     
+    Call InputLogGateway.saveDates(afterInput, beforeInput)
+    
     'Table layout
     Utils.applyStandardLayout ("J")
     Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.Count).ClearContents

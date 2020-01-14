@@ -10,7 +10,6 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SendButton_Click()
-    ' On Error Resume Next
     Dim workspace As String: workspace = WorkspaceBox.Value
     Dim email As String: email = EmailBox.Value
     Dim password As String: password = PasswordBox.Value
@@ -28,7 +27,7 @@ Private Sub SendButton_Click()
     Debug.Print "New session created"
     
     If response("error").Count <> 0 Then
-        MsgBox response("error")("message"), , "Erro"
+        MsgBox response("error")("message"), vbExclamation, "Erro"
         Exit Sub
     End If
     
