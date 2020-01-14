@@ -45,6 +45,7 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
         Set getChargePayments = resp.json()
     Else
         MsgBox resp.error()("message"), , "Erro"
+        Set getChargePayments = resp.json()
     End If
 
 End Function

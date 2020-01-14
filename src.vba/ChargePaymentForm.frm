@@ -78,6 +78,10 @@ Private Sub SearchButton_Click()
 
     Do
         Set respJson = ChargePaymentGateway.getChargePayments(cursor, optionalParam)
+        If respJson.Exists("error") Then
+            Unload Me
+            Exit Sub
+        End If
 
         cursor = ""
         If respJson("cursor") <> "" Then

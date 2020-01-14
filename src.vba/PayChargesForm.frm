@@ -49,13 +49,18 @@ Private Sub ConfirmButton_Click()
     Call SessionGateway.saveAccessToken(accessToken)
     
     '--------------- Read privateKey -----------------
-    Open myFile For Input As #1
-    Do Until EOF(1)
-        Line Input #1, textLine
-        privkeyStr = privkeyStr & textLine & vbLf
-    Loop
-    
-    Close #1
+    If dir(myFile) <> "" Then
+        Open myFile For Input As #1
+        Do Until EOF(1)
+            Line Input #1, textLine
+            privkeyStr = privkeyStr & textLine & vbLf
+        Loop
+        
+        Close #1
+    Else
+        MsgBox "Arquivo não encontrado", vbExclamation
+        Exit Sub
+    End If
     
     '--------------- Create body -----------------
     Dim payload As String, tags() As String
