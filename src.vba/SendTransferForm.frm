@@ -92,13 +92,14 @@ Private Sub ConfirmButton_Click()
     Dim signature64 As String: signature64 = signature.toBase64()
     
     '--------------- Create transfers -----------------
-    Dim respMessage As String
-    respMessage = TransferGateway.createTransfers(payload, signature64)
+    Dim respJson As String
+    respJson = TransferGateway.createTransfers(payload, signature64)
     
-        If respJson.Exists("error") Then
-            Unload Me
-            Exit Sub
-        End If
+    If respJson.Exists("error") Then
+        Unload Me
+        Exit Sub
+    End If
+    
     Unload Me
      
 End Sub

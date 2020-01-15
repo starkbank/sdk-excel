@@ -53,14 +53,14 @@ Public Sub clearAll()
 End Sub
 
 Public Sub openHelp()
-    With HelpForm
+    With ViewHelpForm
         .MultiPage1.Value = 0
         .Show
     End With
 End Sub
 
 Public Sub searchStatement()
-    SearchForm.Show
+    ViewStatementForm.Show
 End Sub
 
 Public Sub sendOrders()
@@ -69,11 +69,11 @@ Public Sub sendOrders()
 End Sub
 
 Public Sub searchCharges()
-    ChargeForm.Show
+    ViewChargeForm.Show
 End Sub
 
 Public Sub searchTransfers()
-    TransferForm.Show
+    ViewTransferForm.Show
 End Sub
 
 Public Sub keyGeneration()
@@ -190,13 +190,13 @@ Public Sub createCharges()
 End Sub
 
 Public Sub executeTransfers()
-    ExecuteTransfersForm.Show
+    SendTransferForm.Show
 End Sub
 
 Public Sub payCharges()
-    PayChargesForm.Show
+    SendChargePaymentForm.Show
 End Sub
 
 Public Sub searchChargePayments()
-    ChargePaymentForm.Show
+    ViewChargePaymentForm.Show
 End Sub

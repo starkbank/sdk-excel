@@ -64,7 +64,7 @@ Public Function getChargePaymentsFromSheet() As Collection
         
         If obj("Linha Digitável ou Código de Barras") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de pagamento de boleto", , "Erro"
-            Unload PayChargesForm
+            Unload SendChargePaymentForm
             End
         End If
         lineOrBarCode = Trim(obj("Linha Digitável ou Código de Barras"))

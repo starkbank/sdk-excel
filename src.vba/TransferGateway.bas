@@ -89,7 +89,7 @@ Public Function getTransfersFromSheet() As Collection
         
         If obj("Valor") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
-            Unload ExecuteTransfersForm
+            Unload SendTransferForm
             End
         End If
         amount = Utils.IntegerFrom((obj("Valor")))

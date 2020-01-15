@@ -25,11 +25,11 @@ Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Falha"
     
     Me.StatusBox.Value = "Todos"
+    Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
+    Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
 End Sub
 
 Private Sub SearchButton_Click()
-    'On Error Resume Next
-
     Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String
     Dim payments As Collection
@@ -42,6 +42,8 @@ Private Sub SearchButton_Click()
     
     Dim after As String: after = Utils.DateToSendingFormat(afterInput)
     Dim before As String: before = Utils.DateToSendingFormat(beforeInput)
+    
+    Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
     Utils.applyStandardLayout ("G")

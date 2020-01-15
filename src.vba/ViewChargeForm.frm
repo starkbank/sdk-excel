@@ -26,6 +26,8 @@ Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Cancelados"
     
     Me.StatusBox.Value = "Todos"
+    Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
+    Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
 End Sub
 
 Private Sub SearchButton_Click()
@@ -42,6 +44,8 @@ Private Sub SearchButton_Click()
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     Dim rng As Range
+    
+    Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
     Utils.applyStandardLayout ("J")

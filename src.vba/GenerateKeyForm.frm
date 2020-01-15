@@ -68,7 +68,7 @@ Private Sub GenerateKeys_Click()
 End Sub
 
 Private Sub HelpButton_Click()
-    With HelpForm
+    With ViewHelpForm
         .MultiPage1.Value = 2
         .Show
     End With

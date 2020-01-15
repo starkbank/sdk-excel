@@ -23,6 +23,8 @@ Private Sub UserForm_Initialize()
     Me.StatusComboBox.AddItem "Falha"
     
     Me.StatusComboBox.Value = "Todos"
+    Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
+    Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
 End Sub
 
 Private Sub SearchButton_Click()
