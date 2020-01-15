@@ -19,12 +19,10 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
     
     Set resp = StarkBankApi.getRequest("/v1/bank/transaction", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getTransaction = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
-        Set getTransaction = New Dictionary
     End If
+    Set getTransaction = resp.json()
 
 End Function
 

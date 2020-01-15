@@ -28,7 +28,6 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SearchButton_Click()
-    On Error Resume Next
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
     
@@ -88,6 +87,10 @@ Private Sub SearchButton_Click()
 
     Do
         Set respJson = getTransfers(cursor, optionalParam)
+        If respJson.Exists("error") Then
+            Unload Me
+            Exit Sub
+        End If
 
         cursor = ""
         If respJson("cursor") <> "" Then

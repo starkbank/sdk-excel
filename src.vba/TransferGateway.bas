@@ -38,11 +38,11 @@ Public Function getTransfers(cursor As String, optionalParam As Dictionary)
     
     Set resp = StarkBankApi.getRequest("/v1/transfer", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getTransfers = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
+    Set getTransfers = resp.json()
+    
 End Function
 
 Public Function getOrders(cursor As String, optionalParam As Dictionary)
@@ -66,11 +66,10 @@ Public Function getOrders(cursor As String, optionalParam As Dictionary)
     
     Set resp = StarkBankApi.getRequest("/v1/team/order", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getOrders = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
+    Set getOrders = resp.json()
 
 End Function
 
@@ -123,37 +122,12 @@ Public Function transfer(amount As Long, taxId As String, name As String, bankCo
 End Function
 
 Public Function createTransfers(payload As String, signature As String)
-    Dim resp As response
     Dim headers As New Dictionary
     
     '--------------- Include signature in headers -----------------
     headers.Add "Digital-Signature", signature
     
     '--------------- Send request ---------------------------------
-    Set resp = StarkBankApi.postRequest("/v1/transfer", payload, headers)
-    
-    If resp.Status = 200 Then
-        createTransfers = resp.json()("message")
-        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
-    
-    ElseIf resp.error().Exists("errors") Then
-        Dim errors As Collection: Set errors = resp.error()("errors")
-        Dim error As Dictionary
-        Dim errorList As String
-        Dim errorDescription As String
-        
-        For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
-            errorList = errorList & errorDescription & Chr(10)
-        Next
-        
-        Dim messageBox As String
-        messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
-        MsgBox messageBox, , "Erro"
-        createTransfers = resp.json()
-    Else
-        MsgBox resp.error()("message"), vbExclamation, "Erro"
-        createTransfers = resp.json()
-    End If
+    Set createTransfers = StarkBankApi.postRequest("/v1/transfer", payload, headers)
     
 End Function

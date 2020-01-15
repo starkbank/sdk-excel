@@ -6,16 +6,21 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
         objHTTP.setRequestHeader key, headers(key)
     Next
     
-    objHTTP.send payload
-    
     Dim resp As response
     Set resp = New response
+    
+    On Error GoTo eh:
+    objHTTP.send payload
     
     resp.Status = objHTTP.Status
     resp.content = objHTTP.responseText
     
     Set fetch = resp
-
+    Exit Function
+eh:
+    resp.Status = 404
+    resp.content = "{""error"":{""code"":""connectionError"",""message"":""Verifique sua conexão de internet!""}}"
+    Set fetch = resp
 End Function
 
 Public Function download(url As String, path As String) As Boolean
@@ -23,6 +28,7 @@ Public Function download(url As String, path As String) As Boolean
     
     objHTTP.Open "GET", url, False
     
+    On Error GoTo eh:
     objHTTP.send
     
     If objHTTP.Status = 200 Then
@@ -34,6 +40,7 @@ Public Function download(url As String, path As String) As Boolean
         oStream.Close
         download = True
     Else
+eh:
         download = False
     End If
 End Function

@@ -41,12 +41,10 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
     
     Set resp = StarkBankApi.getRequest("/v1/charge-payment", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getChargePayments = resp.json()
-    Else
-        MsgBox resp.error()("message"), , "Erro"
-        Set getChargePayments = resp.json()
+    If resp.Status >= 300 Then
+        MsgBox resp.error()("message"), vbExclamation, "Erro"
     End If
+    Set getChargePayments = resp.json()
 
 End Function
 
@@ -125,10 +123,8 @@ Public Function createPayments(payload As String, signature As String)
         Dim messageBox As String
         messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
         MsgBox messageBox, , "Erro"
-        
     Else
         MsgBox resp.error()("message"), , "Erro"
-        
     End If
     
 End Function

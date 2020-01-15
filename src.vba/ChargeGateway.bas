@@ -71,12 +71,10 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
     End If
     
     Set resp = StarkBankApi.getRequest("/v1/charge", query, New Dictionary)
-    
-    If resp.Status = 200 Then
-        Set getCharges = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
+    Set getCharges = resp.json()
 
 End Function
 
@@ -101,11 +99,10 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     
     Set resp = StarkBankApi.getRequest("/v1/charge/customer", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getCustomers = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
+    Set getCustomers = resp.json()
 
 End Function
 
@@ -255,13 +252,10 @@ Public Function getEventLog(chargeId As String, logevent As String, optionalPara
         Next
     End If
     Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
-    If resp.Status = 200 Then
-        Set logArray = resp.json()
-    Else
+    If resp.Status >= 300 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
-    
-    Set getEventLog = logArray
+    Set getEventLog = resp.json()
 
 End Function
 

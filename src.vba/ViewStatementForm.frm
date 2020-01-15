@@ -24,7 +24,6 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub DownloadButton_Click()
-    'On Error Resume Next
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
 
@@ -99,6 +98,10 @@ Private Sub DownloadButton_Click()
     
     Do
         Set respJson = getTransaction(cursor, optionalParam)
+        If respJson.Exists("error") Then
+            Unload Me
+            Exit Sub
+        End If
         If respJson.Count = 0 Then
             Exit Sub
         End If

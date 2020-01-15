@@ -92,12 +92,28 @@ Private Sub ConfirmButton_Click()
     Dim signature64 As String: signature64 = signature.toBase64()
     
     '--------------- Create transfers -----------------
-    Dim respJson As String
-    respJson = TransferGateway.createTransfers(payload, signature64)
+    Dim resp As response
+    Set resp = TransferGateway.createTransfers(payload, signature64)
     
-    If respJson.Exists("error") Then
-        Unload Me
-        Exit Sub
+    If resp.Status = 200 Then
+        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
+    
+    ElseIf resp.error().Exists("errors") Then
+        Dim errors As Collection: Set errors = resp.error()("errors")
+        Dim error As Dictionary
+        Dim errorList As String
+        Dim errorDescription As String
+        
+        For Each error In errors
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
+            errorList = errorList & errorDescription & vbNewLine
+        Next
+        
+        Dim messageBox As String
+        messageBox = resp.error()("message") & vbNewLine & vbNewLine & errorList
+        MsgBox messageBox, , "Erro"
+    Else
+        MsgBox resp.error()("message"), vbExclamation, "Erro"
     End If
     
     Unload Me
