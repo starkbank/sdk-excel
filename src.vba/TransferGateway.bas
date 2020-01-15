@@ -122,12 +122,36 @@ Public Function transfer(amount As Long, taxId As String, name As String, bankCo
 End Function
 
 Public Function createTransfers(payload As String, signature As String)
+    Dim resp As response
     Dim headers As New Dictionary
     
     '--------------- Include signature in headers -----------------
     headers.Add "Digital-Signature", signature
     
     '--------------- Send request ---------------------------------
-    Set createTransfers = StarkBankApi.postRequest("/v1/transfer", payload, headers)
+    Set resp = StarkBankApi.postRequest("/v1/transfer", payload, headers)
+    
+    If resp.Status = 200 Then
+        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
+    
+    ElseIf resp.error().Exists("errors") Then
+        Dim errors As Collection: Set errors = resp.error()("errors")
+        Dim error As Dictionary
+        Dim errorList As String
+        Dim errorDescription As String
+        
+        For Each error In errors
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
+            errorList = errorList & errorDescription & vbNewLine
+        Next
+        
+        Dim messageBox As String
+        messageBox = resp.error()("message") & vbNewLine & vbNewLine & errorList
+        MsgBox messageBox, , "Erro"
+    Else
+        MsgBox resp.error()("message"), vbExclamation, "Erro"
+    End If
+    
+    Set createTransfers = resp.json()
     
 End Function
