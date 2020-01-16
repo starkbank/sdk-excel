@@ -46,7 +46,7 @@ Public Sub clearAll()
             WS.Cells.UnMerge
             WS.Range("A10:Z" & Rows.Count).ClearContents
             If WS.name = "InputLog" Then
-                WS.Range("B:B").Clear
+                WS.Range("B:B").ClearContents
             End If
         End If
     Next
