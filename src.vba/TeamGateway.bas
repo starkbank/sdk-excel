@@ -19,11 +19,11 @@ Public Function getTeams(cursor As String, optionalParam As Dictionary)
 
     Set resp = StarkBankApi.getRequest("/v1/team", query, New Dictionary)
     
-    If resp.Status = 200 Then
-        Set getTeams = resp.json()
-    Else
+    If resp.Status <> 200 Then
         MsgBox resp.error()("message"), , "Erro"
     End If
+    
+    Set getTeams = resp.json()
 
 End Function
 

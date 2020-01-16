@@ -94,7 +94,13 @@ Private Sub DownloadButton_Click()
 
     row = TableFormat.HeaderRow() + 1
     
-    Set teams = getTeams("", New Dictionary)("teams")
+    Set respJson = getTeams("", New Dictionary)
+    If respJson.Exists("error") Then
+        Unload Me
+        Exit Sub
+    End If
+    
+    Set teams = respJson("teams")
     
     Do
         Set respJson = getTransaction(cursor, optionalParam)
