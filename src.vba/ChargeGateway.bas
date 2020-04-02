@@ -60,7 +60,7 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -87,7 +87,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -174,13 +174,13 @@ Public Function order(amount As Long, customerId As String, dueDate As String, f
     Dim dict As New Dictionary
     Dim descriptions As New Collection
     
-    If description1.Count > 0 Then
+    If description1.count > 0 Then
         descriptions.Add description1
     End If
-    If description2.Count > 0 Then
+    If description2.count > 0 Then
         descriptions.Add description2
     End If
-    If description3.Count > 0 Then
+    If description3.count > 0 Then
         descriptions.Add description3
     End If
     
@@ -242,7 +242,7 @@ Public Function getEventLog(chargeId As String, logevent As String, optionalPara
     If chargeId <> "" Then
         query = "?events=" + logevent + "&chargeIds=" + chargeId
     End If
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))

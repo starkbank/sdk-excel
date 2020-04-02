@@ -8,6 +8,11 @@ Public Sub BotaoExtrato()
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
+Public Sub BotaoTransacaoInterna()
+    name = "Transferência Interna"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoConsultaTransfer()
     name = "Consulta de Transferências"
     ThisWorkbook.Sheets(name).Activate

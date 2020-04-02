@@ -1,27 +1,37 @@
-Private Sub UserForm_Initialize()
-    Me.PathBox.text = InputLogGateway.getPath()
+Dim AmountBoxoldValue As String
+
+Private Sub SendInternalTransferForm_Initialize()
+    PathBox.text = InputLogGateway.getPath()
+    AmountBox = "R$ 0,00"
+    AmountBox.SelStart = 6
+End Sub
+
+Private Sub BrowseButton_Click()
+    Dim myFile As String
+    myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
+    If CStr(myFile) <> "False" Then
+        Me.PathBox.Value = myFile
+    End If
+End Sub
+
+Private Sub AmountBox_Change()
+    AmountBox = Utils.formatCurrencyInUserForm(AmountBox)
 End Sub
 
 Private Sub ConfirmButton_Click()
     'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
+    Dim amount As Long: amount = Utils.IntegerFrom(Utils.clearNonNumeric(AmountBox.Value))
+    Dim receiverId As String: receiverId = WorkspaceBox.Value
     Dim externalId As String: externalId = ExternalIdBox.Value
     Dim description As String: description = DescriptionBox.Value
+    Dim tags() As String: tags = Split(TagsBox.Value, ",")
     
     Dim privkeyStr As String, textLine As String
     Dim response As Dictionary
     
     Call InputLogGateway.savePath(myFile)
     Call Utils.applyStandardLayout("G")
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Código do Banco"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Agência"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Conta"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
     
     With ActiveWindow
         .SplitColumn = 7
@@ -69,18 +79,16 @@ Private Sub ConfirmButton_Click()
     End If
     
     '--------------- Create body -----------------
-    Dim payload As String, tags() As String
+    Dim payload As String
     Dim dict As New Dictionary, transactionDict As New Dictionary
-    Dim transfers As Collection
     
-    Set transfers = TransferGateway.getTransfersFromSheet()
-    
+    transactionDict.Add "amount", amount
+    transactionDict.Add "receiverId", receiverId
     transactionDict.Add "externalId", externalId
     transactionDict.Add "description", description
     transactionDict.Add "tags", tags
     
     dict.Add "transaction", transactionDict
-    dict.Add "transfers", transfers
     
     payload = JsonConverter.ConvertToJson(dict)
     
@@ -93,16 +101,16 @@ Private Sub ConfirmButton_Click()
     
     '--------------- Create transfers -----------------
     Dim respJson As Dictionary
-    Set respJson = TransferGateway.createTransfers(payload, signature64)
+    Set respJson = BankGateway.postTransaction(payload, signature64)
     
     Unload Me
      
 End Sub
 
-Private Sub BrowseButton_Click()
-    Dim myFile As String
-    myFile = Application.GetOpenFilename(Title:="Por favor, selecione a sua chave privada")
-    If CStr(myFile) <> "False" Then
-        Me.PathBox.Value = myFile
-    End If
+Private Sub ExternalIdBox_Change()
+
+End Sub
+
+Private Sub Label8_Click()
+
 End Sub

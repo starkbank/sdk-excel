@@ -9,7 +9,7 @@ End Sub
 Private Sub RequestToken_Click()
     Set response = DigitalSignature.mailToken()
     
-    If response("error").Count <> 0 Then
+    If response("error").count <> 0 Then
         MsgBox response("error")("message"), , "Erro"
         Exit Sub
     End If
@@ -25,7 +25,7 @@ Private Sub SendPublic_Click()
     Dim email As String: email = SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
-    If response("error").Count <> 0 Then
+    If response("error").count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
         Exit Sub
     End If
@@ -42,7 +42,7 @@ Private Sub SendPublic_Click()
     
     Set response = DigitalSignature.sendPublicKey(SessionGateway.getWorkspaceId(), memberId, Me.TokenBox.Value, keyPath)
     
-    If response("error").Count <> 0 Then
+    If response("error").count <> 0 Then
         MsgBox response("error")("message"), , "Erro"
         Exit Sub
     End If

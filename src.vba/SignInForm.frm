@@ -26,7 +26,7 @@ Private Sub SendButton_Click()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     Debug.Print "New session created"
     
-    If response("error").Count <> 0 Then
+    If response("error").count <> 0 Then
         MsgBox response("error")("message"), vbExclamation, "Erro"
         Exit Sub
     End If

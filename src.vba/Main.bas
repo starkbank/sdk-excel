@@ -18,7 +18,7 @@ Public Sub signOut()
     Application.ScreenUpdating = False
     Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
     
-    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
+    If response("error").count <> 0 And response("error")("code") <> "invalidAccessToken" Then
         MsgBox response("error")("message"), , "Erro"
         Exit Sub
     End If
@@ -44,7 +44,7 @@ Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Principal" Then
             WS.Cells.UnMerge
-            WS.Range("A10:Z" & Rows.Count).ClearContents
+            WS.Range("A10:Z" & Rows.count).ClearContents
             If WS.name = "InputLog" Then
                 WS.Range("B:B").ClearContents
             End If
@@ -94,7 +94,7 @@ Public Sub searchCustomers()
     
     'Table layout
     Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.Count).ClearContents
+    Range("A10:L" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
@@ -191,6 +191,10 @@ End Sub
 
 Public Sub executeTransfers()
     SendTransferForm.Show
+End Sub
+
+Public Sub executeInternalTransfers()
+    SendInternalTransferForm.Show
 End Sub
 
 Public Sub payCharges()

@@ -4,7 +4,7 @@ Private Sub AfterTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
+    AfterTextBox.text = Utils.formatDateInUserForm(AfterTextBox.text)
     reentry = False
 End Sub
 
@@ -13,7 +13,7 @@ Private Sub BeforeTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
+    BeforeTextBox.text = Utils.formatDateInUserForm(BeforeTextBox.text)
     reentry = False
 End Sub
 
@@ -48,24 +48,30 @@ Private Sub SearchButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
-    Utils.applyStandardLayout ("J")
+    Utils.applyStandardLayout ("P")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":P" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = " Data de Emissão"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Status"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Linha Digitável"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Id do Boleto"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Tags"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Link PDF"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Valor de Emissão"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Desconto"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Multa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Juros"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Data de Crédito"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Linha Digitável"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Id do Boleto"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Tarifa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 15).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 16).Value = "Link PDF"
     
     With ActiveWindow
-        .SplitColumn = 10
+        .SplitColumn = 6
         .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
@@ -100,29 +106,67 @@ Private Sub SearchButton_Click()
 
         For Each charge In charges
 
+            Dim id As String: id = charge("id")
+            Dim amount As Double: amount = charge("amount") / 100
+            Dim fee As Double: fee = charge("fee") / 100
             Dim issueDate As String: issueDate = charge("issueDate")
-            ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
-
-            ActiveSheet.Cells(row, 2).Value = charge("amount") / 100
-
-            Dim dueDate As String: dueDate = charge("dueDate")
-            ActiveSheet.Cells(row, 3).Value = Utils.ISODATEZ(dueDate)
-
             Dim chargeStatus As String: chargeStatus = charge("status")
-            ActiveSheet.Cells(row, 4).Value = ChargeGateway.getStatusInPt(chargeStatus)
-            ActiveSheet.Cells(row, 5).Value = charge("name")
-            ActiveSheet.Cells(row, 6).Value = charge("taxId")
-            ActiveSheet.Cells(row, 7).Value = charge("line")
-            ActiveSheet.Cells(row, 8).Value = charge("id")
-
+            Dim dueDate As String: dueDate = charge("dueDate")
             Dim tags As Collection: Set tags = charge("tags")
-            ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
             
-            ActiveSheet.Cells(row, 10).Value = "Link"
+            ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
+            ActiveSheet.Cells(row, 2).Value = charge("name")
+            ActiveSheet.Cells(row, 3).Value = charge("taxId")
+            ActiveSheet.Cells(row, 4).Value = ChargeGateway.getStatusInPt(chargeStatus)
+            ActiveSheet.Cells(row, 5).Value = amount
             
-            Set rng = ActiveSheet.Range("J" + CStr(row))
+            ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
+            ActiveSheet.Cells(row, 12).Value = charge("line")
+            ActiveSheet.Cells(row, 13).Value = id
+            ActiveSheet.Cells(row, 14).Value = fee
+            ActiveSheet.Cells(row, 15).Value = CollectionToString(tags, ",")
+            
+            ActiveSheet.Cells(row, 16).Value = "PDF"
+            Set rng = ActiveSheet.Range("P" + CStr(row))
             rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
+            If DetailedCheckBox.Value = True And chargeStatus = "paid" Then
+                Dim nominalAmount As Double
+                Dim fine As Double
+                Dim interest As Double
+                Dim discount As Double
+                Dim deltaAmount As Double
+                Dim bankDate As String
+                Dim logs As Collection
+                Dim bankLog As Dictionary
+                Dim createdLog As Dictionary
+                
+                Set logs = ChargeGateway.getEventLog(id, "register,bank", New Dictionary)("logs")
+                Set createdLog = logs(2)
+                Set bankLog = logs(1)
+                
+                bankDate = bankLog("created")
+                ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(bankDate)
+                
+                nominalAmount = createdLog("charge")("amount") / 100
+                deltaAmount = amount - nominalAmount
+                
+                ActiveSheet.Cells(row, 6).Value = nominalAmount
+                If deltaAmount < 0 Then
+                    discount = deltaAmount
+                    ActiveSheet.Cells(row, 7).Value = discount
+                    ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
+                End If
+                If deltaAmount > 0 Then
+                    fine = charge("fine") / 100 * nominalAmount
+                    interest = amount - fine - nominalAmount
+                    ActiveSheet.Cells(row, 8).Value = fine
+                    ActiveSheet.Cells(row, 9).Value = interest
+                    ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
+                    ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
+                End If
+            End If
+            
             row = row + 1
         Next
 

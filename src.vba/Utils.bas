@@ -1,6 +1,22 @@
-Function CollectionToString(c As Collection, Optional Delimiter As String) As String
+Public Function Min(a As Variant, b As Variant) As Variant
+    If a >= b Then
+        Min = b
+    Else
+        Min = a
+    End If
+End Function
+
+Public Function Max(a As Variant, b As Variant) As Variant
+    If a < b Then
+        Max = b
+    Else
+        Max = a
+    End If
+End Function
+
+Public Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
-    If c.Count <> 0 Then
+    If c.count <> 0 Then
         For Each el In c
             elString = elString + el + Delimiter
         Next
@@ -62,6 +78,34 @@ Public Function formatDateInUserForm(dateString As String)
         
 End Function
 
+Public Function formatCurrencyInUserForm(buffer As String)
+    Dim clearBuffer As String
+    If buffer = "" Then
+        buffer = "0"
+    End If
+    clearBuffer = clearNonNumeric(buffer)
+    If Len(clearBuffer) > 9 Then
+        clearBuffer = Left(clearBuffer, 9)
+    End If
+    If buffer = "" Then
+        buffer = "0"
+    End If
+    If Len(clearBuffer) > 9 Then
+        clearBuffer = Left(clearBuffer, 9)
+    End If
+    buffer = Format(IntegerFrom(clearBuffer) / 100, "R$ #,##0.00")
+    formatCurrencyInUserForm = buffer
+End Function
+
+Public Function clearNonNumeric(text)
+    Dim Reg As RegExp
+    Set Reg = New RegExp
+    Reg.Global = True
+    Reg.Pattern = "\D"
+    clearNonNumeric = Reg.Replace(text, "")
+    Set Reg = Nothing
+End Function
+
 Function correctErrorLine(errorMessage As String, offset As Integer) As String
     Dim lineNumber As Integer
     Dim message As String
@@ -82,12 +126,16 @@ End Function
 Public Function IntegerFrom(Value As String) As Long
     Dim temp As String
     temp = Value
+    On Error GoTo eh:
     With CreateObject("VBScript.RegExp")
         .Pattern = "[^\d]+"
         .Global = True
         temp = .Replace(temp, "")
     End With
     IntegerFrom = CLng(temp)
+    Exit Function
+eh:
+    IntegerFrom = 0
 End Function
 
 Public Function DateToSendingFormat(dateInput As String) As String
@@ -130,7 +178,7 @@ Public Function encodeBase64(ByRef arrData() As Byte) As String
     Set objNode = objXML.createElement("b64")
     objNode.DataType = "bin.base64"
     objNode.nodeTypedValue = arrData
-    encodeBase64 = Replace(objNode.Text, vbLf, "")
+    encodeBase64 = Replace(objNode.text, vbLf, "")
  
     Set objNode = Nothing
     Set objXML = Nothing
@@ -143,7 +191,7 @@ Public Function decodeBase64(ByVal strData As String) As Byte()
     Set objXML = New MSXML2.DOMDocument60
     Set objNode = objXML.createElement("b64")
     objNode.DataType = "bin.base64"
-    objNode.Text = strData
+    objNode.text = strData
     decodeBase64 = objNode.nodeTypedValue
     
     Set objNode = Nothing
@@ -210,7 +258,7 @@ Public Function correctTransferTags(tags As Collection)
             index = index + 1
             pathBool = False
             Set allMatches = .Execute(tag)
-            If allMatches.Count <> 0 Then
+            If allMatches.count <> 0 Then
                 pathBool = True
             End If
             If pathBool = True Then

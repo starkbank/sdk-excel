@@ -28,7 +28,7 @@ Public Sub displayMemberInfo()
     Dim balanceMessage As String
     
     helloMessage = "Olá " + SessionGateway.getMemberName() + "!"
-    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace()
+    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace() + " (" + SessionGateway.getWorkspaceId() + ")"
     emailMessage = "E-mail: " + SessionGateway.getEmail()
     envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
     balanceMessage = "Saldo: " + SessionGateway.getBalance()
@@ -88,7 +88,7 @@ Public Function getBalance()
     
     Set AccountInfo = BankGateway.getAccount()
     balanceMessage = "-"
-    If AccountInfo.Count > 0 Then
+    If AccountInfo.count > 0 Then
         Dim balance As Long
         balance = AccountInfo("account")("balance")
         balanceMessage = Utils.MoneyStringFrom(balance)

@@ -4,7 +4,7 @@ Private Sub AfterTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
+    AfterTextBox.text = Utils.formatDateInUserForm(AfterTextBox.text)
     reentry = False
 End Sub
 
@@ -13,7 +13,7 @@ Private Sub BeforeTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
+    BeforeTextBox.text = Utils.formatDateInUserForm(BeforeTextBox.text)
     reentry = False
 End Sub
 
@@ -67,7 +67,7 @@ Private Sub DownloadButton_Click()
     
     ActiveSheet.Cells.UnMerge
     Call Utils.applyStandardLayout("F")
-    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
@@ -108,7 +108,7 @@ Private Sub DownloadButton_Click()
             Unload Me
             Exit Sub
         End If
-        If respJson.Count = 0 Then
+        If respJson.count = 0 Then
             Exit Sub
         End If
 
@@ -200,13 +200,11 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
         End If
 
         Set transfers = transferRespJson("transfers")
-
-        numberOfTransfers = transfers.Count()
-        transferFee = transactionFee / numberOfTransfers
-
+        
         For Each transfer In transfers
+            transferFee = transfer("fee")
             Set transferTags = transfer("tags")
-            If transferTags.Count() <> 0 Then
+            If transferTags.count() <> 0 Then
                 Set transferTags = correctTransferTags(transferTags)
             End If
             transferTagsStr = CollectionToString(transferTags, ",")
@@ -222,7 +220,7 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
             End If
             ActiveSheet.Cells(row, 4).Value = transferDescription
             ActiveSheet.Cells(row, 5).Value = transactionId
-            ActiveSheet.Cells(row, 6).Value = transferFee
+            ActiveSheet.Cells(row, 6).Value = transferFee / 100
             ActiveSheet.Cells(row, 7).Value = transferTagsStr
 
             row = row + 1

@@ -570,7 +570,7 @@ Public Function SHA256(sMessage As String) As String
     Dim HASH(7) As Long
     Dim M()     As Long
     Dim W(63)   As Long
-    Dim A       As Long
+    Dim a       As Long
     Dim b       As Long
     Dim c       As Long
     Dim d       As Long
@@ -598,7 +598,7 @@ Public Function SHA256(sMessage As String) As String
 
     ' Main loop
     For i = 0 To UBound(M) Step 16
-        A = HASH(0)
+        a = HASH(0)
         b = HASH(1)
         c = HASH(2)
         d = HASH(3)
@@ -617,7 +617,7 @@ Public Function SHA256(sMessage As String) As String
 
             T1 = AddUnsigned(AddUnsigned(AddUnsigned(AddUnsigned(H, Sigma1(e)), _
                 Ch(e, f, g)), K(j)), W(j))
-            T2 = AddUnsigned(Sigma0(A), Maj(A, b, c))
+            T2 = AddUnsigned(Sigma0(a), Maj(a, b, c))
 
             H = g
             g = f
@@ -625,11 +625,11 @@ Public Function SHA256(sMessage As String) As String
             e = AddUnsigned(d, T1)
             d = c
             c = b
-            b = A
-            A = AddUnsigned(T1, T2)
+            b = a
+            a = AddUnsigned(T1, T2)
         Next
 
-        HASH(0) = AddUnsigned(A, HASH(0))
+        HASH(0) = AddUnsigned(a, HASH(0))
         HASH(1) = AddUnsigned(b, HASH(1))
         HASH(2) = AddUnsigned(c, HASH(2))
         HASH(3) = AddUnsigned(d, HASH(3))

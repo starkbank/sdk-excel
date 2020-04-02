@@ -1,4 +1,4 @@
-Public A As String
+Public a As String
 Public b As String
 Public P As String
 Public n As String
@@ -12,7 +12,7 @@ Public Function contains(x As String, y As String) As Boolean
     Dim x2 As String: x2 = BigIntMath.multiply(x, x)
     Dim x3 As String: x3 = BigIntMath.multiply(x2, x)
     
-    Dim cx As String: cx = BigIntMath.Add(x3, BigIntMath.Add(BigIntMath.multiply(A, x), b))
+    Dim cx As String: cx = BigIntMath.Add(x3, BigIntMath.Add(BigIntMath.multiply(a, x), b))
     Dim cxy As String: cxy = BigIntMath.Subtract(y2, cx)
     
     contains = (BigIntMath.Modulus(cxy, P) = "0")
@@ -29,7 +29,7 @@ Public Function initializeByOid(oidInput As String)
     Dim result As Boolean: result = False
     Select Case oidInput
         Case "1;3;132;0;10":
-            A = BigIntMath.BigIntFromString("0000000000000000000000000000000000000000000000000000000000000000", 16)
+            a = BigIntMath.BigIntFromString("0000000000000000000000000000000000000000000000000000000000000000", 16)
             b = BigIntMath.BigIntFromString("0000000000000000000000000000000000000000000000000000000000000007", 16)
             P = BigIntMath.BigIntFromString("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f", 16)
             n = BigIntMath.BigIntFromString("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16)

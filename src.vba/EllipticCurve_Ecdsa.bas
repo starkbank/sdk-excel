@@ -2,8 +2,8 @@ Public Function sign(message As String, PrivateKey As PrivateKey) As signature
     Dim hashMessage As String: hashMessage = Utils.SHA256function(message)
     Dim numberMessage As String: numberMessage = BigIntMath.BigIntFromString(hashMessage, 16)
     
-    Dim respJson As Dictionary: Set respJson = EllipticCurve_Math.randomPointOnCurve(PrivateKey.curve.Gx, PrivateKey.curve.Gy, PrivateKey.curve.n, PrivateKey.curve.A, PrivateKey.curve.P)
-    If respJson("error").Count <> 0 Then
+    Dim respJson As Dictionary: Set respJson = EllipticCurve_Math.randomPointOnCurve(PrivateKey.curve.Gx, PrivateKey.curve.Gy, PrivateKey.curve.n, PrivateKey.curve.a, PrivateKey.curve.P)
+    If respJson("error").count <> 0 Then
         Err.Raise number:=vbObjectError + 513, description:=respJson("error")("message")
     End If
     

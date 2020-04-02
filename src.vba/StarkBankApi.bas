@@ -22,6 +22,15 @@ Public Function defaultHeaders()
     Set defaultHeaders = result
 End Function
 
+Public Function pdfHeaders()
+    Dim result As Dictionary
+    Set result = New Dictionary
+    result.Add "Accept-Language", "pt-BR"
+    result.Add "Access-Token", SessionGateway.getAccessToken()
+    
+    Set pdfHeaders = result
+End Function
+
 Public Function getRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     
@@ -52,10 +61,14 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
 End Function
 
-Public Function downloadRequest(path As String, filepath As String) As Boolean
+Public Function downloadRequest(path As String, filepath As String, headers As Dictionary) As Boolean
     Dim url As String: url = baseUrl() + path
     
-    downloadRequest = Request.download(url, filepath)
+    For Each key In pdfHeaders().keys()
+        headers.Add key, pdfHeaders()(key)
+    Next
+    
+    downloadRequest = Request.download(url, filepath, headers)
 End Function
 
 Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)

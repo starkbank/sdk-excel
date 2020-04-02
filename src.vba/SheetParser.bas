@@ -12,11 +12,11 @@ Public Function dict()
     
     Set keys = headers()
     
-    For row = 10 To ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    For row = 10 To ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).Text
+            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
         result.Add obj
     Next

@@ -3,7 +3,7 @@ Private Sub AfterTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    AfterTextBox.Text = Utils.formatDateInUserForm(AfterTextBox.Text)
+    AfterTextBox.text = Utils.formatDateInUserForm(AfterTextBox.text)
     reentry = False
 End Sub
 
@@ -12,7 +12,7 @@ Private Sub BeforeTextBox_Change()
     If reentry Then Exit Sub
     
     reentry = True
-    BeforeTextBox.Text = Utils.formatDateInUserForm(BeforeTextBox.Text)
+    BeforeTextBox.text = Utils.formatDateInUserForm(BeforeTextBox.text)
     reentry = False
 End Sub
 
@@ -46,7 +46,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("J")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":J" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
