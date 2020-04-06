@@ -48,9 +48,9 @@ Private Sub SearchButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
-    Utils.applyStandardLayout ("P")
+    Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":P" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = " Data de Emissão"
@@ -69,6 +69,12 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Tarifa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 15).Value = "Tags"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 16).Value = "Link PDF"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 17).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 18).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 19).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 20).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 21).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 22).Value = "CEP"
     
     With ActiveWindow
         .SplitColumn = 6
@@ -130,40 +136,49 @@ Private Sub SearchButton_Click()
             Set rng = ActiveSheet.Range("P" + CStr(row))
             rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
-            If DetailedCheckBox.Value = True And chargeStatus = "paid" Then
-                Dim nominalAmount As Double
-                Dim fine As Double
-                Dim interest As Double
-                Dim discount As Double
-                Dim deltaAmount As Double
-                Dim bankDate As String
-                Dim logs As Collection
-                Dim bankLog As Dictionary
-                Dim createdLog As Dictionary
+            If DetailedCheckBox.Value = True Then
+                ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
+                ActiveSheet.Cells(row, 18).Value = charge("streetLine2")
+                ActiveSheet.Cells(row, 19).Value = charge("district")
+                ActiveSheet.Cells(row, 20).Value = charge("city")
+                ActiveSheet.Cells(row, 21).Value = charge("stateCode")
+                ActiveSheet.Cells(row, 22).Value = charge("zipCode")
                 
-                Set logs = ChargeGateway.getEventLog(id, "register,bank", New Dictionary)("logs")
-                Set createdLog = logs(2)
-                Set bankLog = logs(1)
-                
-                bankDate = bankLog("created")
-                ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(bankDate)
-                
-                nominalAmount = createdLog("charge")("amount") / 100
-                deltaAmount = amount - nominalAmount
-                
-                ActiveSheet.Cells(row, 6).Value = nominalAmount
-                If deltaAmount < 0 Then
-                    discount = deltaAmount
-                    ActiveSheet.Cells(row, 7).Value = discount
-                    ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
-                End If
-                If deltaAmount > 0 Then
-                    fine = charge("fine") / 100 * nominalAmount
-                    interest = amount - fine - nominalAmount
-                    ActiveSheet.Cells(row, 8).Value = fine
-                    ActiveSheet.Cells(row, 9).Value = interest
-                    ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
-                    ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
+                If chargeStatus = "paid" Then
+                    Dim nominalAmount As Double
+                    Dim fine As Double
+                    Dim interest As Double
+                    Dim discount As Double
+                    Dim deltaAmount As Double
+                    Dim paidDate As String
+                    Dim logs As Collection
+                    Dim paidLog As Dictionary
+                    Dim createdLog As Dictionary
+                    
+                    Set logs = ChargeGateway.getEventLog(id, "register,paid", New Dictionary)("logs")
+                    Set createdLog = logs(2)
+                    Set paidLog = logs(1)
+                    
+                    paidDate = paidLog("created")
+                    ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
+                    
+                    nominalAmount = createdLog("charge")("amount") / 100
+                    deltaAmount = amount - nominalAmount
+                    
+                    ActiveSheet.Cells(row, 6).Value = nominalAmount
+                    If deltaAmount < 0 Then
+                        discount = deltaAmount
+                        ActiveSheet.Cells(row, 7).Value = discount
+                        ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
+                    End If
+                    If deltaAmount > 0 Then
+                        fine = charge("fine") / 100 * nominalAmount
+                        interest = amount - fine - nominalAmount
+                        ActiveSheet.Cells(row, 8).Value = fine
+                        ActiveSheet.Cells(row, 9).Value = interest
+                        ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
+                        ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
+                    End If
                 End If
             End If
             

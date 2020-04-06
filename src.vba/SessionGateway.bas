@@ -28,7 +28,8 @@ Public Sub displayMemberInfo()
     Dim balanceMessage As String
     
     helloMessage = "Olá " + SessionGateway.getMemberName() + "!"
-    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace() + " (" + SessionGateway.getWorkspaceId() + ")"
+    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace()
+    workspaceId = "ID do Workspace: " + SessionGateway.getWorkspaceId()
     emailMessage = "E-mail: " + SessionGateway.getEmail()
     envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
     balanceMessage = "Saldo: " + SessionGateway.getBalance()
@@ -37,9 +38,10 @@ Public Sub displayMemberInfo()
         If WS.name <> "Credentials" And WS.name <> "InputLog" Then
             WS.Cells(2, 1).Value = helloMessage
             WS.Cells(3, 1).Value = workspaceMessage
-            WS.Cells(4, 1).Value = emailMessage
-            WS.Cells(5, 1).Value = envMessage
-            WS.Cells(6, 1).Value = balanceMessage
+            WS.Cells(4, 1).Value = workspaceId
+            WS.Cells(5, 1).Value = emailMessage
+            WS.Cells(6, 1).Value = envMessage
+            WS.Cells(7, 1).Value = balanceMessage
         End If
     Next
 End Sub

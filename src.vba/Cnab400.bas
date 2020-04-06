@@ -150,7 +150,7 @@ Private Sub getLogOccurrenceDates(lastRow As Integer, logevent As String)
     j = 0
     For i = 10 To lastRow
         statusCode = Cells(i, "D").Value
-        chargeId = CStr(Cells(i, "H").Value)
+        chargeId = CStr(Cells(i, "M").Value)
         
         occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
         If ChargeGateway.getStatusFromId(occurrenceId) = logevent Then
@@ -236,12 +236,12 @@ Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     Dim amountInt As Long
     
     issueDate = Cells(i, "A").Value
-    amount = CStr(Cells(i, "B").Value)
-    dueDate = Cells(i, "C").Value
+    amount = CStr(Cells(i, "E").Value)
+    dueDate = Cells(i, "K").Value
     statusCode = Cells(i, "D").Value
-    companyName = Cells(i, "E").Value
-    taxId = Cells(i, "F").Value
-    chargeId = CStr(Cells(i, "H").Value)
+    companyName = Cells(i, "B").Value
+    taxId = Cells(i, "C").Value
+    chargeId = CStr(Cells(i, "M").Value)
     
     taxId = CStr(taxId)
     typeTaxId = getTaxIdType(taxId)

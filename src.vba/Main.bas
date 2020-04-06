@@ -32,6 +32,7 @@ Public Sub signOut()
             WS.Cells(4, 1).Value = ""
             WS.Cells(5, 1).Value = ""
             WS.Cells(6, 1).Value = ""
+            WS.Cells(7, 1).Value = ""
         End If
     Next
     clearDates
@@ -55,6 +56,13 @@ End Sub
 Public Sub openHelp()
     With ViewHelpForm
         .MultiPage1.Value = 0
+        .Show
+    End With
+End Sub
+
+Public Sub openHelpDigSign()
+    With ViewHelpForm
+        .MultiPage1.Value = 2
         .Show
     End With
 End Sub
