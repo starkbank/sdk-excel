@@ -15,6 +15,10 @@ Private Sub Label1_Click()
 
 End Sub
 
+Private Sub Label2_Click()
+
+End Sub
+
 Private Sub SendPublicKeyButton_Click()
     SendKeyForm.Show
 End Sub
