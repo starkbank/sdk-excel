@@ -91,8 +91,8 @@ Public Function getBalance()
     Set AccountInfo = BankGateway.getAccount()
     balanceMessage = "-"
     If AccountInfo.count > 0 Then
-        Dim balance As Long
-        balance = AccountInfo("account")("balance")
+        Dim balance As Double
+        balance = CDbl(AccountInfo("account")("balance"))
         balanceMessage = Utils.MoneyStringFrom(balance)
     End If
     getBalance = balanceMessage

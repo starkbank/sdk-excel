@@ -44,6 +44,7 @@ Private Sub DownloadButton_Click()
     Dim transactionCreated As String
     Dim transactionId As String
     Dim transactionFee As Double
+    Dim balance As Double
 
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
@@ -67,19 +68,20 @@ Private Sub DownloadButton_Click()
     
     ActiveSheet.Cells.UnMerge
     Call Utils.applyStandardLayout("F")
-    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.count).ClearContents
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Tipo de transação"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Descrição"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Id da Transação"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Tarifa"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Saldo final"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Id da Transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tarifa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
 
     With ActiveWindow
-        .SplitColumn = 7
+        .SplitColumn = 8
         .SplitRow = TableFormat.HeaderRow()
     End With
     ActiveWindow.FreezePanes = True
@@ -132,13 +134,14 @@ Private Sub DownloadButton_Click()
             transactionCreated = Utils.ISODATEZ(created)
             transactionId = transact("id")
             transactionFee = CDbl(transact("fee")) / 100
+            balance = CDbl(transact("balance")) / 100
             transactionType = getTransactionType(splitPath, teams)
             
             conditionTeam = (splitPath(0) = "team")
             conditionTransferRequest = (splitPath(0) = "transfer-request")
             If (conditionTeam Or conditionTransferRequest) And DetailedCheckBox.Value = True Then
                 initialRow = row
-                row = getTransfersInTransaction(path, transactionCreated, transactionId, transactionFee, transactionType, row)
+                row = getTransfersInTransaction(path, transactionCreated, transactionId, transactionFee, transactionType, balance, row)
                 
             Else
                 sign = transactionSign(transact("flow"))
@@ -150,10 +153,16 @@ Private Sub DownloadButton_Click()
                 Else
                     ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
                 End If
-                ActiveSheet.Cells(row, 4).Value = transact("description")
-                ActiveSheet.Cells(row, 5).Value = transactionId
-                ActiveSheet.Cells(row, 6).Value = transactionFee
-                ActiveSheet.Cells(row, 7).Value = CollectionToString(tags, ",")
+                ActiveSheet.Cells(row, 4).Value = balance
+                If balance > 0 Then
+                    ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
+                Else
+                    ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
+                End If
+                ActiveSheet.Cells(row, 5).Value = transact("description")
+                ActiveSheet.Cells(row, 6).Value = transactionId
+                ActiveSheet.Cells(row, 7).Value = transactionFee
+                ActiveSheet.Cells(row, 8).Value = CollectionToString(tags, ",")
                 
                 row = row + 1
             End If
@@ -166,7 +175,7 @@ Private Sub DownloadButton_Click()
 
 End Sub
 
-Private Function getTransfersInTransaction(path As String, transactionCreated As String, transactionId As String, transactionFee As Double, transactionType As String, row As Integer) As Integer
+Private Function getTransfersInTransaction(path As String, transactionCreated As String, transactionId As String, transactionFee As Double, transactionType As String, balance As Double, row As Integer) As Integer
     Dim transfers As Collection
     Dim cursor As String
     Dim transfer As Object
@@ -201,6 +210,13 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
 
         Set transfers = transferRespJson("transfers")
         
+        ActiveSheet.Cells(row, 4).Value = balance
+        If balance > 0 Then
+            ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
+        Else
+            ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
+        End If
+        
         For Each transfer In transfers
             transferFee = transfer("fee")
             Set transferTags = transfer("tags")
@@ -218,10 +234,15 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
             Else
                 ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
             End If
-            ActiveSheet.Cells(row, 4).Value = transferDescription
-            ActiveSheet.Cells(row, 5).Value = transactionId
-            ActiveSheet.Cells(row, 6).Value = transferFee / 100
-            ActiveSheet.Cells(row, 7).Value = transferTagsStr
+    
+            If IsEmpty(ActiveSheet.Cells(row, 4)) = True Then
+                ActiveSheet.Cells(row, 4).Value = 0
+            End If
+            
+            ActiveSheet.Cells(row, 5).Value = transferDescription
+            ActiveSheet.Cells(row, 6).Value = transactionId
+            ActiveSheet.Cells(row, 7).Value = transferFee / 100
+            ActiveSheet.Cells(row, 8).Value = transferTagsStr
 
             row = row + 1
             initialRow = row
@@ -236,11 +257,15 @@ Private Function getTransactionType(list() As String, ByRef teams As Collection)
     Select Case list(0)
         Case "self"
             transactionType = "Transferência interna"
-        Case "charge"
+        Case "charge", "boleto"
             transactionType = "Recebimento de boleto pago"
-        Case "charge-payment"
-            transactionType = "Pagamento de boleto"
+        Case "charge-payment", "boleto-payment"
+            transactionType = "Pag. de boleto"
+        Case "bar-code-payment"
+            transactionType = "Pag. de imposto/concessionária"
         Case "transfer-request"
+            transactionType = "Transf. sem aprovação"
+        Case "transfer"
             transactionType = "Transf. sem aprovação"
         Case "team"
             Dim teamName As String

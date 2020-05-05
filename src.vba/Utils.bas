@@ -154,7 +154,7 @@ Public Function SingleFrom(Value As String) As Single
     SingleFrom = CSng(temp)
 End Function
 
-Public Function MoneyStringFrom(Value As Long) As String
+Public Function MoneyStringFrom(Value As Double) As String
     MoneyStringFrom = Format(Value / 100, "Currency")
 End Function
 
