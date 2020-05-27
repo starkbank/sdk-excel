@@ -29,7 +29,7 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -67,7 +67,7 @@ Public Function getChargePaymentsFromSheet() As Collection
         End If
         lineOrBarCode = Trim(obj("Linha Digitável ou Código de Barras"))
         taxId = Trim(obj("CPF/CNPJ do Beneficiário"))
-        scheduled = Utils.DateToSendingFormat((obj("Data de Agendamento")))
+        scheduled = Utils.DateToSendingFormat(Format(obj("Data de Agendamento"), "dd/mm/yyyy"))
         description = obj("Descrição")
         tags = Split(obj("Tags"), ",")
         

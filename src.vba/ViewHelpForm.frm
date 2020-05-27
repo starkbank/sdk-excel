@@ -4,19 +4,11 @@ Private Sub GeneratePublicPrivateButton_Click()
 End Sub
 
 Private Sub HelpProductionWebButton_Click()
-    ActiveWorkbook.FollowHyperlink address:="https://web.starkbank.com"
+    ActiveWorkbook.FollowHyperlink address:="https://web.starkbank.com/signup/email"
 End Sub
 
 Private Sub HelpSandboxWebButton_Click()
-    ActiveWorkbook.FollowHyperlink address:="https://sandbox.web.starkbank.com"
-End Sub
-
-Private Sub Label1_Click()
-
-End Sub
-
-Private Sub Label2_Click()
-
+    ActiveWorkbook.FollowHyperlink address:="https://starkbank.com/sandbox"
 End Sub
 
 Private Sub SendPublicKeyButton_Click()

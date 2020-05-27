@@ -60,7 +60,7 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -78,6 +78,33 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
 
 End Function
 
+Public Function getChargeLogs(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
+    If resp.Status >= 300 Then
+        MsgBox resp.error()("message"), , "Erro"
+    End If
+    Set getChargeLogs = resp.json()
+
+End Function
+
 Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
@@ -87,7 +114,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -127,7 +154,7 @@ Public Function getOrders() As Collection
         End If
         amount = Utils.IntegerFrom((obj("Valor")))
         customerId = Trim(obj("Id do Cliente"))
-        dueDate = Utils.DateToSendingFormat((obj("Data de Vencimento")))
+        dueDate = Utils.DateToSendingFormat(Format(obj("Data de Vencimento"), "dd/mm/yyyy"))
         
         If obj("Multa") <> "" Then
             fine = Utils.SingleFrom((obj("Multa")))
@@ -174,13 +201,13 @@ Public Function order(amount As Long, customerId As String, dueDate As String, f
     Dim dict As New Dictionary
     Dim descriptions As New Collection
     
-    If description1.count > 0 Then
+    If description1.Count > 0 Then
         descriptions.Add description1
     End If
-    If description2.count > 0 Then
+    If description2.Count > 0 Then
         descriptions.Add description2
     End If
-    If description3.count > 0 Then
+    If description3.Count > 0 Then
         descriptions.Add description3
     End If
     
@@ -242,7 +269,7 @@ Public Function getEventLog(chargeId As String, logevent As String, optionalPara
     If chargeId <> "" Then
         query = "?events=" + logevent + "&chargeIds=" + chargeId
     End If
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))

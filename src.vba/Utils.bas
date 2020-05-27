@@ -16,7 +16,7 @@ End Function
 
 Public Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
-    If c.count <> 0 Then
+    If c.Count <> 0 Then
         For Each el In c
             elString = elString + el + Delimiter
         Next
@@ -26,7 +26,7 @@ Public Function CollectionToString(c As Collection, Optional Delimiter As String
     CollectionToString = elString
 End Function
 
-Public Function ISODATEZ(iso As String) As Date
+Public Function ISODATEZ(iso As String) As String
     Dim yearPart As Integer: yearPart = CInt(Mid(iso, 1, 4))
     Dim monPart As Integer: monPart = CInt(Mid(iso, 6, 2))
     Dim dayPart As Integer: dayPart = CInt(Mid(iso, 9, 2))
@@ -48,14 +48,14 @@ Public Function ISODATEZ(iso As String) As Date
     End If
 
     ' Return value is the ISO8601 date in the local time zone
-    dt = TimeZoneConverter.UtcToBrt(dt)
+    Dim dtString As String: dtString = TimeZoneConverter.UtcToBrt(dt)
     
-    ISODATEZ = dt
+    ISODATEZ = dtString
 End Function
 
 Public Function applyStandardLayout(col As String)
     ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
-    ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(99, 114, 130)
+    ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
     ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
 End Function
 
@@ -77,6 +77,12 @@ Public Function formatDateInUserForm(dateString As String)
     formatDateInUserForm = buffer
         
 End Function
+
+Public Sub PrintKeys(dict As Dictionary)
+    For Each key In dict.keys()
+        Debug.Print "key", key
+    Next
+End Sub
 
 Public Function formatCurrencyInUserForm(buffer As String)
     Dim clearBuffer As String
@@ -258,7 +264,7 @@ Public Function correctTransferTags(tags As Collection)
             index = index + 1
             pathBool = False
             Set allMatches = .Execute(tag)
-            If allMatches.count <> 0 Then
+            If allMatches.Count <> 0 Then
                 pathBool = True
             End If
             If pathBool = True Then

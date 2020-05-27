@@ -33,11 +33,7 @@ Private Sub ConfirmButton_Click()
     Call InputLogGateway.savePath(myFile)
     Call Utils.applyStandardLayout("G")
     
-    With ActiveWindow
-        .SplitColumn = 7
-        .SplitRow = TableFormat.HeaderRow()
-    End With
-    ActiveWindow.FreezePanes = True
+    Call FreezeHeader
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
@@ -45,7 +41,7 @@ Private Sub ConfirmButton_Click()
     Dim email As String: email = SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
-    If response("error").count <> 0 Then
+    If response("error").Count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
         Exit Sub
     End If
@@ -103,7 +99,9 @@ Private Sub ConfirmButton_Click()
     Dim respJson As Dictionary
     Set respJson = BankGateway.postTransaction(payload, signature64)
     
-    Unload Me
+    If respJson.Exists("transaction") Then
+        Unload Me
+    End If
      
 End Sub
 

@@ -1,4 +1,33 @@
 
+Private Sub ForgotPasswordButton_Click()
+    Dim workspace As String: workspace = WorkspaceBox.Value
+    Dim envString As String: envString = EnvironmentBox.Value
+    Dim envDomain As String
+    If envString = "" Then
+        MsgBox "Preencha seu Ambiente (Sandbox ou Produção)!", vbExclamation
+        Exit Sub
+    End If
+    If workspace = "" Then
+        MsgBox "Preencha seu Workspace!", vbExclamation
+        Exit Sub
+    End If
+    envDomain = IIf(LCase(envString) = "sandbox", "sandbox.", "")
+    ActiveWorkbook.FollowHyperlink address:="https://" + envDomain + "web.starkbank.com/forgotPassword/" + workspace
+    
+End Sub
+
+Private Sub ForgotWorkspaceButton_Click()
+    Dim envString As String: envString = EnvironmentBox.Value
+    Dim envDomain As String
+    If envString = "" Then
+        MsgBox "Preencha seu Ambiente (Sandbox ou Produção)!", vbExclamation
+        Exit Sub
+    End If
+    envDomain = IIf(LCase(envString) = "sandbox", "sandbox.", "")
+    ActiveWorkbook.FollowHyperlink address:="https://" + envDomain + "web.starkbank.com/signup/company/search"
+    
+End Sub
+
 Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Produção"
     Me.EnvironmentBox.AddItem "Sandbox"
@@ -26,7 +55,7 @@ Private Sub SendButton_Click()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     Debug.Print "New session created"
     
-    If response("error").count <> 0 Then
+    If response("error").Count <> 0 Then
         MsgBox response("error")("message"), vbExclamation, "Erro"
         Exit Sub
     End If
