@@ -49,9 +49,9 @@ Private Sub DownloadButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     If beforeInput = "" Then
-        beforeInput = Date
+        beforeInput = Format(Date, "dd/mm/yyyy")
         If afterInput = "" Then
-            afterInput = DateAdd("d", -30, Date)
+            afterInput = Format(DateAdd("d", -30, Date), "dd/mm/yyyy")
         End If
     ElseIf afterInput = "" Then
         afterInput = "01/01/2018"
@@ -67,8 +67,8 @@ Private Sub DownloadButton_Click()
     End If
     
     ActiveSheet.Cells.UnMerge
-    Call Utils.applyStandardLayout("F")
-    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.count).ClearContents
+    Call Utils.applyStandardLayout("H")
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
@@ -80,11 +80,7 @@ Private Sub DownloadButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tarifa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
 
-    With ActiveWindow
-        .SplitColumn = 8
-        .SplitRow = TableFormat.HeaderRow()
-    End With
-    ActiveWindow.FreezePanes = True
+    Call FreezeHeader
 
     'Optional parameters
     If after <> "--" Then
@@ -110,7 +106,7 @@ Private Sub DownloadButton_Click()
             Unload Me
             Exit Sub
         End If
-        If respJson.count = 0 Then
+        If respJson.Count = 0 Then
             Exit Sub
         End If
 
@@ -220,7 +216,7 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
         For Each transfer In transfers
             transferFee = transfer("fee")
             Set transferTags = transfer("tags")
-            If transferTags.count() <> 0 Then
+            If transferTags.Count() <> 0 Then
                 Set transferTags = correctTransferTags(transferTags)
             End If
             transferTagsStr = CollectionToString(transferTags, ",")
@@ -241,7 +237,13 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
             
             ActiveSheet.Cells(row, 5).Value = transferDescription
             ActiveSheet.Cells(row, 6).Value = transactionId
-            ActiveSheet.Cells(row, 7).Value = transferFee / 100
+            
+            If chargebackBool Then
+                ActiveSheet.Cells(row, 7).Value = 0
+            Else
+                ActiveSheet.Cells(row, 7).Value = transferFee / 100
+            End If
+            
             ActiveSheet.Cells(row, 8).Value = transferTagsStr
 
             row = row + 1
@@ -257,9 +259,9 @@ Private Function getTransactionType(list() As String, ByRef teams As Collection)
     Select Case list(0)
         Case "self"
             transactionType = "Transferência interna"
-        Case "charge", "boleto"
+        Case "charge"
             transactionType = "Recebimento de boleto pago"
-        Case "charge-payment", "boleto-payment"
+        Case "charge-payment"
             transactionType = "Pag. de boleto"
         Case "bar-code-payment"
             transactionType = "Pag. de imposto/concessionária"

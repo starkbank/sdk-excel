@@ -7,7 +7,7 @@ Public Function getTeams(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -124,7 +124,7 @@ Public Function getOrdersByTransfer(cursor As String, optionalParam As Dictionar
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))

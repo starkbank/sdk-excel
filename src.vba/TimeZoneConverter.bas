@@ -44,7 +44,7 @@ Public Function UtcToBrt(utcDate As Date) As String
     End Select
     
     brt = DateAdd("n", -dwbias, utcDate)
-    tmp = Format$(brt, "DD/MM/YYYY HH:MM:SS")
+    tmp = Format(brt, "dd/mm/yyyy hh:mm:ss")
     
     UtcToBrt = tmp
 End Function

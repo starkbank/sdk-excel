@@ -14,7 +14,7 @@ Public Sub downloadSelectedTransferPdfs()
     service = "transfer"
     
     initRow = Utils.Max(Selection.row, 10)
-    lastRow = Utils.Min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
+    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhuma transferência válida selecionada"
@@ -31,7 +31,7 @@ Public Sub downloadSelectedChargePdfs()
     service = "charge"
     
     initRow = Utils.Max(Selection.row, 10)
-    lastRow = Utils.Min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
+    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhum boleto válido selecionado"
@@ -88,7 +88,6 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
         For i = initRow To lastRow
             entityId = CStr(Cells(i, idColumn).Value)
             success = downloadSinglePdf(service, entityId, folder)
-            Debug.Print success
             If Not success Then
                 anyFailed = True
             End If
@@ -111,7 +110,7 @@ Public Sub downloadAllPdfs(service As String)
     
     idColumn = ColumnId(service)
     initRow = 10
-    lastRow = ActiveSheet.Range(idColumn + "9").CurrentRegion.Rows.count + 8
+    lastRow = ActiveSheet.Range(idColumn + "9").CurrentRegion.Rows.Count + 8
 
     Call downloadPdfRange(service, initRow, lastRow)
 End Sub

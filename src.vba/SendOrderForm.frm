@@ -40,11 +40,7 @@ Private Sub SendButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição"
     
-    With ActiveWindow
-        .SplitColumn = 8
-        .SplitRow = TableFormat.HeaderRow()
-    End With
-    ActiveWindow.FreezePanes = True
+    Call FreezeHeader
     
     With CreateObject("VBScript.RegExp")
         .Pattern = "\= ([^)]+)\)"

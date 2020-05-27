@@ -2,6 +2,7 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     
+'    Debug.Print url
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
     Next
@@ -26,9 +27,6 @@ Public Function download(url As String, path As String, headers As Dictionary) A
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open "GET", url, False
     
-    Debug.Print (url)
-    Debug.Print (path)
-    
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
     Next
@@ -44,10 +42,8 @@ Public Function download(url As String, path As String, headers As Dictionary) A
         oStream.SaveToFile path, 2 ' 1 = no overwrite, 2 = overwrite
         oStream.Close
         download = True
-        Debug.Print ("Successful pdf download")
     Else
 eh:
         download = False
-        Debug.Print (objHTTP.responseBody)
     End If
 End Function

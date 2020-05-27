@@ -27,11 +27,7 @@ Private Sub ConfirmButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Descrição"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Tags"
     
-    With ActiveWindow
-        .SplitColumn = 5
-        .SplitRow = 9
-    End With
-    ActiveWindow.FreezePanes = True
+    Call FreezeHeader
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
@@ -39,7 +35,7 @@ Private Sub ConfirmButton_Click()
     Dim email As String: email = SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
-    If response("error").count <> 0 Then
+    If response("error").Count <> 0 Then
         MsgBox "Senha incorreta!", , "Erro"
         Exit Sub
     End If

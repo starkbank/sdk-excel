@@ -47,7 +47,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("G")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -58,11 +58,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
     
-    With ActiveWindow
-        .SplitColumn = 7
-        .SplitRow = TableFormat.HeaderRow()
-    End With
-    ActiveWindow.FreezePanes = True
+    Call FreezeHeader
     
     'Optional parameters
     Dim Status As String: Status = ChargePaymentGateway.getStatus(statusString)
