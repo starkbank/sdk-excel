@@ -19,7 +19,7 @@ Private Sub AmountBox_Change()
 End Sub
 
 Private Sub ConfirmButton_Click()
-    On Error Resume Next
+    'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
     Dim amount As Long: amount = Utils.IntegerFrom(Utils.clearNonNumeric(AmountBox.Value))
     Dim receiverId As String: receiverId = WorkspaceBox.Value
