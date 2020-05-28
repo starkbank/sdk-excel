@@ -58,7 +58,7 @@ Private Sub SearchButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
-    Utils.applyStandardLayout ("W")
+    Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
     Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.Count).ClearContents
     
@@ -73,7 +73,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Desconto"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Multa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Juros"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Data de Crédito"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Data de Emissão"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Vencimento"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Linha Digitável"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Id do Boleto"
@@ -136,6 +136,7 @@ Private Sub SearchButton_Click()
                 amount = charge("amount") / 100
                 fee = charge("fee") / 100
                 eventDate = chargeLog("created")
+                issueDate = charge("issueDate")
                 chargeStatus = charge("status")
                 dueDate = charge("dueDate")
                 Set tags = charge("tags")
@@ -146,6 +147,7 @@ Private Sub SearchButton_Click()
                 ActiveSheet.Cells(row, 4).Value = charge("taxId")
                 ActiveSheet.Cells(row, 5).Value = amount
     
+                ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(issueDate)
                 ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
                 ActiveSheet.Cells(row, 12).Value = charge("line")
                 ActiveSheet.Cells(row, 13).Value = id
@@ -197,6 +199,7 @@ Private Sub SearchButton_Click()
             
             ActiveSheet.Cells(row, 5).Value = amount
 
+            ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
             ActiveSheet.Cells(row, 12).Value = charge("line")
             ActiveSheet.Cells(row, 13).Value = id
@@ -276,13 +279,10 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     Dim interest As Double
     Dim discount As Double
     Dim deltaAmount As Double
-    Dim paidDate As String
     Dim logs As Collection
     Dim id As String: id = charge("id")
     
     amount = charge("amount") / 100
-    paidDate = paidLog("created")
-    ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
     
     nominalAmount = createdLog("charge")("amount") / 100
     deltaAmount = amount - nominalAmount
