@@ -98,8 +98,8 @@ Public Function getTaxIdType(taxId As String) As String
     getTaxIdType = idType
 End Function
 
-Public Function ZeroPad(s As Variant, n As Integer) As String
-    ZeroPad = Format(CStr(s), String(n, "0"))
+Public Function ZeroPad(S As Variant, n As Integer) As String
+    ZeroPad = Format(CStr(S), String(n, "0"))
 End Function
 
 Private Sub DebugDict()
@@ -123,12 +123,12 @@ End Function
 
 Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) As String
     Dim respMessage As Variant
-    Dim logevent As String
+    Dim logEvent As String
     Set respMessage = ChargeGateway.getChargeLog(chargeId, New Dictionary)
     
     For Each elem In respMessage("logs")
-        logevent = elem("event")
-        If (statusCode = ChargeGateway.getStatusInPt(logevent)) Then
+        logEvent = elem("event")
+        If (statusCode = ChargeGateway.getStatusInPt(logEvent)) Then
             getLogOccurrenceDate = elem("created")
             Exit Function
         End If
@@ -136,7 +136,7 @@ Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) 
     
 End Function
 
-Private Sub getLogOccurrenceDates(lastRow As Integer, logevent As String)
+Private Sub getLogOccurrenceDates(lastRow As Integer, logEvent As String)
     Dim chunk As String
     Dim respMessage As Dictionary
     Dim i As Integer
@@ -153,23 +153,23 @@ Private Sub getLogOccurrenceDates(lastRow As Integer, logevent As String)
         chargeId = CStr(Cells(i, "M").Value)
         
         occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
-        If ChargeGateway.getStatusFromId(occurrenceId) = logevent Then
+        If ChargeGateway.getStatusFromId(occurrenceId) = logEvent Then
             j = j + 1
             chunk = chunk & chargeId & ","
             If j >= 100 Then
-                insertOccurrenceDict chunk, logevent
+                insertOccurrenceDict chunk, logEvent
                 chunk = ""
                 j = 0
             End If
         End If
     Next
     If chunk <> "" Then
-        insertOccurrenceDict chunk, logevent
+        insertOccurrenceDict chunk, logEvent
     End If
 End Sub
 
-Private Sub insertOccurrenceDict(chunk As String, logevent As String)
-    Set respMessage = ChargeGateway.getEventLog(chunk, logevent, New Dictionary)
+Private Sub insertOccurrenceDict(chunk As String, logEvent As String)
+    Set respMessage = ChargeGateway.getEventLog(chunk, logEvent, New Dictionary)
     
     For Each elem In respMessage("logs")
         occurrenceDateDict.Add CStr(elem("charge")("id")), elem("created")
