@@ -153,6 +153,8 @@ Private Sub SearchButton_Click()
                 ActiveSheet.Cells(row, 15).Value = CollectionToString(tags, ",")
     
                 ActiveSheet.Cells(row, 16).Value = "PDF"
+                Set rng = ActiveSheet.Range("P" + CStr(row))
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
                 row = row + 1
             Next
         Loop While cursor <> ""
@@ -223,17 +225,34 @@ Private Sub SearchButton_Click()
         Dim logsParam As Dictionary
         Dim keys As String
         Dim sep As String
+        Dim registeredCursor As String: registeredCursor = ""
+        keys = ""
+        sep = ""
         Set logsParam = New Dictionary
-        logsParam("events") = "registered"
-        Set respJson = getChargeLogs("", logsParam)
-        If respJson.Exists("error") Then
-            MsgBox "Erro ao obter dados detalhados de boletos criados!"
-            Exit Sub
-        End If
-
-        For Each registeredLog In respJson("logs")
-            Set logsRegisteredByCharge(registeredLog("charge")("id")) = registeredLog
+        
+        For Each chargeId In logsPaidByCharge.keys()
+            keys = keys + sep + chargeId
+            sep = ","
         Next
+        logsParam.Add "chargeIds", keys
+        
+        Do
+            logsParam("events") = "register"
+            logsParam("cursor") = registeredCursor
+            Set respJson = getChargeLogs("", logsParam)
+            If respJson.Exists("error") Then
+                MsgBox "Erro ao obter dados detalhados de boletos registrados!"
+                Exit Sub
+            End If
+            If respJson("cursor") <> "" Then
+                registeredCursor = respJson("cursor")
+            End If
+            Set registeredLogs = respJson("logs")
+            For Each registeredLog In registeredLogs
+                Set logsRegisteredByCharge(registeredLog("charge")("id")) = registeredLog
+            Next
+        Loop While registeredCursor <> ""
+        
         For Each chargeLog In logs
             Set charge = chargeLog("charge")
             If charge("status") = "paid" Then
