@@ -18,29 +18,29 @@ End Function
 
 Public Function fromDer(strByte() As Byte)
     Dim strs() As String: strs = Split(EllipticCurve_Der.removeSequence(strByte), ",")
-    Dim s As String: s = strs(0)
+    Dim S As String: S = strs(0)
     Dim emptyStr As String: emptyStr = strs(1)
     
     If Len(emptyStr) <> 0 Then
         Err.Raise number:=vbObjectError + 513, description:="trailing junk after DER privkey: " & emptyStr
     End If
     
-    strs = Split(EllipticCurve_Der.removeInteger(s), ",")
+    strs = Split(EllipticCurve_Der.removeInteger(S), ",")
     Dim one As String: one = strs(0)
-    s = strs(1)
+    S = strs(1)
 
     If one <> "1" Then
         Err.Raise number:=vbObjectError + 513, description:="expected '1' at start of DER privkey, got " & one
     End If
     
-    strs = Split(EllipticCurve_Der.removeOctetString(s), ",")
+    strs = Split(EllipticCurve_Der.removeOctetString(S), ",")
     Dim privkeyStr As String: privkeyStr = strs(0)
-    s = strs(1)
+    S = strs(1)
     
-    strs = Split(EllipticCurve_Der.removeConstructed(s), ",")
+    strs = Split(EllipticCurve_Der.removeConstructed(S), ",")
     Dim tag As String: tag = strs(0)
     Dim curveOidStr As String: curveOidStr = strs(1)
-    s = strs(2)
+    S = strs(2)
     
     If tag <> "0" Then
         Err.Raise number:=vbObjectError + 513, description:="expected tag 0 in DER privkey, got " & tag

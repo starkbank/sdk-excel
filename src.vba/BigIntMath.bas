@@ -228,7 +228,7 @@ End Function
 Public Function Divide(ByVal a As String, ByVal b As String) As String
     Dim an, bn, rn As Boolean
     Dim c As Integer
-    Dim s As String
+    Dim S As String
     Dim d As PartialDivideInfo
     an = (Left(a, 1) = "-")
     bn = (Left(b, 1) = "-")
@@ -258,12 +258,12 @@ Public Function Divide(ByVal a As String, ByVal b As String) As String
         Exit Function
     End If
     Divide = ""
-    s = ""
+    S = ""
     For c = 1 To Len(a)
-        s = s + Mid(a, c, 1)
-        d = PartialDivide(s, b)
+        S = S + Mid(a, c, 1)
+        d = PartialDivide(S, b)
         Divide = Divide + CStr(d.Quotient)
-        s = d.Remainder
+        S = d.Remainder
     Next c
     Do While Len(Divide) > 1 And Left(Divide, 1) = "0"
         Divide = Mid(Divide, 2)
@@ -271,7 +271,7 @@ Public Function Divide(ByVal a As String, ByVal b As String) As String
     If Divide <> "0" And rn Then
         Divide = "-" + Divide
     End If
-    LastRemainder = s
+    LastRemainder = S
 End Function
 
 Public Function LastModulus() As String
@@ -291,20 +291,20 @@ Public Function Modulus(ByVal a As String, ByVal b As String) As String
     End If
 End Function
 
-Public Function BigIntFromString(ByVal s As String, ByVal base As Integer) As String
+Public Function BigIntFromString(ByVal S As String, ByVal base As Integer) As String
     Dim rn As Boolean
     Dim bs As String
     Dim i, v As Integer
-    If Left(s, 1) = "-" Then
+    If Left(S, 1) = "-" Then
         rn = True
-        s = Mid(s, 2)
+        S = Mid(S, 2)
     Else
         rn = False
     End If
     bs = CStr(base)
     BigIntFromString = "0"
-    For i = 1 To Len(s)
-        v = InStr(Alphabet, UCase(Mid(s, i, 1)))
+    For i = 1 To Len(S)
+        v = InStr(Alphabet, UCase(Mid(S, i, 1)))
         If v > 0 Then
             BigIntFromString = multiply(BigIntFromString, bs)
             BigIntFromString = Add(BigIntFromString, CStr(v - 1))
@@ -315,20 +315,20 @@ Public Function BigIntFromString(ByVal s As String, ByVal base As Integer) As St
     End If
 End Function
 
-Public Function BigIntToString(ByVal s As String, ByVal base As Integer) As String
+Public Function BigIntToString(ByVal S As String, ByVal base As Integer) As String
     Dim rn As Boolean
     Dim bs As String
     Dim v As Integer
-    If Left(s, 1) = "-" Then
+    If Left(S, 1) = "-" Then
         rn = True
-        s = Mid(s, 2)
+        S = Mid(S, 2)
     Else
         rn = False
     End If
     bs = CStr(base)
     BigIntToString = ""
-    Do While Compare(s, "0") > 0
-        s = Divide(s, bs)
+    Do While Compare(S, "0") > 0
+        S = Divide(S, bs)
         v = CInt(LastModulus())
         BigIntToString = Mid(Alphabet, v + 1, 1) + BigIntToString
     Loop

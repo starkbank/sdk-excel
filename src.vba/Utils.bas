@@ -322,13 +322,13 @@ Public Function ShellRun(sCmd As String) As String
     Set oOutput = oExec.StdOut
 
     'handle the results as they are written to and read from the StdOut object
-    Dim s As String
+    Dim S As String
     Dim sLine As String
     While Not oOutput.AtEndOfStream
         sLine = oOutput.ReadLine
-        If sLine <> "" Then s = s & sLine & vbCrLf
+        If sLine <> "" Then S = S & sLine & vbCrLf
     Wend
 
-    ShellRun = s
+    ShellRun = S
 
 End Function

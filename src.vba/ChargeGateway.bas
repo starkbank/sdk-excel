@@ -21,6 +21,21 @@ Public Function getStatusInPt(Status As String)
     End Select
 End Function
 
+Public Function getEventInPt(Status As String)
+    Select Case Status
+        Case "paid":  getEventInPt = "pago"
+        Case "bank":  getEventInPt = "creditado"
+        Case "register":  getEventInPt = "criado (pendente de registro)"
+        Case "registered":  getEventInPt = "registrado"
+        Case "overdue":  getEventInPt = "vencido"
+        Case "cancel":  getEventInPt = "em cancelamento"
+        Case "canceled":  getEventInPt = "cancelado"
+        Case "failed":  getEventInPt = "falha"
+        Case "unknown":  getEventInPt = "desconhecido"
+        Case Else:  getEventInPt = Status
+    End Select
+End Function
+
 Public Function getStatusFromId(id As String)
     Select Case id
         Case "00":  getStatusFromId = "register"
@@ -260,14 +275,14 @@ Public Function createCharges(charges As Collection)
     
 End Function
 
-Public Function getEventLog(chargeId As String, logevent As String, optionalParam As Dictionary)
+Public Function getEventLog(chargeId As String, logEvent As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
     Dim elem As Variant
     
     query = ""
     If chargeId <> "" Then
-        query = "?events=" + logevent + "&chargeIds=" + chargeId
+        query = "?events=" + logEvent + "&chargeIds=" + chargeId
     End If
     If optionalParam.Count > 0 Then
         For Each key In optionalParam

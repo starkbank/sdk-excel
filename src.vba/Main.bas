@@ -80,6 +80,10 @@ Public Sub searchCharges()
     ViewChargeForm.Show
 End Sub
 
+Public Sub searchChargeEvents()
+    ViewChargeEventsForm.Show
+End Sub
+
 Public Sub searchTransfers()
     ViewTransferForm.Show
 End Sub

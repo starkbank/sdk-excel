@@ -48,6 +48,11 @@ Public Sub BotaoConsultaEmitidos()
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
+Public Sub BotaoEventosBoletos()
+    name = "Histórico de Boletos Emitidos"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoEmissaoBoletos()
     name = "Emissão de Boletos"
     ThisWorkbook.Sheets(name).Activate
