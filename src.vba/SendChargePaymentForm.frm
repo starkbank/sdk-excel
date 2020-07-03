@@ -75,9 +75,11 @@ Private Sub ConfirmButton_Click()
     payload = JsonConverter.ConvertToJson(dict)
     
     '--------------- Sign body -----------------
+    On Error GoTo eh
     Dim pk As PrivateKey: Set pk = New PrivateKey
     pk.fromPem (privkeyStr)
     
+    On Error Resume Next
     Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(payload, pk)
     Dim signature64 As String: signature64 = signature.toBase64()
     
@@ -86,5 +88,7 @@ Private Sub ConfirmButton_Click()
     respMessage = ChargePaymentGateway.createPayments(payload, signature64)
     
     Unload Me
-     
+    Exit Sub
+eh:
+    MsgBox "Por favor, selecione uma chave privada válida!", vbCritical, "Falha de assinatura"
 End Sub
