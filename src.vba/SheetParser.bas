@@ -23,3 +23,21 @@ Public Function dict()
     
     Set dict = result
 End Function
+
+Public Function longDict(initRow, lastRow)
+    Dim result As New Collection
+    Dim keys As Collection
+    
+    Set keys = headers()
+    
+    For row = initRow To lastRow
+        Dim obj As Object
+        Set obj = JsonConverter.ParseJson("{}")
+        For Each elem In ActiveSheet.UsedRange.columns
+            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+        Next
+        result.Add obj
+    Next
+    
+    Set longDict = result
+End Function

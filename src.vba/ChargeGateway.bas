@@ -148,10 +148,10 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
 
 End Function
 
-Public Function getOrders() As Collection
+Public Function getOrders(initRow As Long, midRow As Long) As Collection
     Dim orders As New Collection
     
-    For Each obj In SheetParser.dict
+    For Each obj In SheetParser.longDict(initRow, midRow)
         Dim amount As Long
         Dim customerId As String
         Dim dueDate As String
@@ -207,9 +207,49 @@ Public Function getOrders() As Collection
         Set order = ChargeGateway.order(amount, customerId, dueDate, fine, interest, overdueLimit, description1, description2, description3)
     
         orders.Add order
-        
     Next
     Set getOrders = orders
+End Function
+
+Public Function getCustomerOrders(initRow As Long, midRow As Long) As Collection
+    Dim orders As New Collection
+    
+    For Each obj In SheetParser.longDict(initRow, midRow)
+        Dim name As String
+        Dim taxId As String
+        Dim email As String
+        Dim phone As String
+        Dim streetLine1 As String
+        Dim streetLine2 As String
+        Dim district As String
+        Dim city As String
+        Dim stateCode As String
+        Dim zipCode As String
+        Dim tags As String
+        Dim order As Dictionary
+        
+        If obj("Nome") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre os clientes para cadastro", vbExclamation, "Erro"
+            End
+        End If
+        name = obj("Nome")
+        taxId = obj("CPF/CNPJ")
+        email = obj("E-mail")
+        phone = obj("Telefone")
+        streetLine1 = obj("Logradouro")
+        streetLine2 = obj("Complemento")
+        district = obj("Bairro")
+        city = obj("Cidade")
+        stateCode = obj("Estado")
+        zipCode = obj("CEP")
+        tags = obj("Tags")
+        
+        Set order = ChargeGateway.customerOrder(name, taxId, email, phone, streetLine1, streetLine2, district, city, stateCode, zipCode, tags)
+    
+        orders.Add order
+        
+    Next
+    Set getCustomerOrders = orders
 End Function
 
 Public Function order(amount As Long, customerId As String, dueDate As String, fine As Single, interest As Single, overdueLimit As Long, description1 As Dictionary, description2 As Dictionary, description3 As Dictionary) As Dictionary
@@ -238,6 +278,28 @@ Public Function order(amount As Long, customerId As String, dueDate As String, f
     
 End Function
 
+Public Function customerOrder(name As String, taxId As String, email As String, phone As String, streetLine1 As String, streetLine2 As String, district As String, city As String, stateCode As String, zipCode As String, tags As String) As Dictionary
+    Dim dict As New Dictionary
+    Dim address As New Dictionary
+    
+    address.Add "streetLine1", streetLine1
+    address.Add "streetLine2", streetLine2
+    address.Add "district", district
+    address.Add "city", city
+    address.Add "stateCode", stateCode
+    address.Add "zipCode", zipCode
+    
+    dict.Add "name", name
+    dict.Add "taxId", taxId
+    dict.Add "email", email
+    dict.Add "phone", phone
+    dict.Add "address", address
+    dict.Add "tags", Split(tags, ",")
+    
+    Set customerOrder = dict
+    
+End Function
+
 Public Function createCharges(charges As Collection)
     Dim resp As response
     Dim payload As String
@@ -247,31 +309,20 @@ Public Function createCharges(charges As Collection)
     
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set resp = StarkBankApi.postRequest("/v1/charge", payload, New Dictionary)
+    Set createCharges = StarkBankApi.postRequest("/v1/charge", payload, New Dictionary)
     
-    If resp.Status = 200 Then
-        createCharges = resp.json()("message")
-        MsgBox resp.json()("message"), , "Sucesso"
-        
-    ElseIf resp.error().Exists("errors") Then
-        Dim errors As Collection: Set errors = resp.error()("errors")
-        Dim error As Dictionary
-        Dim errorList As String
-        Dim errorDescription As String
-        
-        For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow())
-            errorList = errorList & errorDescription & Chr(10)
-        Next
-        
-        Dim messageBox As String
-        messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
-        MsgBox messageBox, , "Erro"
-        
-    Else
-        MsgBox resp.error()("message"), , "Erro"
-        
-    End If
+End Function
+
+Public Function createCustomers(customers As Collection)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    
+    dict.Add "customers", customers
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set createCustomers = StarkBankApi.postRequest("/v1/charge/customer", payload, New Dictionary)
     
 End Function
 

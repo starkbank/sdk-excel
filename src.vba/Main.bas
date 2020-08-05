@@ -168,9 +168,11 @@ Public Sub searchCustomers()
 End Sub
 
 Public Sub createCharges()
-    On Error Resume Next
-    
     Dim charges As Collection
+    Dim resp As response
+    Dim initRow As Long
+    Dim midRow As Long
+    Dim lastRow As Long
     Dim respMessage As String
     
     Call Utils.applyStandardLayout("L")
@@ -194,11 +196,110 @@ Public Sub createCharges()
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
-
-    Set charges = ChargeGateway.getOrders()
     
-    respMessage = ChargeGateway.createCharges(charges)
+    initRow = 10
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    midRow = initRow - 1
+    Do
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set charges = ChargeGateway.getOrders(initRow, midRow)
+        Set resp = ChargeGateway.createCharges(charges)
+        
+        If resp.Status = 200 Then
+            respMessage = resp.json()("message")
+            MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
+            
+        ElseIf resp.error().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.error()("errors")
+            Dim error As Dictionary
+            Dim errorList As String
+            Dim errorDescription As String
+            
+            For Each error In errors
+                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
+                errorList = errorList & errorDescription & Chr(10)
+            Next
+            
+            Dim messageBox As String
+            messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+            MsgBox messageBox, , "Erro"
+            End
+        Else
+            MsgBox resp.error()("message"), , "Erro"
+            
+        End If
+        
+        initRow = initRow + 100
+    Loop Until (midRow >= lastRow)
      
+End Sub
+
+Public Sub sendCustomers()
+    Dim customers As Collection
+    Dim resp As response
+    Dim initRow As Long
+    Dim midRow As Long
+    Dim lastRow As Long
+    Dim respMessage As String
+    Dim errorDescription As String
+    
+    Call Utils.applyStandardLayout("K")
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "E-mail"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Telefone"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Tags"
+    
+    With ActiveWindow
+        .SplitColumn = 11
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+
+    initRow = 10
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    midRow = initRow - 1
+    Do
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set customers = ChargeGateway.getCustomerOrders(initRow, midRow)
+        Set resp = ChargeGateway.createCustomers(customers)
+        
+        If resp.Status = 200 Then
+            respMessage = resp.json()("message")
+            MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
+            
+        ElseIf resp.error().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.error()("errors")
+            Dim error As Dictionary
+            Dim errorList As String
+            
+            For Each error In errors
+                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
+                errorList = errorList & errorDescription & Chr(10)
+            Next
+            
+            Dim messageBox As String
+            messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+            MsgBox messageBox, , "Erro"
+            End
+        Else
+            Dim errorMessage As String: errorMessage = resp.error()("message")
+            errorDescription = Utils.correctErrorLine(errorMessage, initRow - 1)
+            MsgBox errorDescription, , "Erro"
+            
+        End If
+        
+        initRow = initRow + 100
+    Loop Until (midRow >= lastRow)
+    
 End Sub
 
 Public Sub executeTransfers()
