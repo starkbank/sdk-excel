@@ -217,7 +217,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 21).Value = charge("stateCode")
             ActiveSheet.Cells(row, 22).Value = charge("zipCode")
 
-            If chargeStatus = "paid" Then
+            If chargeStatus = "paid" And Not logsPaidByCharge.Exists(id) Then
                 logsPaidByCharge.Add id, chargeLog
                 logsRegisteredByCharge.Add id, New Dictionary
             End If

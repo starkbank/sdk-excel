@@ -43,6 +43,11 @@ Public Sub BotaoConsultaClientes()
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
+Public Sub BotaoCadastroClientes()
+    name = "Cadastro de Clientes"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoConsultaEmitidos()
     name = "Consulta de Boletos Emitidos"
     ThisWorkbook.Sheets(name).Activate
