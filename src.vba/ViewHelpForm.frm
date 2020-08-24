@@ -11,6 +11,10 @@ Private Sub HelpSandboxWebButton_Click()
     ActiveWorkbook.FollowHyperlink address:="https://starkbank.com/sandbox"
 End Sub
 
+Private Sub Label2_Click()
+
+End Sub
+
 Private Sub SendPublicKeyButton_Click()
     SendKeyForm.Show
 End Sub
