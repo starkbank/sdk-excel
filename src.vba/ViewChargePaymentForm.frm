@@ -47,7 +47,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("H")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"

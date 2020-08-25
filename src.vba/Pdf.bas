@@ -83,6 +83,7 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
     Dim anyFailed As Boolean
     Dim tooMany As Boolean
     anyFailed = False
+    anySuccess = False
     tooMany = True
     
     idColumn = ColumnId(service)
@@ -112,13 +113,17 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
             success = downloadSinglePdf(service, entityId, folder)
             If Not success Then
                 anyFailed = True
+            Else
+                anySuccess = True
             End If
         Next
         
         If anyFailed Then
             MsgBox "Alguns arquivos tiveram falha no download!" + vbNewLine + "Atenção: Não é possível baixar comprovantes de operações com falha ou canceladas!", vbExclamation
         End If
-        MsgBox "Arquivos salvos em:" + vbNewLine + folder
+        If anySuccess Then
+            MsgBox "Arquivos salvos em:" + vbNewLine + folder
+        End If
     End If
 End Sub
 
