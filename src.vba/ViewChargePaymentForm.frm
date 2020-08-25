@@ -46,8 +46,8 @@ Private Sub SearchButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
-    Utils.applyStandardLayout ("G")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":G" & Rows.Count).ClearContents
+    Utils.applyStandardLayout ("H")
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -57,6 +57,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Linha Digitável"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Id do pagamento"
     
     Call FreezeHeader
     
@@ -106,6 +107,8 @@ Private Sub SearchButton_Click()
 
             Dim tags As Collection: Set tags = payment("tags")
             ActiveSheet.Cells(row, 7).Value = CollectionToString(tags, ",")
+            
+            ActiveSheet.Cells(row, 8).Value = payment("id")
 
             row = row + 1
         Next

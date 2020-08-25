@@ -7,6 +7,10 @@ Public Sub downloadAllChargePdfs()
     downloadAllPdfs ("charge")
 End Sub
 
+Public Sub downloadAllChargePaymentPdfs()
+    downloadAllPdfs ("charge-payment")
+End Sub
+
 Public Sub downloadSelectedTransferPdfs()
     Dim initRow As Long
     Dim lastRow As Long
@@ -41,6 +45,24 @@ Public Sub downloadSelectedChargePdfs()
     Call downloadPdfRange(service, initRow, lastRow)
 End Sub
 
+Public Sub downloadSelectedChargePaymentPdfs()
+    Dim initRow As Long
+    Dim lastRow As Long
+    Dim service As String
+    service = "charge-payment"
+    
+    initRow = Utils.Max(Selection.row, 10)
+    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    
+    If initRow > lastRow Then
+        MsgBox "Nenhum pagamento válido selecionado"
+        Exit Sub
+    End If
+    
+    Call downloadPdfRange(service, initRow, lastRow)
+End Sub
+
+
 Public Function downloadSinglePdf(service, id As String, folder As String)
     Dim success As Boolean
     Dim path As String
@@ -61,6 +83,7 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
     Dim anyFailed As Boolean
     Dim tooMany As Boolean
     anyFailed = False
+    anySuccess = False
     tooMany = True
     
     idColumn = ColumnId(service)
@@ -90,13 +113,16 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
             success = downloadSinglePdf(service, entityId, folder)
             If Not success Then
                 anyFailed = True
+            Else
+                anySuccess = True
             End If
         Next
         
         If anyFailed Then
-            MsgBox "Alguns arquivos tiveram falha no download!", vbExclamation
-        Else
-            MsgBox "Arquivos salvos com sucesso em:" + vbNewLine + folder
+            MsgBox "Alguns arquivos tiveram falha no download!" + vbNewLine + "Atenção: Não é possível baixar comprovantes de operações com falha ou canceladas!", vbExclamation
+        End If
+        If anySuccess Then
+            MsgBox "Arquivos salvos em:" + vbNewLine + folder
         End If
     End If
 End Sub
