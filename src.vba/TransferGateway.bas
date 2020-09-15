@@ -120,7 +120,7 @@ Public Function getTransfersFromSheet() As Collection
             Unload SendTransferForm
             End
         End If
-        amount = Utils.IntegerFrom((obj("Valor")))
+        amount = getAmountLong((obj("Valor")))
         taxId = Trim(obj("CPF/CNPJ"))
         name = Trim(obj("Nome"))
         bankCode = Trim(obj("Código do Banco"))

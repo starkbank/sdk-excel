@@ -129,6 +129,15 @@ Function correctErrorLine(errorMessage As String, offset As Integer) As String
     
 End Function
 
+Public Function getAmountLong(amount As Variant)
+    amount = FormatCurrency(amount, 2)
+    amount = Replace(amount, ",", "")
+    amount = Replace(amount, ".", "")
+    amount = Replace(amount, "R$", "")
+    amount = CLng(amount)
+    getAmountLong = amount
+End Function
+
 Public Function IntegerFrom(Value As String) As Long
     Dim temp As String
     temp = Value

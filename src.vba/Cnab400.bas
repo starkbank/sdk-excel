@@ -112,15 +112,6 @@ Private Sub DebugDict()
     Debug.Print "Total Amount:", totalAmount
 End Sub
 
-Private Function getAmountLong(amount As Variant)
-    amount = FormatCurrency(amount, 2)
-    amount = Replace(amount, ",", "")
-    amount = Replace(amount, ".", "")
-    amount = Replace(amount, "R$", "")
-    amount = CLng(amount)
-    getAmountLong = amount
-End Function
-
 Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) As String
     Dim respMessage As Variant
     Dim logEvent As String
