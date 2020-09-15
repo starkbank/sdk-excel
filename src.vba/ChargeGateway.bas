@@ -167,7 +167,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
             End
         End If
-        amount = Utils.IntegerFrom((obj("Valor")))
+        amount = getAmountLong((obj("Valor")))
         customerId = Trim(obj("Id do Cliente"))
         dueDate = Utils.DateToSendingFormat(Format(obj("Data de Vencimento"), "dd/mm/yyyy"))
         
@@ -187,21 +187,21 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
             description1.Add "text", obj("Descrição 1")
         End If
         If obj("Valor 1") <> "" Then
-            description1.Add "amount", Utils.IntegerFrom((obj("Valor 1")))
+            description1.Add "amount", getAmountLong((obj("Valor 1")))
         End If
         
         If obj("Descrição 2") <> "" Then
             description2.Add "text", obj("Descrição 2")
         End If
         If obj("Valor 2") <> "" Then
-            description2.Add "amount", Utils.IntegerFrom((obj("Valor 2")))
+            description2.Add "amount", getAmountLong((obj("Valor 2")))
         End If
         
         If obj("Descrição 3") <> "" Then
             description3.Add "text", obj("Descrição 3")
         End If
         If obj("Valor 3") <> "" Then
-            description3.Add "amount", Utils.IntegerFrom((obj("Valor 3")))
+            description3.Add "amount", getAmountLong((obj("Valor 3")))
         End If
         
         Set order = ChargeGateway.order(amount, customerId, dueDate, fine, interest, overdueLimit, description1, description2, description3)

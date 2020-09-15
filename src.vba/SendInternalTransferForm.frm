@@ -21,7 +21,7 @@ End Sub
 Private Sub ConfirmButton_Click()
     'On Error Resume Next
     Dim myFile As String: myFile = PathBox.Value
-    Dim amount As Long: amount = Utils.IntegerFrom(Utils.clearNonNumeric(AmountBox.Value))
+    Dim amount As Long: amount = getAmountLong(Utils.clearNonNumeric(AmountBox.Value))
     Dim receiverId As String: receiverId = WorkspaceBox.Value
     Dim externalId As String: externalId = ExternalIdBox.Value
     Dim description As String: description = DescriptionBox.Value
