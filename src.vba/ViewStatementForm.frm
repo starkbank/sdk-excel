@@ -131,7 +131,7 @@ Private Sub DownloadButton_Click()
             transactionId = transact("id")
             transactionFee = CDbl(transact("fee")) / 100
             balance = CDbl(transact("balance")) / 100
-            transactionType = getTransactionType(splitPath, teams)
+            transactionType = getTransactionType(splitPath, teams, tags)
             
             conditionTeam = (splitPath(0) = "team")
             conditionTransferRequest = (splitPath(0) = "transfer-request")
@@ -254,7 +254,7 @@ Private Function getTransfersInTransaction(path As String, transactionCreated As
     getTransfersInTransaction = row
 End Function
 
-Private Function getTransactionType(list() As String, ByRef teams As Collection)
+Private Function getTransactionType(list() As String, ByRef teams As Collection, ByRef tags As Collection)
     Dim transactionType As String
     Select Case list(0)
         Case "self"
@@ -265,10 +265,22 @@ Private Function getTransactionType(list() As String, ByRef teams As Collection)
             transactionType = "Pag. de boleto"
         Case "bar-code-payment"
             transactionType = "Pag. de imposto/concessionária"
+        Case "utility-payment"
+            transactionType = "Pag. de concessionária com cód. de barras"
+        Case "darf-payment"
+            transactionType = "Pag. de DARF sem cód. de barras"
+        Case "tax-payment"
+            transactionType = "Pag. de imposto com cód. de barras"
         Case "transfer-request"
             transactionType = "Transf. sem aprovação"
         Case "transfer"
+            Dim tag As Variant
             transactionType = "Transf. sem aprovação"
+            For Each tag In tags
+                If InStr(1, tag, "payment-request/") Then
+                    transactionType = "Transf. com aprovação"
+                End If
+            Next
         Case "team"
             Dim teamName As String
             Dim team As Dictionary
