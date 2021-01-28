@@ -112,7 +112,7 @@ Public Function clearNonNumeric(text)
     Set Reg = Nothing
 End Function
 
-Function correctErrorLine(errorMessage As String, offset As Integer) As String
+Function correctErrorLine(ByVal errorMessage As String, offset As Integer) As String
     Dim lineNumber As Integer
     Dim message As String
     
@@ -124,7 +124,6 @@ Function correctErrorLine(errorMessage As String, offset As Integer) As String
             message = M.submatches(2)
         Next
     End With
-    
     correctErrorLine = "Linha " & CStr(lineNumber + offset) & ": " & message
     
 End Function
