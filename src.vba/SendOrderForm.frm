@@ -22,7 +22,6 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub SendButton_Click()
-    On Error Resume Next
     Dim teamId As String
     Dim orders As Collection
     Dim respMessage As String
@@ -34,11 +33,18 @@ Private Sub SendButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Código do Banco"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Código do Banco/ISPB"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Agência"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Conta"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "externalId"
+    
+    If Sheets("Credentials").Cells(7, 2) <> Date Then
+        ActiveSheet.Range("I10:I" & Rows.Count).ClearContents
+    End If
+    
+    Sheets("Credentials").Cells(7, 2) = Date
     
     Call FreezeHeader
     
@@ -50,8 +56,7 @@ Private Sub SendButton_Click()
         Next
     End With
 
-    Set orders = TeamGateway.getOrders()
-    respMessage = TeamGateway.createOrders(teamId, orders)
+    respMessage = TeamGateway.createOrders(teamId)
     
     Unload Me
      

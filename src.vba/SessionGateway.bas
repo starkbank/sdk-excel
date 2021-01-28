@@ -12,6 +12,7 @@ Public Sub saveSession(workspace As String, email As String, envString As String
     Sheets("Credentials").Cells(5, 2) = memberName
     Sheets("Credentials").Cells(6, 1) = "Workspace ID"
     Sheets("Credentials").Cells(6, 2) = workspaceId
+    Sheets("Credentials").Cells(7, 1) = "Approval Date"
        
 End Sub
 
