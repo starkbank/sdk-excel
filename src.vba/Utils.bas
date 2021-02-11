@@ -157,6 +157,19 @@ Public Function DateToSendingFormat(dateInput As String) As String
     DateToSendingFormat = dateToSend
 End Function
 
+Public Function DatefromIsoString(iso As String) As Date
+    Dim yearPart As Integer: yearPart = CInt(Mid(iso, 1, 4))
+    Dim monPart As Integer: monPart = CInt(Mid(iso, 6, 2))
+    Dim dayPart As Integer: dayPart = CInt(Mid(iso, 9, 2))
+    Dim hourPart As Integer: hourPart = CInt(Mid(iso, 12, 2))
+    Dim minPart As Integer: minPart = CInt(Mid(iso, 15, 2))
+    Dim secPart As Integer: secPart = CInt(Mid(iso, 18, 2))
+    Dim tz As String: tz = Mid(iso, 28)
+    
+    Dim dt As Date: dt = DateSerial(yearPart, monPart, dayPart) + TimeSerial(hourPart, minPart, secPart)
+    DatefromIsoString = dt
+End Function
+
 Public Function SingleFrom(Value As String) As Single
     Dim temp As String
     temp = Value

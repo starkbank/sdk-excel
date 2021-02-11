@@ -136,7 +136,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
         Dim dueDate As String
         Dim fine As Single: fine = 2
         Dim interest As Single: interest = 1
-        Dim overdueLimit As Long: overdueLimit = 59
+        Dim overdueLimit As Long: overdueLimit = 1416
         Dim description1 As Dictionary: Set description1 = New Dictionary
         Dim description2 As Dictionary: Set description2 = New Dictionary
         Dim description3 As Dictionary: Set description3 = New Dictionary
@@ -149,7 +149,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
         amount = getAmountLong((obj("Valor")))
         name = Trim(obj("Nome do Cliente"))
         taxId = Trim(obj("CPF/CNPJ do Cliente"))
-        dueDate = Utils.DateToSendingFormat(Format(obj("Data de Vencimento"), "dd/mm/yyyy")) + "T23:59:50.000+00:00"
+        dueDate = Utils.DateToSendingFormat(Format(DateAdd("d", 1, obj("Data de Vencimento")), "dd/mm/yyyy")) + "T02:59:59.000+00:00"
         
         If obj("Multa") <> "" Then
             fine = Utils.SingleFrom((obj("Multa")))
@@ -159,8 +159,12 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
             interest = Utils.SingleFrom((obj("Juros ao Mês")))
         End If
         
-        If obj("Dias para Baixa Automática") <> "" Then
-            overdueLimit = CLng(3600) * 24 * Utils.IntegerFrom((obj("Dias para Baixa Automática")))
+        If obj("Expiração em Horas") <> "" Then
+            If Utils.IntegerFrom((obj("Expiração em Horas"))) > CLng(596523) Then
+                overdueLimit = CLng(3600) * CLng(596523)
+            Else
+                overdueLimit = CLng(3600) * Utils.IntegerFrom((obj("Expiração em Horas")))
+            End If
         End If
         
         If obj("Descrição 1") <> "" Then

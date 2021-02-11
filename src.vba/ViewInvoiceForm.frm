@@ -68,8 +68,8 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Desconto"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Multa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Juros"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Data da última atualização"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Pagável até"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Copia e Cola (BR Code)"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Id do Boleto"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Tarifa"
@@ -120,7 +120,10 @@ Private Sub SearchButton_Click()
             Dim updated As String: updated = invoice("updated")
             Dim invoiceStatus As String: invoiceStatus = invoice("status")
             Dim dueDate As String: dueDate = invoice("due")
+            Dim expiration As Long: expiration = invoice("expiration")
             Dim tags As Collection: Set tags = invoice("tags")
+            
+            Dim expirationDate As Date: expirationDate = DateAdd("s", expiration, Utils.DatefromIsoString(dueDate))
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 2).Value = invoice("name")
@@ -131,8 +134,8 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 7).Value = discountAmount
             ActiveSheet.Cells(row, 8).Value = fineAmount
             ActiveSheet.Cells(row, 9).Value = interestAmount
-            ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(updated)
-            ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
+            ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(dueDate)
+            ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(Format(expirationDate, "yyyy-mm-ddThh:mm:ss"))
             ActiveSheet.Cells(row, 12).Value = invoice("brcode")
             ActiveSheet.Cells(row, 13).Value = id
             ActiveSheet.Cells(row, 14).Value = fee
@@ -149,79 +152,3 @@ Private Sub SearchButton_Click()
     
     Unload Me
 End Sub
-
-Public Sub setPaidBoletoInfo(ByVal invoice As Object, row As Long)
-    Dim nominalAmount As Double
-    Dim fine As Double
-    Dim interest As Double
-    Dim discount As Double
-    Dim deltaAmount As Double
-    Dim paidDate As String
-    Dim logs As Collection
-    Dim paidLog As Dictionary
-    Dim createdLog As Dictionary
-    Dim id As String: id = invoice("id")
-    
-    Set logs = v2InvoiceGateway.getEventLog(id, "register,paid", New Dictionary)("logs")
-    Set createdLog = logs(2)
-    Set paidLog = logs(1)
-    
-    paidDate = paidLog("created")
-    ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
-    
-    nominalAmount = createdLog("invoice")("amount") / 100
-    deltaAmount = amount - nominalAmount
-    
-    ActiveSheet.Cells(row, 6).Value = nominalAmount
-    If deltaAmount < 0 Then
-        discount = deltaAmount
-        ActiveSheet.Cells(row, 7).Value = discount
-        ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
-    End If
-    If deltaAmount > 0 Then
-        fine = invoice("fine") / 100 * nominalAmount
-        interest = amount - fine - nominalAmount
-        ActiveSheet.Cells(row, 8).Value = fine
-        ActiveSheet.Cells(row, 9).Value = interest
-        ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
-        ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
-    End If
-End Sub
-
-
-
-Public Sub setInvoiceInfo(ByVal invoice As Object, ByVal paidLog As Dictionary, ByVal createdLog As Dictionary, row As Long)
-    Dim nominalAmount As Double
-    Dim fine As Double
-    Dim amount As Double
-    Dim interest As Double
-    Dim discount As Double
-    Dim deltaAmount As Double
-    Dim paidDate As String
-    Dim logs As Collection
-    Dim id As String: id = invoice("id")
-    
-    amount = invoice("amount") / 100
-    paidDate = paidLog("created")
-    ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
-    
-    nominalAmount = createdLog("invoice")("amount") / 100
-    deltaAmount = amount - nominalAmount
-    
-    ActiveSheet.Cells(row, 6).Value = nominalAmount
-    If deltaAmount < 0 Then
-        discount = deltaAmount
-        ActiveSheet.Cells(row, 7).Value = discount
-        ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
-    End If
-    If deltaAmount > 0 Then
-        fine = invoice("fine") / 100 * nominalAmount
-        interest = amount - fine - nominalAmount
-        ActiveSheet.Cells(row, 8).Value = fine
-        ActiveSheet.Cells(row, 9).Value = interest
-        ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
-        ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
-    End If
-End Sub
-
-

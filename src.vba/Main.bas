@@ -255,7 +255,7 @@ Public Sub createInvoices()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Data de Vencimento"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Multa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Juros ao Mês"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Dias para Baixa Automática"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Expiração em Horas"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição 1"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Valor 1"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Descrição 2"
@@ -289,7 +289,7 @@ Public Sub createInvoices()
             
             For Each error In errors
                 Debug.Print error("message")
-                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
+                errorDescription = Utils.correctErrorLine(error("message"), CInt(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
             
