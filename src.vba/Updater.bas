@@ -24,10 +24,17 @@ Public Sub UpdateRoutine()
     Else
         MsgBox "Atualização cancelada."
     End If
+    OpensslRoutine
     Exit Sub
 Err:
     MsgBox "Não foi possível verificar atualizações. Favor checar a conexão."
     Exit Sub
+End Sub
+
+Public Sub OpensslRoutine()
+    If getGitDir() = "" Then
+        ViewOpensslForm.Show
+    End If
 End Sub
 
 Public Function UpdateVersionNumber(newVersion As String)

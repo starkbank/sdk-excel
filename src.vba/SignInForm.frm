@@ -65,6 +65,8 @@ Private Sub SendButton_Click()
     workspaceId = response("success")("member")("workspaceId")
     
     Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName, workspaceId)
+    RenewSessionKeys
+    postSessionV2
     Debug.Print "New session data saved"
     
     Call SessionGateway.displayMemberInfo

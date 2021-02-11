@@ -2,8 +2,8 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     
-'    Debug.Print url
-'    Debug.Print payload
+    Debug.Print url
+    Debug.Print payload
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
     Next
@@ -15,7 +15,7 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     
     resp.Status = objHTTP.Status
     resp.content = objHTTP.responseText
-'    Debug.Print resp.content
+    Debug.Print resp.content
     Set fetch = resp
     Exit Function
 eh:
@@ -29,6 +29,7 @@ Public Function download(url As String, path As String, headers As Dictionary) A
     objHTTP.Open "GET", url, False
     
     For Each key In headers.keys()
+        Debug.Print headers(key)
         objHTTP.setRequestHeader key, headers(key)
     Next
     
@@ -45,6 +46,8 @@ Public Function download(url As String, path As String, headers As Dictionary) A
         download = True
     Else
 eh:
+        Debug.Print objHTTP.Status
+        Debug.Print objHTTP.responseBody
         download = False
     End If
 End Function

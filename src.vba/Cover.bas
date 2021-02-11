@@ -67,3 +67,13 @@ Public Sub Principal()
     name = "Principal"
     ThisWorkbook.Sheets(name).Activate
 End Sub
+
+Public Sub BotaoConsultaInvoices()
+    name = "Consulta de Invoices Emitidas"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
+Public Sub BotaoEmissaoInvoices()
+    name = "Emissão de Invoice Pix"
+    ThisWorkbook.Sheets(name).Activate
+End Sub

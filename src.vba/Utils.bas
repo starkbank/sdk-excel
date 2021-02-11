@@ -1,16 +1,16 @@
-Public Function Min(a As Variant, b As Variant) As Variant
+Public Function min(a As Variant, b As Variant) As Variant
     If a >= b Then
-        Min = b
+        min = b
     Else
-        Min = a
+        min = a
     End If
 End Function
 
-Public Function Max(a As Variant, b As Variant) As Variant
+Public Function max(a As Variant, b As Variant) As Variant
     If a < b Then
-        Max = b
+        max = b
     Else
-        Max = a
+        max = a
     End If
 End Function
 
@@ -339,4 +339,27 @@ Public Function ShellRun(sCmd As String) As String
 
     ShellRun = S
 
+End Function
+
+Public Function getTempDir() As String
+    getTempDir = Environ("temp")
+End Function
+
+Public Function getOpensslDir() As String
+    getOpensslDir = getGitDir() + "\..\usr\bin\openssl.exe"
+End Function
+
+Public Function getGitDir()
+    Debug.Print
+    Dim TextStrng As String
+    Dim Result() As String
+    Dim DisplayText As String
+    TextStrng = Environ("path")
+    Result = Split(TextStrng, ";")
+    getGitDir = ""
+    For i = LBound(Result()) To UBound(Result())
+        If InStr(LCase(Result(i)), "\git\cmd") > 0 Then
+            getGitDir = Result(i)
+        End If
+    Next i
 End Function

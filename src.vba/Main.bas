@@ -80,6 +80,10 @@ Public Sub searchCharges()
     ViewChargeForm.Show
 End Sub
 
+Public Sub searchInvoices()
+    ViewInvoiceForm.Show
+End Sub
+
 Public Sub searchChargeEvents()
     ViewChargeEventsForm.Show
 End Sub
@@ -222,6 +226,75 @@ Public Sub createCharges()
             
             Dim messageBox As String
             messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+            MsgBox messageBox, , "Erro"
+            End
+        Else
+            MsgBox resp.error()("message"), , "Erro"
+            
+        End If
+        
+        initRow = initRow + 100
+    Loop Until (midRow >= lastRow)
+     
+End Sub
+
+Public Sub createInvoices()
+    Dim invoices As Collection
+    Dim resp As response
+    Dim initRow As Long
+    Dim midRow As Long
+    Dim lastRow As Long
+    Dim respMessage As String
+    
+    Call Utils.applyStandardLayout("M")
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Data de Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Multa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Juros ao Mês"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Dias para Baixa Automática"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Valor 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Descrição 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Valor 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Descrição 3"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Valor 3"
+    
+    With ActiveWindow
+        .SplitColumn = 13
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+    
+    initRow = 10
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    midRow = initRow - 1
+    Do
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set invoices = v2InvoiceGateway.getOrders(initRow, midRow)
+        Set resp = v2InvoiceGateway.createInvoices(invoices)
+        
+        If resp.Status = 200 Then
+            respMessage = resp.json()("message")
+            MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
+            
+        ElseIf resp.errors().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.errors()("errors")
+            Dim error As Dictionary
+            Dim errorList As String
+            Dim errorDescription As String
+            
+            For Each error In errors
+                Debug.Print error("message")
+                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
+                errorList = errorList & errorDescription & Chr(10)
+            Next
+            
+            Dim messageBox As String
+            messageBox = errorList
             MsgBox messageBox, , "Erro"
             End
         Else
