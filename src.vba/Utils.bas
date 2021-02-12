@@ -1,16 +1,16 @@
-Public Function Min(a As Variant, b As Variant) As Variant
+Public Function min(a As Variant, b As Variant) As Variant
     If a >= b Then
-        Min = b
+        min = b
     Else
-        Min = a
+        min = a
     End If
 End Function
 
-Public Function Max(a As Variant, b As Variant) As Variant
+Public Function max(a As Variant, b As Variant) As Variant
     If a < b Then
-        Max = b
+        max = b
     Else
-        Max = a
+        max = a
     End If
 End Function
 
@@ -157,6 +157,19 @@ Public Function DateToSendingFormat(dateInput As String) As String
     DateToSendingFormat = dateToSend
 End Function
 
+Public Function DatefromIsoString(iso As String) As Date
+    Dim yearPart As Integer: yearPart = CInt(Mid(iso, 1, 4))
+    Dim monPart As Integer: monPart = CInt(Mid(iso, 6, 2))
+    Dim dayPart As Integer: dayPart = CInt(Mid(iso, 9, 2))
+    Dim hourPart As Integer: hourPart = CInt(Mid(iso, 12, 2))
+    Dim minPart As Integer: minPart = CInt(Mid(iso, 15, 2))
+    Dim secPart As Integer: secPart = CInt(Mid(iso, 18, 2))
+    Dim tz As String: tz = Mid(iso, 28)
+    
+    Dim dt As Date: dt = DateSerial(yearPart, monPart, dayPart) + TimeSerial(hourPart, minPart, secPart)
+    DatefromIsoString = dt
+End Function
+
 Public Function SingleFrom(Value As String) As Single
     Dim temp As String
     temp = Value
@@ -300,6 +313,10 @@ On Error GoTo 0
 IsInArray = False
 End Function
 
+Public Function isSignedin()
+    isSignedin = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
+End Function
+
 Function GetFolder() As String
     Dim fldr As FileDialog
     Dim sItem As String
@@ -339,4 +356,27 @@ Public Function ShellRun(sCmd As String) As String
 
     ShellRun = S
 
+End Function
+
+Public Function getTempDir() As String
+    getTempDir = Environ("temp")
+End Function
+
+Public Function getOpensslDir() As String
+    getOpensslDir = getGitDir() + "\..\usr\bin\openssl.exe"
+End Function
+
+Public Function getGitDir()
+    Debug.Print
+    Dim TextStrng As String
+    Dim Result() As String
+    Dim DisplayText As String
+    TextStrng = Environ("path")
+    Result = Split(TextStrng, ";")
+    getGitDir = ""
+    For i = LBound(Result()) To UBound(Result())
+        If InStr(LCase(Result(i)), "\git\cmd") > 0 Then
+            getGitDir = Result(i)
+        End If
+    Next i
 End Function

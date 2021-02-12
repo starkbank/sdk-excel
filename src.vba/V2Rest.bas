@@ -1,8 +1,7 @@
-Public Enum Environment
-    development
-    sandbox
-    production
-End Enum
+
+Public Function toUnix(dt) As Long
+    toUnix = DateDiff("s", "1/1/1970 00:00:00", dt) + 10800
+End Function
 
 Public Function baseUrl()
     Select Case SessionGateway.getEnvironment()
@@ -12,30 +11,63 @@ Public Function baseUrl()
     End Select
 End Function
 
-Public Function defaultHeaders()
+Public Function defaultHeaders(payload As String)
     Dim Result As Dictionary
     Set Result = New Dictionary
+    Dim accessTime As Long
+    Dim message As String
+    
+    accessTime = toUnix(Now)
+    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    
+    Dim pk As PrivateKey: Set pk = New PrivateKey
+    pk.fromPem (getSessionPrivateKeyContent)
+    
+    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
+    Dim signature64 As String: signature64 = signature.toBase64()
+    
+    Debug.Print (signature64)
+    
     Result.Add "Content-Type", "Application/json"
     Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Token", SessionGateway.getAccessToken()
+    Result.Add "Access-Time", accessTime
+    Result.Add "Access-Id", getAccessId()
+    Result.Add "Access-Signature", signature64
     
     Set defaultHeaders = Result
 End Function
 
-Public Function pdfHeaders()
+Public Function pdfHeaders(payload As String)
     Dim Result As Dictionary
     Set Result = New Dictionary
+    Dim accessTime As Long
+    Dim message As String
+    
+    accessTime = toUnix(Now)
+    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    
+    Dim pk As PrivateKey: Set pk = New PrivateKey
+    pk.fromPem (getSessionPrivateKeyContent)
+    
+    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
+    Dim signature64 As String: signature64 = signature.toBase64()
+    
     Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Token", SessionGateway.getAccessToken()
+    Result.Add "Access-Time", accessTime
+    Result.Add "Access-Id", getAccessId()
+    Result.Add "Access-Signature", signature64
     
     Set pdfHeaders = Result
 End Function
 
 Public Function getRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
+    Dim defHeaders As New Dictionary
     
-    For Each key In defaultHeaders().keys()
-        headers.Add key, defaultHeaders()(key)
+    Set defHeaders = defaultHeaders("")
+    
+    For Each key In defHeaders.keys()
+        headers.Add key, defHeaders(key)
     Next
     
     Set getRequest = Request.fetch(url, "GET", headers, "")
@@ -43,9 +75,12 @@ End Function
 
 Public Function postRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
+    Dim defHeaders As New Dictionary
     
-    For Each key In defaultHeaders().keys()
-        headers.Add key, defaultHeaders()(key)
+    Set defHeaders = defaultHeaders(payload)
+    
+    For Each key In defHeaders.keys()
+        headers.Add key, defHeaders(key)
     Next
     
     Set postRequest = Request.fetch(url, "POST", headers, payload)
@@ -53,9 +88,12 @@ End Function
 
 Public Function deleteRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
+    Dim defHeaders As New Dictionary
     
-    For Each key In defaultHeaders().keys()
-        headers.Add key, defaultHeaders()(key)
+    Set defHeaders = defaultHeaders("")
+    
+    For Each key In defHeaders.keys()
+        headers.Add key, defHeaders(key)
     Next
     
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
@@ -63,9 +101,12 @@ End Function
 
 Public Function downloadRequest(path As String, filepath As String, headers As Dictionary) As Boolean
     Dim url As String: url = baseUrl() + path
+    Dim defHeaders As New Dictionary
     
-    For Each key In pdfHeaders().keys()
-        headers.Add key, pdfHeaders()(key)
+    Set defHeaders = pdfHeaders("")
+    
+    For Each key In defHeaders.keys()
+        headers.Add key, defHeaders(key)
     Next
     
     downloadRequest = Request.download(url, filepath, headers)
@@ -88,3 +129,4 @@ Public Function externalPostRequest(url As String, payload As String)
     
     Set externalPostRequest = Request.fetch(url, "POST", headers, payload)
 End Function
+

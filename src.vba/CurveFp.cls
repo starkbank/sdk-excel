@@ -26,7 +26,7 @@ Public Function length()
 End Function
 
 Public Function initializeByOid(oidInput As String)
-    Dim result As Boolean: result = False
+    Dim Result As Boolean: Result = False
     Select Case oidInput
         Case "1;3;132;0;10":
             a = BigIntMath.BigIntFromString("0000000000000000000000000000000000000000000000000000000000000000", 16)
@@ -36,7 +36,7 @@ Public Function initializeByOid(oidInput As String)
             Gx = BigIntMath.BigIntFromString("79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798", 16)
             Gy = BigIntMath.BigIntFromString("483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8", 16)
             oid = "1;3;132;0;10"
-            result = True
+            Result = True
     End Select
-    initializeByOid = result
+    initializeByOid = Result
 End Function

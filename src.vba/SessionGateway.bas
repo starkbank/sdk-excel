@@ -13,6 +13,10 @@ Public Sub saveSession(workspace As String, email As String, envString As String
     Sheets("Credentials").Cells(6, 1) = "Workspace ID"
     Sheets("Credentials").Cells(6, 2) = workspaceId
     Sheets("Credentials").Cells(7, 1) = "Approval Date"
+    
+    Sheets("Credentials").Cells(11, 1) = "Session Private"
+    Sheets("Credentials").Cells(12, 1) = "Session Public"
+    Sheets("Credentials").Cells(13, 1) = "Access ID"
        
 End Sub
 
@@ -98,3 +102,98 @@ Public Function getBalance()
     End If
     getBalance = balanceMessage
 End Function
+
+
+Public Function sessionPrivateKeyContent() As String
+    Dim sessionPrivateKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    Call Shell("""" + getOpensslDir() + """ ecparam -name secp256k1 -genkey -out """ + sessionPrivateKeyPath + """")
+    Application.Wait Now + #12:00:01 AM#
+    
+    Open sessionPrivateKeyPath For Input As #1
+    Do Until EOF(1)
+        Line Input #1, textLine
+        sessionPrivateKeyContent = sessionPrivateKeyContent & textLine & vbLf
+    Loop
+    Close #1
+    
+End Function
+
+Public Function sessionPublicKeyContent() As String
+    Dim sessionPrivateKeyPath
+    Dim sessionPublicKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
+    Call Shell("""C:\Program Files\Git\cmd\..\usr\bin\openssl.exe"" ec -in """ + sessionPrivateKeyPath + """ -pubout -out """ + sessionPublicKeyPath + """")
+    Application.Wait Now + #12:00:01 AM#
+    
+    Open sessionPublicKeyPath For Input As #1
+    Do Until EOF(1)
+        Line Input #1, textLine
+        sessionPublicKeyContent = sessionPublicKeyContent & textLine & vbLf
+    Loop
+    Close #1
+    
+End Function
+
+Public Function getSessionPrivateKeyContent() As String
+    getSessionPrivateKeyContent = Sheets("Credentials").Cells(11, 2)
+End Function
+
+Public Function getSessionPublicKeyContent() As String
+    getSessionPublicKeyContent = Sheets("Credentials").Cells(12, 2)
+End Function
+
+Public Function getAccessId() As String
+    getAccessId = Sheets("Credentials").Cells(13, 2)
+End Function
+
+Public Sub RenewSessionKeys()
+    Sheets("Credentials").Cells(11, 2) = sessionPrivateKeyContent
+    Sheets("Credentials").Cells(12, 2) = sessionPublicKeyContent
+    DeleteTempKeys
+End Sub
+
+Public Sub DeleteSessionKeys()
+    Sheets("Credentials").Cells(11, 2) = ""
+    Sheets("Credentials").Cells(12, 2) = ""
+    DeleteTempKeys
+End Sub
+
+Public Sub DeleteTempKeys()
+    Dim sessionPrivateKeyPath
+    Dim sessionPublicKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
+    Kill sessionPrivateKeyPath
+    Kill sessionPublicKeyPath
+End Sub
+
+Public Sub postSessionV2()
+    Dim payload As String
+    Dim resp As response
+    Dim Result As New Dictionary
+    Dim headers As New Dictionary
+    Dim dict As New Dictionary
+    
+    dict.Add "platform", "web"
+    dict.Add "expiration", 5184000
+    dict.Add "publicKey", getSessionPublicKeyContent()
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set resp = StarkBankApi.postRequest("/v1/auth/session", payload, headers)
+    
+    If resp.Status = 200 Then
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
+    Else
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
+    End If
+    Debug.Print JsonConverter.ConvertToJson(Result)
+    accessId = Result("success")("session")("id")
+    
+    Sheets("Credentials").Cells(13, 2) = "session/" + accessId
+    
+End Sub

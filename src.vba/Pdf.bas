@@ -11,14 +11,18 @@ Public Sub downloadAllChargePaymentPdfs()
     downloadAllPdfs ("charge-payment")
 End Sub
 
+Public Sub downloadAllInvoicePdfs()
+    downloadAllPdfs ("invoice")
+End Sub
+
 Public Sub downloadSelectedTransferPdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
     service = "transfer"
     
-    initRow = Utils.Max(Selection.row, 10)
-    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    initRow = Utils.max(Selection.row, 10)
+    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhuma transferência válida selecionada"
@@ -34,8 +38,8 @@ Public Sub downloadSelectedChargePdfs()
     Dim service As String
     service = "charge"
     
-    initRow = Utils.Max(Selection.row, 10)
-    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    initRow = Utils.max(Selection.row, 10)
+    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhum boleto válido selecionado"
@@ -51,11 +55,28 @@ Public Sub downloadSelectedChargePaymentPdfs()
     Dim service As String
     service = "charge-payment"
     
-    initRow = Utils.Max(Selection.row, 10)
-    lastRow = Utils.Min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    initRow = Utils.max(Selection.row, 10)
+    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhum pagamento válido selecionado"
+        Exit Sub
+    End If
+    
+    Call downloadPdfRange(service, initRow, lastRow)
+End Sub
+
+Public Sub downloadSelectedInvoicePdfs()
+    Dim initRow As Long
+    Dim lastRow As Long
+    Dim service As String
+    service = "invoice"
+    
+    initRow = Utils.max(Selection.row, 10)
+    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    
+    If initRow > lastRow Then
+        MsgBox "Nenhuma Invoice válida selecionada"
         Exit Sub
     End If
     
@@ -67,11 +88,25 @@ Public Function downloadSinglePdf(service, id As String, folder As String)
     Dim success As Boolean
     Dim path As String
     Dim filepath As String
+    Dim version As String
     
-    path = "/v1/" + service + "/" + id + "/pdf"
+    Select Case service
+        Case "invoice"
+            version = "v2"
+        Case Else
+            version = "v1"
+    End Select
+    
+    path = "/" + version + "/" + service + "/" + id + "/pdf"
     filepath = folder + "/" + service + "-" + id + ".pdf"
     
-    downloadSinglePdf = StarkBankApi.downloadRequest(path, filepath, New Dictionary)
+    Select Case service
+        Case "invoice"
+            downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary)
+        Case Else
+            downloadSinglePdf = StarkBankApi.downloadRequest(path, filepath, New Dictionary)
+    End Select
+    
 End Function
 
 Public Sub downloadPdfRange(service As String, initRow, lastRow)
@@ -149,6 +184,9 @@ Public Function ColumnId(service As String)
             ColumnId = "B"
         Case "charge"
             Worksheets("Consulta de Boletos Emitidos").Activate
+            ColumnId = "M"
+        Case "invoice"
+            Worksheets("Consulta de Invoices Emitidas").Activate
             ColumnId = "M"
         Case "charge-payment"
             Worksheets("Consulta de Pagamento Boletos").Activate

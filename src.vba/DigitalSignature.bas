@@ -1,18 +1,18 @@
 Public Function mailToken()
     Dim resp As response
     Dim dict As New Dictionary
-    Dim result As New Dictionary
+    Dim Result As New Dictionary
     
     Set resp = StarkBankApi.postRequest("/v1/auth/public-key/token", "", New Dictionary)
     
     If resp.Status = 200 Then
-        result.Add "success", resp.json()
-        result.Add "error", New Dictionary
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
     Else
-        result.Add "success", New Dictionary
-        result.Add "error", resp.error()
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
     End If
-    Set mailToken = result
+    Set mailToken = Result
 End Function
 
 Public Function sendPublicKey(workspaceId As String, memberId As String, token As String, keyPath As String)
@@ -22,7 +22,7 @@ Public Function sendPublicKey(workspaceId As String, memberId As String, token A
     Dim publicKeyContent As String
     Dim headers As New Dictionary
     Dim dict As New Dictionary
-    Dim result As New Dictionary
+    Dim Result As New Dictionary
     Dim file_name As String
     Dim file_length As Long
     Dim fnum As Integer
@@ -51,11 +51,11 @@ Public Function sendPublicKey(workspaceId As String, memberId As String, token A
     Set resp = StarkBankApi.uploadRequest("/v1/auth/public-key", payload, headers, boundary)
     
     If resp.Status = 200 Then
-        result.Add "success", resp.json()
-        result.Add "error", New Dictionary
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
     Else
-        result.Add "success", New Dictionary
-        result.Add "error", resp.error()
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
     End If
-    Set sendPublicKey = result
+    Set sendPublicKey = Result
 End Function

@@ -2,7 +2,7 @@ Public Function randomPointOnCurve(px As String, py As String, n As String, a As
     Dim resp As response
     Dim payload As String
     Dim dict As New Dictionary
-    Dim result As New Dictionary
+    Dim Result As New Dictionary
     
     dict.Add "Gx", px
     dict.Add "Gy", py
@@ -15,13 +15,13 @@ Public Function randomPointOnCurve(px As String, py As String, n As String, a As
     Set resp = StarkBankApi.externalPostRequest("https://us-central1-api-ms-auth-sbx.cloudfunctions.net/ellipticCurveMath", payload)
     
     If resp.Status = 200 Then
-        result.Add "success", resp.json()
-        result.Add "error", New Dictionary
-        Set randomPointOnCurve = result
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
+        Set randomPointOnCurve = Result
     Else
-        result.Add "success", New Dictionary
-        result.Add "error", resp.error()
-        Set randomPointOnCurve = result
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
+        Set randomPointOnCurve = Result
     End If
 
 End Function

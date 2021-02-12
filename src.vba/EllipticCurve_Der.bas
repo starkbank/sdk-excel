@@ -21,7 +21,7 @@ Public Function removeObject(strHexa As String) As String
     Dim endseq As String: endseq = BigIntMath.Add("1", BigIntMath.Add(lenghts(0), lenghts(1)))
     
     Dim body As String: body = Utils.getSubByteArray(strHexa, 1 + CInt(lenghts(1)), CInt(endseq) - 1)
-    Dim rest As String: rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
+    Dim Rest As String: Rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
     
     Dim n As String, ll As Integer, numbers() As String, numbersRead() As String, i As Integer: i = 0
     While body <> vbNullString
@@ -50,7 +50,7 @@ Public Function removeObject(strHexa As String) As String
     Next
     respNumbers = Left(respNumbers, Len(respNumbers) - 1)
     
-    removeObject = respNumbers & "," & rest
+    removeObject = respNumbers & "," & Rest
 End Function
 
 Public Function removeConstructed(strHexa As String) As String
@@ -66,9 +66,9 @@ Public Function removeConstructed(strHexa As String) As String
     Dim endseq As String: endseq = BigIntMath.Add("1", BigIntMath.Add(lenghts(0), lenghts(1)))
     
     Dim body As String: body = Utils.getSubByteArray(strHexa, 1 + CInt(lenghts(1)), CInt(endseq) - 1)
-    Dim rest As String: rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
+    Dim Rest As String: Rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
     
-    removeConstructed = tag & "," & body & "," & rest
+    removeConstructed = tag & "," & body & "," & Rest
 End Function
 
 Public Function removeOctetString(strHexa As String) As String
@@ -81,9 +81,9 @@ Public Function removeOctetString(strHexa As String) As String
     Dim endseq As String: endseq = BigIntMath.Add("1", BigIntMath.Add(lenghts(0), lenghts(1)))
     
     Dim body As String: body = Utils.getSubByteArray(strHexa, 1 + CInt(lenghts(1)), CInt(endseq) - 1)
-    Dim rest As String: rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
+    Dim Rest As String: Rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
     
-    removeOctetString = body & "," & rest
+    removeOctetString = body & "," & Rest
 End Function
 
 Public Function removeSequence(strByte() As Byte) As String
@@ -113,12 +113,12 @@ Public Function removeInteger(strHexa As String) As String
     Dim endseq As String: endseq = BigIntMath.Add("1", BigIntMath.Add(lenghts(0), lenghts(1)))
     
     Dim numberbytes As String: numberbytes = Utils.getSubByteArray(strHexa, 1 + CInt(lenghts(1)), CInt(endseq) - 1)
-    Dim rest As String: rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
+    Dim Rest As String: Rest = Utils.getSubByteArray(strHexa, CInt(endseq), -1)
     
     Dim nbytes As String: nbytes = BigIntMath.BigIntFromString(Left(strHexa, 2), 16)
     Debug.Assert nbytes < 128
     
-    removeInteger = BigIntMath.BigIntFromString(numberbytes, 16) & "," & rest
+    removeInteger = BigIntMath.BigIntFromString(numberbytes, 16) & "," & Rest
 End Function
 
 Public Function readNumber(strHexa As String) As String

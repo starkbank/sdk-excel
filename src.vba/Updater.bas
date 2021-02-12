@@ -30,6 +30,19 @@ Err:
     Exit Sub
 End Sub
 
+Public Function OpensslRoutine()
+    OpensslRoutine = False
+    If getGitDir() = "" Then
+        ViewOpensslForm.Show
+        Exit Function
+    End If
+    If dir(getOpensslDir()) = "" Then
+        ViewOpensslForm.Show
+        Exit Function
+    End If
+    OpensslRoutine = True
+End Function
+
 Public Function UpdateVersionNumber(newVersion As String)
     Sheets("Credentials").Cells(9, 2) = newVersion
     Sheets("Principal").Cells(1, 7) = "SDK Stark Bank - " & newVersion
