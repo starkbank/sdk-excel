@@ -25,7 +25,6 @@ Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Cancelados"
     Me.StatusBox.AddItem "Expirados"
     
-    
     Me.StatusBox.Value = "Todos"
     Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
     Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
@@ -33,6 +32,13 @@ End Sub
 
 Private Sub SearchButton_Click()
     ' On Error Resume Next
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Unload Me
+        Exit Sub
+    End If
+    
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
     
@@ -71,7 +77,7 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Vencimento"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Pagável até"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Copia e Cola (BR Code)"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Id do Boleto"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Id da Invoice"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Tarifa"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 15).Value = "Tags"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 16).Value = "Link PDF"
@@ -117,12 +123,10 @@ Private Sub SearchButton_Click()
             Dim interestAmount As Double: interestAmount = invoice("interestAmount") / 100
             Dim fee As Double: fee = invoice("fee") / 100
             Dim issueDate As String: issueDate = invoice("created")
-            Dim updated As String: updated = invoice("updated")
             Dim invoiceStatus As String: invoiceStatus = invoice("status")
             Dim dueDate As String: dueDate = invoice("due")
             Dim expiration As Long: expiration = invoice("expiration")
             Dim tags As Collection: Set tags = invoice("tags")
-            
             Dim expirationDate As Date: expirationDate = DateAdd("s", expiration, Utils.DatefromIsoString(dueDate))
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)

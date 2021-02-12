@@ -24,18 +24,24 @@ Public Sub UpdateRoutine()
     Else
         MsgBox "Atualização cancelada."
     End If
-    OpensslRoutine
     Exit Sub
 Err:
     MsgBox "Não foi possível verificar atualizações. Favor checar a conexão."
     Exit Sub
 End Sub
 
-Public Sub OpensslRoutine()
+Public Function OpensslRoutine()
+    OpensslRoutine = False
     If getGitDir() = "" Then
         ViewOpensslForm.Show
+        Exit Function
     End If
-End Sub
+    If dir(getOpensslDir()) = "" Then
+        ViewOpensslForm.Show
+        Exit Function
+    End If
+    OpensslRoutine = True
+End Function
 
 Public Function UpdateVersionNumber(newVersion As String)
     Sheets("Credentials").Cells(9, 2) = newVersion

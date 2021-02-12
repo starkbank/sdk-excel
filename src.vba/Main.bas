@@ -1,5 +1,7 @@
 Public Sub signIn()
-    SignInForm.Show
+    If OpensslRoutine Then
+        SignInForm.Show
+    End If
 End Sub
 
 Public Sub signOut()
@@ -220,7 +222,7 @@ Public Sub createCharges()
             Dim errorDescription As String
             
             For Each error In errors
-                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
+                errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow) - 1)
                 errorList = errorList & errorDescription & Chr(10)
             Next
             
@@ -239,6 +241,12 @@ Public Sub createCharges()
 End Sub
 
 Public Sub createInvoices()
+
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
     Dim invoices As Collection
     Dim resp As response
     Dim initRow As Long
@@ -289,7 +297,7 @@ Public Sub createInvoices()
             
             For Each error In errors
                 Debug.Print error("message")
-                errorDescription = Utils.correctErrorLine(error("message"), CInt(initRow))
+                errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
             

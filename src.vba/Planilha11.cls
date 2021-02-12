@@ -1,6 +1,3 @@
-Private Sub GetChargesButton_Click()
-    Main.searchCharges
-End Sub
 
 Private Sub SignInButton_Click()
     Call Main.signIn

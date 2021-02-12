@@ -185,6 +185,9 @@ Public Function ColumnId(service As String)
         Case "charge"
             Worksheets("Consulta de Boletos Emitidos").Activate
             ColumnId = "M"
+        Case "invoice"
+            Worksheets("Consulta de Invoices Emitidas").Activate
+            ColumnId = "M"
         Case "charge-payment"
             Worksheets("Consulta de Pagamento Boletos").Activate
             ColumnId = "H"

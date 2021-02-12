@@ -19,7 +19,6 @@ Public Function defaultHeaders(payload As String)
     
     accessTime = toUnix(Now)
     message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
-    Debug.Print (message)
     
     Dim pk As PrivateKey: Set pk = New PrivateKey
     pk.fromPem (getSessionPrivateKeyContent)
@@ -46,7 +45,6 @@ Public Function pdfHeaders(payload As String)
     
     accessTime = toUnix(Now)
     message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
-    Debug.Print (message)
     
     Dim pk As PrivateKey: Set pk = New PrivateKey
     pk.fromPem (getSessionPrivateKeyContent)
@@ -54,7 +52,6 @@ Public Function pdfHeaders(payload As String)
     Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
     Dim signature64 As String: signature64 = signature.toBase64()
     
-    accessTime = toUnix(Now)
     Result.Add "Accept-Language", "pt-BR"
     Result.Add "Access-Time", accessTime
     Result.Add "Access-Id", getAccessId()

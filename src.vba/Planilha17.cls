@@ -1,6 +1,3 @@
-Private Sub CreateChargesButton_Click()
-    Main.createCharges
-End Sub
 
 Private Sub SignInButton_Click()
     Call Main.signIn

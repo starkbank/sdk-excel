@@ -313,6 +313,10 @@ On Error GoTo 0
 IsInArray = False
 End Function
 
+Public Function isSignedin()
+    isSignedin = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
+End Function
+
 Function GetFolder() As String
     Dim fldr As FileDialog
     Dim sItem As String
