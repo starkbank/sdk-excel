@@ -108,7 +108,7 @@ Public Function sessionPrivateKeyContent() As String
     Dim sessionPrivateKeyPath
     sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
     Call Shell("""" + getOpensslDir() + """ ecparam -name secp256k1 -genkey -out """ + sessionPrivateKeyPath + """")
-    Application.Wait Now + #12:00:01 AM#
+    Application.Wait Now + #12:00:02 AM#
     
     Open sessionPrivateKeyPath For Input As #1
     Do Until EOF(1)
@@ -124,8 +124,8 @@ Public Function sessionPublicKeyContent() As String
     Dim sessionPublicKeyPath
     sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
     sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
-    Call Shell("""C:\Program Files\Git\cmd\..\usr\bin\openssl.exe"" ec -in """ + sessionPrivateKeyPath + """ -pubout -out """ + sessionPublicKeyPath + """")
-    Application.Wait Now + #12:00:01 AM#
+    Call Shell("""" + getOpensslDir() + """ ec -in """ + sessionPrivateKeyPath + """ -pubout -out """ + sessionPublicKeyPath + """")
+    Application.Wait Now + #12:00:02 AM#
     
     Open sessionPublicKeyPath For Input As #1
     Do Until EOF(1)
