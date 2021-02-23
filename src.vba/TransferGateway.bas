@@ -13,6 +13,7 @@ Public Function getStatusInPt(Status As String)
         Case "processing":  getStatusInPt = "processando"
         Case "failed":  getStatusInPt = "falha"
         Case "unknown":  getStatusInPt = "desconhecido"
+        Case "canceled": getStatusInPt = "cancelado"
     End Select
 End Function
 

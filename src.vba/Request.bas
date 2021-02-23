@@ -27,6 +27,7 @@ End Function
 Public Function download(url As String, path As String, headers As Dictionary) As Boolean
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open "GET", url, False
+    Dim filepath As String
     
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
@@ -34,13 +35,13 @@ Public Function download(url As String, path As String, headers As Dictionary) A
     
     On Error GoTo eh:
     objHTTP.send
-    
     If objHTTP.Status = 200 Then
         Set oStream = CreateObject("ADODB.Stream")
         oStream.Open
         oStream.Type = 1
         oStream.Write objHTTP.responseBody
-        oStream.SaveToFile path, 2 ' 1 = no overwrite, 2 = overwrite
+        filepath = path + Split(objHTTP.getResponseHeader("Content-Disposition"), "filename=")(1)
+        oStream.SaveToFile filepath, 2 ' 1 = no overwrite, 2 = overwrite
         oStream.Close
         download = True
     Else

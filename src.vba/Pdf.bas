@@ -98,7 +98,7 @@ Public Function downloadSinglePdf(service, id As String, folder As String)
     End Select
     
     path = "/" + version + "/" + service + "/" + id + "/pdf"
-    filepath = folder + "/" + service + "-" + id + ".pdf"
+    filepath = folder + "/"
     
     Select Case service
         Case "invoice"

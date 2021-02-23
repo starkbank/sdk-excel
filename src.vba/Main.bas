@@ -137,7 +137,7 @@ Public Sub searchCustomers()
     row = 10
 
     Do
-        Set respJson = getCustomers(cursor, optionalParam)
+        Set respJson = ChargeGateway.getCustomers(cursor, optionalParam)
 
         cursor = ""
         If respJson("cursor") <> "" Then
