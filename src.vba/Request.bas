@@ -24,10 +24,11 @@ eh:
     Set fetch = resp
 End Function
 
-Public Function download(url As String, path As String, headers As Dictionary) As Boolean
+Public Function download(url As String, path As String, headers As Dictionary, fallbackName As String) As Boolean
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open "GET", url, False
     Dim filepath As String
+    Dim disposition As String
     
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
@@ -40,7 +41,12 @@ Public Function download(url As String, path As String, headers As Dictionary) A
         oStream.Open
         oStream.Type = 1
         oStream.Write objHTTP.responseBody
-        filepath = path + Split(objHTTP.getResponseHeader("Content-Disposition"), "filename=")(1)
+        disposition = objHTTP.getResponseHeader("Content-Disposition")
+        If disposition <> "" Then
+            filepath = path + Split(objHTTP.getResponseHeader("Content-Disposition"), "filename=")(1)
+        Else
+            filepath = path + fallbackName
+        End If
         oStream.SaveToFile filepath, 2 ' 1 = no overwrite, 2 = overwrite
         oStream.Close
         download = True
