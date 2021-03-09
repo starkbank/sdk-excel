@@ -43,7 +43,7 @@ Public Function download(url As String, path As String, headers As Dictionary, f
         oStream.Write objHTTP.responseBody
         disposition = objHTTP.getResponseHeader("Content-Disposition")
         If disposition <> "" Then
-            filepath = path + Split(objHTTP.getResponseHeader("Content-Disposition"), "filename=")(1)
+            filepath = path + Split(disposition, "filename=")(1)
         Else
             filepath = path + fallbackName
         End If

@@ -180,6 +180,9 @@ End Sub
 
 Public Function getFallbackName(row As Long, id As String, service As String)
     getFallbackName = id + ".pdf"
+    If service = "transfer" Then
+        getFallbackName = Format(ActiveSheet.Cells(row, 1), "yyyy-mm-dd") + " - " + Replace(ActiveSheet.Cells(row, 3).text, "R$", "R$ ") + " - " + CStr(ActiveSheet.Cells(row, 5).Value) + ".pdf"
+    End If
 End Function
 
 Public Function ColumnId(service As String)
