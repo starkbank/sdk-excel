@@ -84,7 +84,7 @@ Public Sub downloadSelectedInvoicePdfs()
 End Sub
 
 
-Public Function downloadSinglePdf(service, id As String, folder As String)
+Public Function downloadSinglePdf(service, id As String, folder As String, fallbackName As String)
     Dim success As Boolean
     Dim path As String
     Dim filepath As String
@@ -102,18 +102,20 @@ Public Function downloadSinglePdf(service, id As String, folder As String)
     
     Select Case service
         Case "invoice"
-            downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary)
+            downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
         Case Else
-            downloadSinglePdf = StarkBankApi.downloadRequest(path, filepath, New Dictionary)
+            downloadSinglePdf = StarkBankApi.downloadRequest(path, filepath, New Dictionary, fallbackName)
     End Select
     
 End Function
 
-Public Sub downloadPdfRange(service As String, initRow, lastRow)
+Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
     Dim numberEntities As Integer
+    Dim i As Long
     Dim folder As String
     Dim idColumn As String
     Dim entityId As String
+    Dim fallbackName As String
     Dim success As Boolean
     Dim anyFailed As Boolean
     Dim tooMany As Boolean
@@ -145,7 +147,8 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
     If Not tooMany Then
         For i = initRow To lastRow
             entityId = CStr(Cells(i, idColumn).Value)
-            success = downloadSinglePdf(service, entityId, folder)
+            fallbackName = getFallbackName(i, entityId, service)
+            success = downloadSinglePdf(service, entityId, folder, fallbackName)
             If Not success Then
                 anyFailed = True
             Else
@@ -162,7 +165,6 @@ Public Sub downloadPdfRange(service As String, initRow, lastRow)
     End If
 End Sub
 
-
 Public Sub downloadAllPdfs(service As String)
     Dim initRow As Long
     Dim lastRow As Long
@@ -175,6 +177,13 @@ Public Sub downloadAllPdfs(service As String)
 
     Call downloadPdfRange(service, initRow, lastRow)
 End Sub
+
+Public Function getFallbackName(row As Long, id As String, service As String)
+    getFallbackName = id + ".pdf"
+    If service = "transfer" Then
+        getFallbackName = Format(ActiveSheet.Cells(row, 1), "yyyy-mm-dd") + " - " + Replace(ActiveSheet.Cells(row, 3).text, "R$", "R$ ") + " - " + CStr(ActiveSheet.Cells(row, 5).Value) + ".pdf"
+    End If
+End Function
 
 Public Function ColumnId(service As String)
     

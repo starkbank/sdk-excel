@@ -99,7 +99,7 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
     Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
 End Function
 
-Public Function downloadRequest(path As String, filepath As String, headers As Dictionary) As Boolean
+Public Function downloadRequest(path As String, filepath As String, headers As Dictionary, fallbackName As String) As Boolean
     Dim url As String: url = baseUrl() + path
     Dim defHeaders As New Dictionary
     
@@ -109,7 +109,7 @@ Public Function downloadRequest(path As String, filepath As String, headers As D
         headers.Add key, defHeaders(key)
     Next
     
-    downloadRequest = Request.download(url, filepath, headers)
+    downloadRequest = Request.download(url, filepath, headers, fallbackName)
 End Function
 
 Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)
