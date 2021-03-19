@@ -27,7 +27,7 @@ Public Sub signOut()
     
     Call SessionGateway.saveSession("", "", "", "", "", "")
     For Each WS In ThisWorkbook.Worksheets
-        If WS.name <> "Credentials" And WS.name <> "InputLog" Then
+        If WS.name <> "Credentials" And WS.name <> "InputLog" And WS.name <> "Aux" Then
         
             WS.Cells(2, 1).Value = ""
             WS.Cells(3, 1).Value = ""
@@ -45,7 +45,7 @@ End Sub
 
 Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
-        If WS.name <> "Principal" Then
+        If WS.name <> "Principal" And WS.name <> "Aux" Then
             WS.Cells.UnMerge
             WS.Range("A10:Z" & Rows.Count).ClearContents
             If WS.name = "InputLog" Then

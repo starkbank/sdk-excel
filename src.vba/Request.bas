@@ -2,8 +2,10 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     
-'    Debug.Print url
-'    Debug.Print payload
+    If DebugModeOn() Then
+        DebugPrint "url", url
+        DebugPrint "request", payload
+    End If
     For Each key In headers.keys()
         objHTTP.setRequestHeader key, headers(key)
     Next
@@ -15,7 +17,9 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     
     resp.Status = objHTTP.Status
     resp.content = objHTTP.responseText
-'    Debug.Print resp.content
+    If DebugModeOn() Then
+        DebugPrint "response", resp.content
+    End If
     Set fetch = resp
     Exit Function
 eh:

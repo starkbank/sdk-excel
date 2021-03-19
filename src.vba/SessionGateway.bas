@@ -40,7 +40,7 @@ Public Sub displayMemberInfo()
     balanceMessage = "Saldo: " + SessionGateway.getBalance()
     
     For Each WS In ThisWorkbook.Worksheets
-        If WS.name <> "Credentials" And WS.name <> "InputLog" Then
+        If WS.name <> "Credentials" And WS.name <> "InputLog" And WS.name <> "Aux" Then
             WS.Cells(2, 1).Value = helloMessage
             WS.Cells(3, 1).Value = workspaceMessage
             WS.Cells(4, 1).Value = workspaceId
