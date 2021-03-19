@@ -27,7 +27,7 @@ Private Sub SendButton_Click()
     Dim respMessage As String
     Dim teamInfo As String: teamInfo = TeamBox.Value
     
-    Call Utils.applyStandardLayout("H")
+    Call Utils.applyStandardLayout("I")
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
@@ -36,12 +36,13 @@ Private Sub SendButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Código do Banco/ISPB"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Agência"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Conta"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tags"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Descrição"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "externalId"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tipo de Conta"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "externalId"
     
     If Sheets("Credentials").Cells(7, 2) <> Date Then
-        ActiveSheet.Range("I10:I" & Rows.Count).ClearContents
+        ActiveSheet.Range("J10:J" & Rows.Count).ClearContents
     End If
     
     Sheets("Credentials").Cells(7, 2) = Date

@@ -31,6 +31,16 @@ Public Sub clearOrders()
     Sheets("Transferências Com Aprovação").Range("A10:Z" & Rows.Count).ClearContents
 End Sub
 
+Public Function getAccountType(accountType As Variant) As String
+    Select Case accountType
+        Case "": getAccountType = "checking"
+        Case "Corrente":  getAccountType = "checking"
+        Case "Poupança":  getAccountType = "savings"
+        Case "Salário":  getAccountType = "salary"
+        Case Else:  getAccountType = "checking"
+    End Select
+End Function
+
 Public Function createOrders(teamId As String)
     Dim orders As New Collection
     Dim orderNumbers As New Collection
@@ -62,6 +72,7 @@ Public Function createOrders(teamId As String)
         Dim bankCode As String
         Dim branchCode As String
         Dim accountNumber As String
+        Dim accountType As String
         Dim tags() As String
         Dim description As String
         Dim order As Dictionary
@@ -74,12 +85,13 @@ Public Function createOrders(teamId As String)
             Unload SendOrderForm
             End
         End If
-        amount = getAmountLong((obj("Valor")))
+        amount = getAmountLong(obj("Valor"))
         taxId = Trim(obj("CPF/CNPJ"))
         name = Trim(obj("Nome"))
         bankCode = Trim(obj("Código do Banco/ISPB"))
         branchCode = Trim(obj("Agência"))
         accountNumber = Trim(obj("Conta"))
+        accountType = getAccountType(obj("Tipo de Conta"))
         tags = Split(obj("Tags"), ",")
         description = obj("Descrição")
         externalId = obj("externalId")
@@ -89,7 +101,7 @@ Public Function createOrders(teamId As String)
         If calculatedExternalId = externalId Then
             warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados!" + Chr(10) + Chr(10)
         Else
-            Set order = TeamGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, tags, description)
+            Set order = TeamGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, tags, description)
             orders.Add order
             orderNumbers.Add iteration
             externalIds.Add calculatedExternalId
@@ -115,7 +127,7 @@ Public Function createOrders(teamId As String)
                 returnMessage = returnMessage + rowsMessage(startRow, currentRow) + resp.json()("message") + Chr(10)
                 Dim j As Integer
                 For j = 1 To externalIds.Count
-                    ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 9).Value = externalIds.Item(j)
+                    ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 10).Value = externalIds.Item(j)
                 Next j
                 
             ElseIf resp.error().Exists("errors") Then
@@ -148,7 +160,7 @@ nextIteration:
     End If
 End Function
 
-Public Function order(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String, description As String) As Dictionary
+Public Function order(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, accountType As String, tags() As String, description As String) As Dictionary
     Dim dict As New Dictionary
     
     dict.Add "amount", amount
@@ -157,6 +169,7 @@ Public Function order(amount As Long, taxId As String, name As String, bankCode 
     dict.Add "bankCode", bankCode
     dict.Add "branchCode", branchCode
     dict.Add "accountNumber", accountNumber
+    dict.Add "accountType", accountType
     dict.Add "tags", tags
     dict.Add "description", description
     

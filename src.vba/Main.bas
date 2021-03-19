@@ -45,7 +45,7 @@ End Sub
 
 Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
-        If WS.name <> "Principal" Then
+        If WS.name <> "Principal" And WS.name <> "Aux" Then
             WS.Cells.UnMerge
             WS.Range("A10:Z" & Rows.Count).ClearContents
             If WS.name = "InputLog" Then
