@@ -17,7 +17,9 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     
     resp.Status = objHTTP.Status
     resp.content = objHTTP.responseText
+    If DebugModeOn() Then
         DebugPrint "response", resp.content
+    End If
     Set fetch = resp
     Exit Function
 eh:

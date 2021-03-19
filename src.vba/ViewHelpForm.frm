@@ -4,6 +4,7 @@ Private Sub CreateLogButton_Click()
     Dim lastRow As Long
     Dim filename As String
     Dim filepath As String
+    Dim datetimenow As String
     
     initRow = 10
     lastRow = CurrentDebugRow() - 1
@@ -12,11 +13,11 @@ Private Sub CreateLogButton_Click()
         MsgBox "Não há nenhuma entrada de log para ser salva. Ative o Modo Debug e execute alguma operação.", vbExclamation
         Exit Sub
     End If
-    filename = "starkbank-sdk-excel-log-" + getCurrentVersion() + "-" + Replace(CStr(Now), ":", "-") + ".log"
+    datetimenow = Format(Now, "yyyy-mm-ddTh-nn-ss")
+    filename = "starkbank-sdk-excel-log-" + getCurrentVersion() + "-" + datetimenow + ".log"
     filepath = ThisWorkbook.path + "\" + filename
-    Debug.Print filepath
     Open filepath For Output As #1
-    Print #1, "Potato"
+    Print #1, "Datetime;Type;Data"
     With Sheets("InputLog")
         For i = initRow To lastRow
             Print #1, CStr(.Cells(i, 1)) + ";" + CStr(.Cells(i, 2)) + ";" + CStr(.Cells(i, 3))
