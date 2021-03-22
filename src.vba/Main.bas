@@ -296,7 +296,6 @@ Public Sub createInvoices()
             Dim errorDescription As String
             
             For Each error In errors
-                Debug.Print error("message")
                 errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
@@ -397,4 +396,8 @@ End Sub
 
 Public Sub searchChargePayments()
     ViewChargePaymentForm.Show
+End Sub
+
+Public Sub searchPaymentRequests()
+    ViewRequestForm.Show
 End Sub

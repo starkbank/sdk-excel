@@ -1,3 +1,9 @@
+
+Public Sub Principal()
+    name = "Principal"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoAssinatura()
     name = "Assinatura Digital"
     ThisWorkbook.Sheets(name).Activate
@@ -63,8 +69,8 @@ Public Sub BotaoEmissaoBoletos()
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
-Public Sub Principal()
-    name = "Principal"
+Public Sub BotaoConsultaAprovacoes()
+    name = "Consulta de Aprovações"
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
