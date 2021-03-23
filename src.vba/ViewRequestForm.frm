@@ -69,9 +69,9 @@ Private Sub SearchButton_Click()
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
-    Utils.applyStandardLayout ("K")
+    Utils.applyStandardLayout ("M")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":K" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":M" & Rows.Count).ClearContents
     
     'Date parameters
     If after <> "--" Then
@@ -160,22 +160,25 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 5).Value = paymentRequestedBy
             ActiveSheet.Cells(row, 6).Value = getRequestStatusInPt(paymentRequestStatus)
             ActiveSheet.Cells(row, 7).Value = payment("id")
-            ActiveSheet.Cells(row, 11).Value = CollectionToString(paymentRequest("tags"))
+            ActiveSheet.Cells(row, 8).Value = CollectionToString(paymentRequest("tags"))
             
             Select Case paymentType
                 Case "transfer":
-                    ActiveSheet.Cells(row, 8).Value = payment("bankCode")
-                    ActiveSheet.Cells(row, 9).Value = payment("branchCode")
-                    ActiveSheet.Cells(row, 10).Value = payment("accountNumber")
+                    ActiveSheet.Cells(row, 9).Value = payment("name")
+                    ActiveSheet.Cells(row, 10).Value = payment("taxId")
+                    ActiveSheet.Cells(row, 11).Value = payment("bankCode")
+                    ActiveSheet.Cells(row, 12).Value = payment("branchCode")
+                    ActiveSheet.Cells(row, 13).Value = payment("accountNumber")
                 Case "boleto-payment":
-                    ActiveSheet.Cells(row, 8).Value = getBarcodeOrLine(payment)
+                    ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
+                    ActiveSheet.Cells(row, 10).Value = payment("taxId")
                 Case "utility-payment":
-                    ActiveSheet.Cells(row, 8).Value = getBarcodeOrLine(payment)
+                    ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
                 Case "tax-payment":
-                    ActiveSheet.Cells(row, 8).Value = getBarcodeOrLine(payment)
+                    ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
                 Case "brcode-payment":
-                    ActiveSheet.Cells(row, 8).Value = getBrcodeType(payment("type"))
                     ActiveSheet.Cells(row, 9).Value = payment("brcode")
+                    ActiveSheet.Cells(row, 10).Value = payment("taxId")
                 Case Else:
             End Select
             row = row + 1
@@ -195,29 +198,39 @@ Sub ViewRequestHeaderInitialize(paymentType As String)
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Solicitado por"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Status"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "ID do pagamento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
     
     Select Case paymentType
         Case "transfer":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Código do Banco / ISPB"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Agência"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Conta"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Nome"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Código do Banco / ISPB"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Agência"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Conta"
         Case "boleto-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Linha Digitável / Código de Barras"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = ""
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Linha Digitável / Código de Barras"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
         Case "utility-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Linha Digitável / Código de Barras"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Linha Digitável / Código de Barras"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
         Case "tax-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Linha Digitável / Código de Barras"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Linha Digitável / Código de Barras"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
         Case "brcode-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tipo de QR Code"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Copia e Cola (BR Code)"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
         Case Else:
     End Select
     Call FreezeHeader
