@@ -399,5 +399,9 @@ Public Sub searchChargePayments()
 End Sub
 
 Public Sub searchPaymentRequests()
+    If Not isSignedin() Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
     ViewRequestForm.Show
 End Sub

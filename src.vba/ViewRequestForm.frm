@@ -6,12 +6,6 @@ Private Sub UserForm_Initialize()
     Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
     Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
     
-    If Not isSignedin() Then
-        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
-        Unload Me
-        Exit Sub
-    End If
-    
     Do
         Set respJson = getCostCenters(cursor, New Dictionary)
     
@@ -170,15 +164,15 @@ Private Sub SearchButton_Click()
                     ActiveSheet.Cells(row, 12).Value = payment("branchCode")
                     ActiveSheet.Cells(row, 13).Value = payment("accountNumber")
                 Case "boleto-payment":
-                    ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
-                    ActiveSheet.Cells(row, 10).Value = payment("taxId")
+                    ActiveSheet.Cells(row, 9).Value = payment("taxId")
+                    ActiveSheet.Cells(row, 10).Value = getBarcodeOrLine(payment)
                 Case "utility-payment":
                     ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
                 Case "tax-payment":
                     ActiveSheet.Cells(row, 9).Value = getBarcodeOrLine(payment)
                 Case "brcode-payment":
-                    ActiveSheet.Cells(row, 9).Value = payment("brcode")
-                    ActiveSheet.Cells(row, 10).Value = payment("taxId")
+                    ActiveSheet.Cells(row, 9).Value = payment("taxId")
+                    ActiveSheet.Cells(row, 10).Value = payment("brcode")
                 Case Else:
             End Select
             row = row + 1
@@ -208,8 +202,8 @@ Sub ViewRequestHeaderInitialize(paymentType As String)
             ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Agência"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Conta"
         Case "boleto-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Linha Digitável / Código de Barras"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Linha Digitável / Código de Barras"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
             ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
             ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
@@ -226,8 +220,8 @@ Sub ViewRequestHeaderInitialize(paymentType As String)
             ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
             ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
         Case "brcode-payment":
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Copia e Cola (BR Code)"
-            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "CPF / CNPJ"
+            ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Copia e Cola (BR Code)"
             ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = ""
             ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = ""
             ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = ""
