@@ -116,6 +116,8 @@ Function correctErrorLine(ByVal errorMessage As String, offset As Integer) As St
     Dim lineNumber As Integer
     Dim message As String
     
+    message = errorMessage
+    
     With CreateObject("VBScript.RegExp")
         .Pattern = "(\w+) +(\d+):(.+)"
         .Global = True
@@ -367,7 +369,6 @@ Public Function getOpensslDir() As String
 End Function
 
 Public Function getGitDir()
-    Debug.Print
     Dim TextStrng As String
     Dim Result() As String
     Dim DisplayText As String

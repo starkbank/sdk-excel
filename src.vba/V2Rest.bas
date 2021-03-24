@@ -26,8 +26,6 @@ Public Function defaultHeaders(payload As String)
     Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
     Dim signature64 As String: signature64 = signature.toBase64()
     
-    Debug.Print (signature64)
-    
     Result.Add "Content-Type", "Application/json"
     Result.Add "Accept-Language", "pt-BR"
     Result.Add "Access-Time", accessTime

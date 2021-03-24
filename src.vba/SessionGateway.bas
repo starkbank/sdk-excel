@@ -191,7 +191,6 @@ Public Sub postSessionV2()
         Result.Add "success", New Dictionary
         Result.Add "error", resp.error()
     End If
-    Debug.Print JsonConverter.ConvertToJson(Result)
     accessId = Result("success")("session")("id")
     
     Sheets("Credentials").Cells(13, 2) = "session/" + accessId

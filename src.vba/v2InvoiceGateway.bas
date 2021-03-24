@@ -62,7 +62,6 @@ Public Function getInvoices(cursor As String, optionalParam As Dictionary)
     End If
     
     Set resp = V2Rest.getRequest("/v2/invoice", query, New Dictionary)
-    Debug.Print resp.Status
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
