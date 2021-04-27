@@ -135,7 +135,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
         Dim dueDate As String
         Dim fine As Single: fine = 2
         Dim interest As Single: interest = 1
-        Dim overdueLimit As Long: overdueLimit = 1416
+        Dim overdueLimit As Long: overdueLimit = CLng(59) * 24 * 3600
         Dim description1 As Dictionary: Set description1 = New Dictionary
         Dim description2 As Dictionary: Set description2 = New Dictionary
         Dim description3 As Dictionary: Set description3 = New Dictionary
@@ -148,7 +148,10 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
         amount = getAmountLong((obj("Valor")))
         name = Trim(obj("Nome do Cliente"))
         taxId = Trim(obj("CPF/CNPJ do Cliente"))
-        dueDate = Utils.DateToSendingFormat(Format(DateAdd("d", 1, obj("Data de Vencimento")), "dd/mm/yyyy")) + "T02:59:59.000+00:00"
+        
+        If obj("Data de Vencimento") <> "" Then
+            dueDate = Utils.DateToSendingFormat(Format(DateAdd("d", 1, obj("Data de Vencimento")), "dd/mm/yyyy")) + "T02:59:59.000+00:00"
+        End If
         
         If obj("Multa") <> "" Then
             fine = Utils.SingleFrom((obj("Multa")))
@@ -211,7 +214,9 @@ Public Function order(amount As Long, name As String, taxId As String, dueDate A
     dict.Add "amount", amount
     dict.Add "name", name
     dict.Add "taxId", taxId
-    dict.Add "due", dueDate
+    If dueDate <> "" Then
+        dict.Add "due", dueDate
+    End If
     dict.Add "fine", fine
     dict.Add "interest", interest
     dict.Add "expiration", overdueLimit
