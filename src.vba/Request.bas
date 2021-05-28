@@ -30,6 +30,11 @@ End Function
 
 Public Function download(url As String, path As String, headers As Dictionary, fallbackName As String) As Boolean
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
+    
+    If DebugModeOn() Then
+        DebugPrint "url", url
+    End If
+    
     objHTTP.Open "GET", url, False
     Dim filepath As String
     Dim disposition As String
@@ -56,6 +61,12 @@ Public Function download(url As String, path As String, headers As Dictionary, f
         download = True
     Else
 eh:
+        If DebugModeOn() And Err.number <> 0 Then
+            DebugPrint "error", "Error # " & str(Err.number)
+            DebugPrint "errorMessage", Err.Source & Chr(13) & "Error Line: " & Erl & Chr(13) & Err.description
+        ElseIf DebugModeOn() Then
+            DebugPrint "response", objHTTP.responseText
+        End If
         download = False
     End If
 End Function
