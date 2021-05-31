@@ -335,6 +335,15 @@ NextCode:
     Set fldr = Nothing
 End Function
 
+Public Function ReplaceFilenameChars(ByVal filename As String)
+    Const SpecialCharacters As String = "\,/,:,*,?,"",<,>,|"
+    Dim char As Variant
+    ReplaceFilenameChars = filename
+    For Each char In Split(SpecialCharacters, ",")
+        ReplaceFilenameChars = Replace(ReplaceFilenameChars, char, "_")
+    Next
+End Function
+
 Public Function ShellRun(sCmd As String) As String
 
     'Run a shell command, returning the output as a string
