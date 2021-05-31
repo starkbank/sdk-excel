@@ -52,10 +52,11 @@ Public Function download(url As String, path As String, headers As Dictionary, f
         oStream.Write objHTTP.responseBody
         disposition = objHTTP.getResponseHeader("Content-Disposition")
         If disposition <> "" Then
-            filepath = path + Split(disposition, "filename=")(1)
+            filename = Split(disposition, "filename=")(1)
         Else
-            filepath = path + fallbackName
+            filename = fallbackName
         End If
+        filepath = path + ReplaceFilenameChars(filename)
         oStream.SaveToFile filepath, 2 ' 1 = no overwrite, 2 = overwrite
         oStream.Close
         download = True
