@@ -169,7 +169,7 @@ Public Sub DeleteTempKeys()
     Kill sessionPublicKeyPath
 End Sub
 
-Public Sub postSessionV2()
+Public Sub postSessionV2(organizationAccess As Boolean)
     Dim payload As String
     Dim resp As response
     Dim Result As New Dictionary
@@ -179,6 +179,9 @@ Public Sub postSessionV2()
     dict.Add "platform", "web"
     dict.Add "expiration", 5184000
     dict.Add "publicKey", getSessionPublicKeyContent()
+    If organizationAccess Then
+        dict.Add "organization", True
+    End If
     
     payload = JsonConverter.ConvertToJson(dict)
     

@@ -73,6 +73,10 @@ Public Sub searchStatement()
     ViewStatementForm.Show
 End Sub
 
+Public Sub searchStatementGlobal()
+    ViewStatementGlobalForm.Show
+End Sub
+
 Public Sub sendOrders()
     On Error Resume Next
     SendOrderForm.Show
