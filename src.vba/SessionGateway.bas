@@ -169,7 +169,7 @@ Public Sub DeleteTempKeys()
     Kill sessionPublicKeyPath
 End Sub
 
-Public Sub postSessionV2()
+Public Sub postSessionV1()
     Dim payload As String
     Dim resp As response
     Dim Result As New Dictionary
