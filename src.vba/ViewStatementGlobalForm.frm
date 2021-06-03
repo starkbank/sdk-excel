@@ -77,8 +77,8 @@ Private Sub DownloadButton_Click()
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Número da Conta (Workspace ID)"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Username"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Username"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Número da Conta (Workspace ID)"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Tipo de transação"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Valor"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
@@ -98,7 +98,14 @@ Private Sub DownloadButton_Click()
     
     row = TableFormat.HeaderRow() + 1
     
-    For Each workspace In SheetParser.dict("Listar Contas")
+    Dim workspaceList As Collection: Set workspaceList = SheetParser.dict("Listar Contas")
+    If workspaceList.Count() = 0 Then
+        MsgBox "É necessário listar as contas antes de baixar o extrato!", vbExclamation
+        Unload Me
+        Exit Sub
+    End If
+    
+    For Each workspace In workspaceList
         Dim workspaceId As String: workspaceId = workspace("Número da Conta (Workspace ID)")
         Dim workspaceUsername As String: workspaceUsername = workspace("Username")
         
