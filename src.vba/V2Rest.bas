@@ -80,7 +80,7 @@ Public Function postRequest(path As String, payload As String, headers As Dictio
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
-    Set defHeaders = defaultHeaders(payload, accessId)
+    Set defHeaders = defaultHeaders(payload)
     For Each key In defHeaders.keys()
         headers.Add key, defHeaders(key)
     Next

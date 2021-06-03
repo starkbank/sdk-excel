@@ -72,17 +72,19 @@ Private Sub DownloadButton_Click()
     End If
     
     ActiveSheet.Cells.UnMerge
-    Call Utils.applyStandardLayout("H")
-    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
+    Call Utils.applyStandardLayout("I")
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":I" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Tipo de transação"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Descrição"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Id da Transação"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tarifa"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Número da Conta (Workspace ID)"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Username"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Tipo de transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Id da Transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tarifa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Tags"
 
     Call FreezeHeader
 
@@ -93,18 +95,13 @@ Private Sub DownloadButton_Click()
     If before <> "--" Then
         optionalParam.Add "before", before
     End If
-
-    Dim workspaceList As Collection
-    Set workspaceList = V2WorkspaceGateway.ListedWorkspaces()
-    If workspaceList.Count() = 0 Then
-        MsgBox "É necessário listar as contas antes de baixar o extrato!", vbExclamation
-        Unload Me
-        Exit Sub
-    End If
     
     row = TableFormat.HeaderRow() + 1
     
-    For Each workspaceId In workspaceList
+    For Each workspace In SheetParser.dict("Listar Contas")
+        Dim workspaceId As String: workspaceId = workspace("Número da Conta (Workspace ID)")
+        Dim workspaceUsername As String: workspaceUsername = workspace("Username")
+        
         Call postSessionV1(True, CStr(workspaceId))
         
         Do
@@ -141,18 +138,20 @@ Private Sub DownloadButton_Click()
                 
                 sign = transactionSign(transact("flow"))
                 ActiveSheet.Cells(row, 1).Value = transactionCreated
-                ActiveSheet.Cells(row, 2).Value = transactionType
-                ActiveSheet.Cells(row, 3).Value = CDbl(transact("amount")) / 100 * sign
+                ActiveSheet.Cells(row, 2).Value = workspaceUsername
+                ActiveSheet.Cells(row, 3).Value = workspaceId
+                ActiveSheet.Cells(row, 4).Value = transactionType
+                ActiveSheet.Cells(row, 5).Value = CDbl(transact("amount")) / 100 * sign
                 If sign > 0 Then
-                    ActiveSheet.Cells(row, 3).Font.Color = RGB(0, 140, 0)
+                    ActiveSheet.Cells(row, 5).Font.Color = RGB(0, 140, 120)
                 Else
-                    ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
+                    ActiveSheet.Cells(row, 5).Font.Color = RGB(180, 0, 150)
                 End If
                 
-                ActiveSheet.Cells(row, 5).Value = transact("description")
-                ActiveSheet.Cells(row, 6).Value = transactionId
-                ActiveSheet.Cells(row, 7).Value = transactionFee
-                ActiveSheet.Cells(row, 8).Value = CollectionToString(tags, ",")
+                ActiveSheet.Cells(row, 6).Value = transact("description")
+                ActiveSheet.Cells(row, 7).Value = transactionId
+                ActiveSheet.Cells(row, 8).Value = transactionFee
+                ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
                 
                 row = row + 1
     
@@ -162,7 +161,7 @@ Private Sub DownloadButton_Click()
     Next
     Dim lastRow As Long
     lastRow = Cells(Rows.Count, 2).End(xlUp).row
-    Range("A10:H" & lastRow).Sort key1:=Range("A10:A" & lastRow), order1:=xlDescending, header:=xlNo
+    Range("A10:I" & lastRow).Sort key1:=Range("A10:A" & lastRow), order1:=xlDescending, header:=xlNo
     Unload Me
 eh:
     

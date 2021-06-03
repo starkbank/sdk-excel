@@ -59,18 +59,6 @@ eh:
     
 End Sub
 
-Public Function ListedWorkspaces()
-    Dim workspaceIds As Collection
-    Set workspaceIds = New Collection
-    
-    For Each obj In SheetParser.dict("Listar Contas")
-        workspaceIds.Add obj("Número da Conta (Workspace ID)")
-        Debug.Print JsonConverter.ConvertToJson(obj)
-    Next
-    Set ListedWorkspaces = workspaceIds
-End Function
-
-
 Public Function getWorkspace(cursor As String)
     Dim query As String
     Dim resp As response

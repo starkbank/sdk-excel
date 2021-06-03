@@ -169,7 +169,7 @@ Public Sub DeleteTempKeys()
     Kill sessionPublicKeyPath
 End Sub
 
-Public Function postSessionV1(organizationAccess As Boolean, workspaceId As String)
+Public Sub postSessionV1(organizationAccess As Boolean, workspaceId As String)
     Dim payload As String
     Dim resp As response
     Dim Result As New Dictionary
@@ -192,11 +192,14 @@ Public Function postSessionV1(organizationAccess As Boolean, workspaceId As Stri
         Result.Add "success", resp.json()
         Result.Add "error", New Dictionary
     Else
+        Dim error As New Dictionary: Set error = resp.error()
         Result.Add "success", New Dictionary
-        Result.Add "error", resp.error()
+        Result.Add "error", error
+        MsgBox error("message")
+        Exit Sub
     End If
     
     Dim sessionId As String: sessionId = "session/" + Result("success")("session")("id")
     Sheets("Credentials").Cells(13, 2) = sessionId
     
-End Function
+End Sub
