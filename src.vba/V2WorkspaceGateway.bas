@@ -4,6 +4,13 @@ Public Sub ListWorkspace()
     Dim row As Integer
     Dim workspaceCreated As String
     
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
+    Call postSessionV1(True, "")
+    
     'Table layout
     Utils.applyStandardLayout ("E")
     Range("A10:E" & Rows.Count).ClearContents
@@ -20,7 +27,7 @@ Public Sub ListWorkspace()
     End With
     ActiveWindow.FreezePanes = True
     
-    row = 10
+    row = HeaderRow() + 1
     
     On Error GoTo eh
     Do
@@ -51,6 +58,17 @@ Public Sub ListWorkspace()
 eh:
     
 End Sub
+
+Public Function ListedWorkspaces()
+    Dim workspaceIds As Collection
+    Set workspaceIds = New Collection
+    
+    For Each obj In SheetParser.dict("Listar Contas")
+        workspaceIds.Add obj("Número da Conta (Workspace ID)")
+        Debug.Print JsonConverter.ConvertToJson(obj)
+    Next
+    Set ListedWorkspaces = workspaceIds
+End Function
 
 
 Public Function getWorkspace(cursor As String)

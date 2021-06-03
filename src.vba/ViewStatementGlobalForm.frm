@@ -24,6 +24,12 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub DownloadButton_Click()
+
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
 
@@ -73,7 +79,6 @@ Private Sub DownloadButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Tipo de transação"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Saldo final"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Descrição"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Id da Transação"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tarifa"
@@ -89,61 +94,75 @@ Private Sub DownloadButton_Click()
         optionalParam.Add "before", before
     End If
 
+    Dim workspaceList As Collection
+    Set workspaceList = V2WorkspaceGateway.ListedWorkspaces()
+    If workspaceList.Count() = 0 Then
+        MsgBox "É necessário listar as contas antes de baixar o extrato!", vbExclamation
+        Unload Me
+        Exit Sub
+    End If
+    
     row = TableFormat.HeaderRow() + 1
-    On Error GoTo eh:
-    Do
-        Set respJson = V2BankGateway.getTransaction(cursor, optionalParam)
-        If respJson.Exists("error") Then
-            Unload Me
-            Exit Sub
-        End If
-        If respJson.Count = 0 Then
-            Exit Sub
-        End If
-
-        cursor = ""
-        If respJson("cursor") <> "" Then
-            cursor = respJson("cursor")
-        End If
-
-        Set transactions = respJson("transactions")
+    
+    For Each workspaceId In workspaceList
+        Call postSessionV1(True, CStr(workspaceId))
         
-        For Each transact In transactions
-        
-            Dim initialRow As Integer
-            Dim created As String: created = transact("created")
-            Dim path As String:  path = transact("path")
-
-            Dim tags As Collection: Set tags = transact("tags")
-            Dim tagsStr As String: tagsStr = CollectionToString(tags, ",")
-            Dim splitPath() As String: splitPath = Split(path, "/")
-            
-            transactionCreated = Utils.ISODATEZ(created)
-            transactionId = transact("id")
-            transactionFee = CDbl(transact("fee")) / 100
-            transactionType = getTransactionType(splitPath, tags)
-            
-            sign = transactionSign(transact("flow"))
-            ActiveSheet.Cells(row, 1).Value = transactionCreated
-            ActiveSheet.Cells(row, 2).Value = transactionType
-            ActiveSheet.Cells(row, 3).Value = CDbl(transact("amount")) / 100 * sign
-            If sign > 0 Then
-                ActiveSheet.Cells(row, 3).Font.Color = RGB(0, 140, 0)
-            Else
-                ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
+        Do
+            Set respJson = V2BankGateway.getTransaction(cursor, optionalParam)
+            If respJson.Exists("error") Then
+                Unload Me
+                Exit Sub
             End If
+            If respJson.Count = 0 Then
+                Exit Sub
+            End If
+    
+            cursor = ""
+            If respJson("cursor") <> "" Then
+                cursor = respJson("cursor")
+            End If
+    
+            Set transactions = respJson("transactions")
             
-            ActiveSheet.Cells(row, 5).Value = transact("description")
-            ActiveSheet.Cells(row, 6).Value = transactionId
-            ActiveSheet.Cells(row, 7).Value = transactionFee
-            ActiveSheet.Cells(row, 8).Value = CollectionToString(tags, ",")
+            For Each transact In transactions
             
-            row = row + 1
-
-        Next
-
-    Loop While cursor <> ""
-
+                Dim initialRow As Integer
+                Dim created As String: created = transact("created")
+                Dim path As String:  path = transact("source")
+    
+                Dim tags As Collection: Set tags = transact("tags")
+                Dim tagsStr As String: tagsStr = CollectionToString(tags, ",")
+                Dim splitPath() As String: splitPath = Split(path, "/")
+                
+                transactionCreated = created
+                transactionId = transact("id")
+                transactionFee = CDbl(transact("fee")) / 100
+                transactionType = getTransactionType(splitPath, tags)
+                
+                sign = transactionSign(transact("flow"))
+                ActiveSheet.Cells(row, 1).Value = transactionCreated
+                ActiveSheet.Cells(row, 2).Value = transactionType
+                ActiveSheet.Cells(row, 3).Value = CDbl(transact("amount")) / 100 * sign
+                If sign > 0 Then
+                    ActiveSheet.Cells(row, 3).Font.Color = RGB(0, 140, 0)
+                Else
+                    ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
+                End If
+                
+                ActiveSheet.Cells(row, 5).Value = transact("description")
+                ActiveSheet.Cells(row, 6).Value = transactionId
+                ActiveSheet.Cells(row, 7).Value = transactionFee
+                ActiveSheet.Cells(row, 8).Value = CollectionToString(tags, ",")
+                
+                row = row + 1
+    
+            Next
+    
+        Loop While cursor <> ""
+    Next
+    Dim lastRow As Long
+    lastRow = Cells(Rows.Count, 2).End(xlUp).row
+    Range("A10:H" & lastRow).Sort key1:=Range("A10:A" & lastRow), order1:=xlDescending, header:=xlNo
     Unload Me
 eh:
     
@@ -156,11 +175,15 @@ Private Function getTransactionType(list() As String, ByRef tags As Collection)
             transactionType = "Transferência interna"
         Case "charge"
             transactionType = "Recebimento de boleto pago"
+        Case "boleto"
+            transactionType = "Recebimento de boleto pago"
         Case "invoice"
             transactionType = "Recebimento de cobrança Pix"
         Case "deposit"
             transactionType = "Recebimento de depósito Pix"
         Case "charge-payment"
+            transactionType = "Pag. de boleto"
+        Case "boleto-payment"
             transactionType = "Pag. de boleto"
         Case "brcode-payment"
             transactionType = "Pag. de QR Code"

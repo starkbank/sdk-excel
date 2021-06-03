@@ -66,7 +66,7 @@ Private Sub SendButton_Click()
     
     Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName, workspaceId)
     RenewSessionKeys
-    postSessionV2 (CheckBoxOrganizationAccess.Value)
+    Call postSessionV1(CheckBoxOrganizationAccess.Value, "")
     Debug.Print "New session data saved"
     
     Call SessionGateway.displayMemberInfo

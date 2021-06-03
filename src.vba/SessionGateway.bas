@@ -169,7 +169,7 @@ Public Sub DeleteTempKeys()
     Kill sessionPublicKeyPath
 End Sub
 
-Public Sub postSessionV2(organizationAccess As Boolean)
+Public Function postSessionV1(organizationAccess As Boolean, workspaceId As String)
     Dim payload As String
     Dim resp As response
     Dim Result As New Dictionary
@@ -177,10 +177,11 @@ Public Sub postSessionV2(organizationAccess As Boolean)
     Dim dict As New Dictionary
     
     dict.Add "platform", "web"
-    dict.Add "expiration", 5184000
+    dict.Add "expiration", 3600
     dict.Add "publicKey", getSessionPublicKeyContent()
     If organizationAccess Then
         dict.Add "organization", True
+        dict.Add "workspaceId", workspaceId
     End If
     
     payload = JsonConverter.ConvertToJson(dict)
@@ -194,8 +195,8 @@ Public Sub postSessionV2(organizationAccess As Boolean)
         Result.Add "success", New Dictionary
         Result.Add "error", resp.error()
     End If
-    accessId = Result("success")("session")("id")
     
-    Sheets("Credentials").Cells(13, 2) = "session/" + accessId
+    Dim sessionId As String: sessionId = "session/" + Result("success")("session")("id")
+    Sheets("Credentials").Cells(13, 2) = sessionId
     
-End Sub
+End Function

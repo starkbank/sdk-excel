@@ -17,8 +17,9 @@ Public Function defaultHeaders(payload As String)
     Dim accessTime As Long
     Dim message As String
     
+    accessId = getAccessId()
     accessTime = toUnix(Now)
-    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = accessId + ":" + CStr(accessTime) + ":" + payload
     
     Dim pk As PrivateKey: Set pk = New PrivateKey
     pk.fromPem (getSessionPrivateKeyContent)
@@ -29,8 +30,12 @@ Public Function defaultHeaders(payload As String)
     Result.Add "Content-Type", "Application/json"
     Result.Add "Accept-Language", "pt-BR"
     Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", getAccessId()
+    Result.Add "Access-Id", accessId
     Result.Add "Access-Signature", signature64
+    
+    If DebugModeOn() Then
+        DebugPrint "headers", JsonConverter.ConvertToJson(Result)
+    End If
     
     Set defaultHeaders = Result
 End Function
@@ -75,8 +80,7 @@ Public Function postRequest(path As String, payload As String, headers As Dictio
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
-    Set defHeaders = defaultHeaders(payload)
-    
+    Set defHeaders = defaultHeaders(payload, accessId)
     For Each key In defHeaders.keys()
         headers.Add key, defHeaders(key)
     Next

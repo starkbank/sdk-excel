@@ -1,5 +1,4 @@
 
-
 Public Function getTransaction(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response

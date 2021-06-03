@@ -1,22 +1,30 @@
-Public Function headers()
+Public Function headers(sheetName As String)
+
+    If sheetName = "" Then
+        sheetName = ActiveSheet.name
+    End If
+    
     Dim columns As New Collection
-    For Each elem In ActiveSheet.UsedRange.columns
-        columns.Add ActiveSheet.Cells(TableFormat.HeaderRow(), elem.column).Value
+    For Each elem In Sheets(sheetName).UsedRange.columns
+        columns.Add Sheets(sheetName).Cells(TableFormat.HeaderRow(), elem.column).Value
     Next
     Set headers = columns
 End Function
 
-Public Function dict()
+Public Function dict(sheetName As String)
     Dim Result As New Collection
     Dim keys As Collection
     
-    Set keys = headers()
+    If sheetName = "" Then
+        sheetName = ActiveSheet.name
+    End If
+    Set keys = headers(sheetName)
     
-    For row = 10 To ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    For row = HeaderRow() + 1 To Sheets(sheetName).Cells(Rows.Count, "A").End(xlUp).row
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
-        For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+        For Each elem In Sheets(sheetName).UsedRange.columns
+            obj(keys(elem.column)) = Sheets(sheetName).Cells(row, elem.column).text
         Next
         Result.Add obj
     Next
