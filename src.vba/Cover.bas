@@ -39,6 +39,11 @@ Public Sub BotaoConsultaPagaBoleto()
     ThisWorkbook.Sheets(name).Activate
 End Sub
 
+Public Sub BotaoConsultaChavesPix()
+    name = "Consulta de Chaves Pix"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
+
 Public Sub BotaoPagaBoletos()
     name = "Pagamento Boletos"
     ThisWorkbook.Sheets(name).Activate
