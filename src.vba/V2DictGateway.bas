@@ -41,7 +41,7 @@ Public Sub ListKeys()
     
     dictKeyCount = lastRow - initRow + 1
     If dictKeyCount > 50 Then
-        If MsgBox("Por restrição do Banco Central, só é possível consultar um máximo de 50 Chaves Pix a cada 150 minutos. Apenas as primeiras 50 Chaves serão consultadas. Continuar?", vbYesNo) = vbNo Then
+        If MsgBox("Por restrição do Banco Central, só é possível consultar um máximo de 50 Chaves Pix sem finalizar o pagamento a cada 150 minutos. Apenas as primeiras 50 Chaves serão consultadas. Continuar?", vbYesNo) = vbNo Then
             Exit Sub
         End If
     End If
