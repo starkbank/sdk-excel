@@ -59,6 +59,11 @@ Public Function applyStandardLayout(col As String)
     ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
 End Function
 
+Public Function applyLockedLayout(col1 As String, col2 As String)
+    ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
+    ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
+End Function
+
 Public Function formatDateInUserForm(dateString As String)
     Dim chars() As Byte
     chars = StrConv(dateString, vbFromUnicode)
