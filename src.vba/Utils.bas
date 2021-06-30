@@ -380,18 +380,21 @@ End Function
 
 Public Function getOpensslDir() As String
     getOpensslDir = getGitDir() + "\..\usr\bin\openssl.exe"
+    Debug.Print "OpenSSL location folder: " + getOpensslDir
 End Function
 
 Public Function getGitDir()
     Dim TextStrng As String
     Dim Result() As String
-    Dim DisplayText As String
     TextStrng = Environ("path")
     Result = Split(TextStrng, ";")
     getGitDir = ""
     For i = LBound(Result()) To UBound(Result())
         If InStr(LCase(Result(i)), "\git\cmd") > 0 Then
             getGitDir = Result(i)
+            Exit Function
         End If
     Next i
+    TextStrng = Environ("LOCALAPPDATA")
+    getGitDir = TextStrng + "\Programs\Git\cmd"
 End Function
