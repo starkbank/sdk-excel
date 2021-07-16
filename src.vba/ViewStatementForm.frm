@@ -72,13 +72,14 @@ Private Sub DownloadButton_Click()
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Tipo de transação"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Saldo final"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Descrição"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Id da Transação"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tarifa"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Categoria da Transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Id da Categoria"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Saldo final"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Id da Transação"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tarifa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Tags"
 
     Call FreezeHeader
 
@@ -143,22 +144,25 @@ Private Sub DownloadButton_Click()
                 sign = transactionSign(transact("flow"))
                 ActiveSheet.Cells(row, 1).Value = transactionCreated
                 ActiveSheet.Cells(row, 2).Value = transactionType
-                ActiveSheet.Cells(row, 3).Value = CDbl(transact("amount")) / 100 * sign
-                If sign > 0 Then
-                    ActiveSheet.Cells(row, 3).Font.Color = RGB(0, 140, 0)
-                Else
-                    ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
+                If UBound(splitPath) > LBound(splitPath) Then
+                    ActiveSheet.Cells(row, 3).Value = splitPath(1)
                 End If
-                ActiveSheet.Cells(row, 4).Value = balance
-                If balance > 0 Then
+                ActiveSheet.Cells(row, 4).Value = CDbl(transact("amount")) / 100 * sign
+                If sign > 0 Then
                     ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
                 Else
                     ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
                 End If
-                ActiveSheet.Cells(row, 5).Value = transact("description")
-                ActiveSheet.Cells(row, 6).Value = transactionId
-                ActiveSheet.Cells(row, 7).Value = transactionFee
-                ActiveSheet.Cells(row, 8).Value = CollectionToString(tags, ",")
+                ActiveSheet.Cells(row, 5).Value = balance
+                If balance > 0 Then
+                    ActiveSheet.Cells(row, 5).Font.Color = RGB(0, 140, 0)
+                Else
+                    ActiveSheet.Cells(row, 5).Font.Color = RGB(180, 0, 0)
+                End If
+                ActiveSheet.Cells(row, 6).Value = transact("description")
+                ActiveSheet.Cells(row, 7).Value = transactionId
+                ActiveSheet.Cells(row, 8).Value = transactionFee
+                ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
                 
                 row = row + 1
             End If
