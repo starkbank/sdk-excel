@@ -3,6 +3,7 @@ Public Sub ListWorkspace()
     Dim workspaces As Collection
     Dim row As Integer
     Dim workspaceCreated As String
+    Dim workspaceId As String
     
     If Not isSignedin Then
         MsgBox "Acesso negado. Faça login novamente.", , "Erro"
@@ -12,8 +13,8 @@ Public Sub ListWorkspace()
     Call postSessionV1(True, "")
     
     'Table layout
-    Utils.applyStandardLayout ("E")
-    Range("A10:E" & Rows.Count).ClearContents
+    Utils.applyStandardLayout ("F")
+    Range("A10:F" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Número da Conta (Workspace ID)"
@@ -42,18 +43,19 @@ Public Sub ListWorkspace()
 
         For Each workspace In workspaces
             workspaceCreated = workspace("created")
-            ActiveSheet.Cells(row, 1).Value = workspace("id")
+            workspaceId = workspace("id")
+            Dim allowedTaxIds As Collection: Set allowedTaxIds = workspace("allowedTaxIds")
+            ActiveSheet.Cells(row, 1).Value = workspaceId
             ActiveSheet.Cells(row, 2).Value = workspace("name")
             ActiveSheet.Cells(row, 3).Value = workspace("username")
             ActiveSheet.Cells(row, 4).Value = Utils.ISODATEZ(workspaceCreated)
-            
-            Dim allowedTaxIds As Collection: Set allowedTaxIds = workspace("allowedTaxIds")
             ActiveSheet.Cells(row, 5).Value = CollectionToString(allowedTaxIds, ", ")
             
             row = row + 1
         Next
 
     Loop While cursor <> ""
+    
     Exit Sub
 eh:
     

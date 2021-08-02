@@ -105,6 +105,8 @@ Private Sub DownloadButton_Click()
         Exit Sub
     End If
     
+    On Error GoTo eh:
+    
     For Each workspace In workspaceList
         Dim workspaceId As String: workspaceId = workspace("Número da Conta (Workspace ID)")
         Dim workspaceUsername As String: workspaceUsername = workspace("Username")
