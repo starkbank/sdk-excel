@@ -32,12 +32,13 @@ Public Sub clearOrders()
 End Sub
 
 Public Function getAccountType(accountType As Variant) As String
-    Select Case accountType
+    Select Case LCase(accountType)
         Case "": getAccountType = "checking"
-        Case "Corrente":  getAccountType = "checking"
-        Case "Poupança":  getAccountType = "savings"
-        Case "Salário":  getAccountType = "salary"
-        Case Else:  getAccountType = "checking"
+        Case "corrente":  getAccountType = "checking"
+        Case "poupança":  getAccountType = "savings"
+        Case "pagamento":  getAccountType = "payment"
+        Case "salário":  getAccountType = "salary"
+        Case Else:  getAccountType = accountType
     End Select
 End Function
 
