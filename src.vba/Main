@@ -314,6 +314,76 @@ Public Sub createInvoices()
      
 End Sub
 
+Public Sub updateInvoices()
+
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
+    Dim invoices As Collection
+    Dim resp As response
+    Dim initRow As Long
+    Dim midRow As Long
+    Dim lastRow As Long
+    Dim respMessage As String
+    Dim reversingError As Boolean
+    reversingError = False
+    
+    Call Utils.applyStandardLayout("B")
+    Call Utils.applyLockedLayout("C", "D")
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "ID da Invoice"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor final"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Status"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Erro"
+    
+    With ActiveWindow
+        .SplitColumn = 4
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+    ActiveSheet.Range("C10:D" & Range("A10").End(xlDown).row).ClearContents
+    initRow = 10
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    midRow = initRow - 1
+    Do
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set invoices = v2InvoiceGateway.getUpdateOrders(initRow, midRow)
+        Set resp = v2InvoiceGateway.updateInvoices(invoices)
+        
+        If resp.Status = 200 Then
+            Dim line As Long
+            line = initRow
+            Do
+                writeReversingResponse line, "Reversão solicitada com sucesso", ""
+                line = line + 1
+            Loop Until (line > midRow)
+            
+        ElseIf resp.errors().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.errors()("errors")
+            Dim error As Dictionary
+            Dim errorList As String
+            Dim errorDict As New Dictionary
+            reversingError = True
+            
+            For Each error In errors
+                Set errorDict = Utils.correctErrorSeparate(error("message"), CLng(initRow))
+                writeReversingResponse errorDict("line"), "Erro ao solicitar reversão", errorDict("message")
+            Next
+            
+        Else
+            MsgBox resp.error()("message"), , "Erro"
+            Exit Sub
+            
+        End If
+        
+        initRow = initRow + 100
+    Loop Until (midRow >= lastRow)
+     
+End Sub
+
 Public Sub sendCustomers()
     Dim customers As Collection
     Dim resp As response

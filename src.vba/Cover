@@ -88,3 +88,8 @@ Public Sub BotaoEmissaoInvoices()
     name = "Emissão de Invoice Pix"
     ThisWorkbook.Sheets(name).Activate
 End Sub
+
+Public Sub BotaoReversaoInvoices()
+    name = "Reversão de Invoice Pix"
+    ThisWorkbook.Sheets(name).Activate
+End Sub
