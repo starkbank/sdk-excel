@@ -197,6 +197,27 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
     Set getOrders = orders
 End Function
 
+Public Function getUpdateOrders(initRow As Long, midRow As Long) As Collection
+    Dim orders As New Collection
+    
+    For Each obj In SheetParser.longDict(initRow, midRow)
+        Dim amount As Long
+        Dim invoiceId As String
+        Dim order As Dictionary
+        If obj("Valor final") = "" Or obj("ID da Invoice") = "" Then
+            MsgBox "Por favor, preencha todas as ordens de atualização com ID e valor", , "Erro"
+            End
+        End If
+        invoiceId = obj("ID da Invoice")
+        amount = getAmountLong((obj("Valor final")))
+        
+        Set order = v2InvoiceGateway.updateOrder(invoiceId, amount)
+    
+        orders.Add order
+    Next
+    Set getUpdateOrders = orders
+End Function
+
 Public Function order(amount As Long, name As String, taxId As String, dueDate As String, fine As Single, interest As Single, overdueLimit As Long, description1 As Dictionary, description2 As Dictionary, description3 As Dictionary) As Dictionary
     Dim dict As New Dictionary
     Dim descriptions As New Collection
@@ -225,6 +246,21 @@ Public Function order(amount As Long, name As String, taxId As String, dueDate A
     Set order = dict
     
 End Function
+
+Public Function updateOrder(invoiceId As String, amount As Long) As Dictionary
+    Dim dict As New Dictionary
+    
+    dict.Add "id", invoiceId
+    dict.Add "amount", amount
+    
+    Set updateOrder = dict
+    
+End Function
+
+Public Sub writeReversingResponse(line As Long, statusMessage As String, errorMessage As String)
+    ActiveSheet.Cells(line, 3).Value = statusMessage
+    ActiveSheet.Cells(line, 4).Value = errorMessage
+End Sub
 
 Public Function customerOrder(name As String, taxId As String, email As String, phone As String, streetLine1 As String, streetLine2 As String, district As String, city As String, stateCode As String, zipCode As String, tags As String) As Dictionary
     Dim dict As New Dictionary
@@ -258,6 +294,20 @@ Public Function createInvoices(invoices As Collection)
     payload = JsonConverter.ConvertToJson(dict)
     
     Set createInvoices = V2Rest.postRequest("/v2/invoice", payload, New Dictionary)
+    
+End Function
+
+
+Public Function updateInvoices(invoices As Collection)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    
+    dict.Add "invoices", invoices
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set updateInvoices = V2Rest.patchRequest("/v2/invoice", payload, New Dictionary)
     
 End Function
 

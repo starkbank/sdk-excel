@@ -117,6 +117,28 @@ Public Function clearNonNumeric(text)
     Set Reg = Nothing
 End Function
 
+Function correctErrorSeparate(ByVal errorMessage As String, offset As Integer) As Dictionary
+    Dim dict As New Dictionary
+    Dim lineNumber As Integer
+    Dim message As String
+    
+    message = errorMessage
+    
+    With CreateObject("VBScript.RegExp")
+        .Pattern = "(\w+) +(\d+):(.+)"
+        .Global = True
+        For Each M In .Execute(errorMessage)
+            lineNumber = CInt(M.submatches(1))
+            message = M.submatches(2)
+        Next
+    End With
+    
+    dict.Add "line", lineNumber + offset
+    dict.Add "message", message
+    Set correctErrorSeparate = dict
+    
+End Function
+
 Function correctErrorLine(ByVal errorMessage As String, offset As Integer) As String
     Dim lineNumber As Integer
     Dim message As String
