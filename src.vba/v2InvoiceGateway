@@ -70,6 +70,17 @@ Public Function getInvoices(cursor As String, optionalParam As Dictionary)
 
 End Function
 
+Public Function getInvoiceIds(initRow As Long, midRow As Long) As Collection
+    Dim invoiceIds As New Collection
+    
+    For Each obj In SheetParser.longDict(initRow, midRow)
+        Dim invoiceId As String
+        invoiceId = obj("Id da Invoice")
+        invoiceIds.Add invoiceId
+    Next
+    Set getInvoiceIds = invoiceIds
+End Function
+
 Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
