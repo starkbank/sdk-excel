@@ -384,6 +384,83 @@ Public Sub updateInvoices()
      
 End Sub
 
+Public Sub SearchInvoicesByIds()
+
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
+    Dim invoiceIds As Collection
+    Dim resp As response
+    Dim initRow As Long
+    Dim row As Long
+    Dim midRow As Long
+    Dim lastRow As Long
+    Dim respMessage As String
+    Dim query As New Dictionary
+    Dim invoice As Variant
+    Dim invoiceId As String
+    
+    initRow = 10
+    lastRow = ActiveSheet.Cells(Rows.Count, "M").End(xlUp).row
+    midRow = initRow - 1
+    Do
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set invoiceIds = v2InvoiceGateway.getInvoiceIds(initRow, midRow)
+        query.Add "ids", CollectionToString(invoiceIds, ",")
+        Set invoices = v2InvoiceGateway.getInvoices("", query)("invoices")
+        Dim invoiceMap As New Dictionary
+        For Each invoice In invoices
+            invoiceId = invoice("id")
+            invoiceMap.Add invoiceId, invoice
+        Next
+        row = initRow
+        For Each queryId In invoiceIds
+            If invoiceMap.Exists(queryId) Then
+                Set invoice = invoiceMap(queryId)
+                Dim id As String: id = invoice("id")
+                Dim amount As Double: amount = invoice("amount") / 100
+                Dim nominalAmount As Double: nominalAmount = invoice("nominalAmount") / 100
+                Dim discountAmount As Double: discountAmount = invoice("discountAmount") / 100
+                Dim fineAmount As Double: fineAmount = invoice("fineAmount") / 100
+                Dim interestAmount As Double: interestAmount = invoice("interestAmount") / 100
+                Dim fee As Double: fee = invoice("fee") / 100
+                Dim issueDate As String: issueDate = invoice("created")
+                Dim invoiceStatus As String: invoiceStatus = invoice("status")
+                Dim dueDate As String: dueDate = invoice("due")
+                Dim expiration As Long: expiration = invoice("expiration")
+                Dim tags As Collection: Set tags = invoice("tags")
+                Dim expirationDate As Date: expirationDate = DateAdd("s", expiration, Utils.DatefromIsoString(dueDate))
+                
+                ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
+                ActiveSheet.Cells(row, 2).Value = invoice("name")
+                ActiveSheet.Cells(row, 3).Value = invoice("taxId")
+                ActiveSheet.Cells(row, 4).Value = v2InvoiceGateway.getStatusInPt(invoiceStatus)
+                ActiveSheet.Cells(row, 5).Value = amount
+                ActiveSheet.Cells(row, 6).Value = nominalAmount
+                ActiveSheet.Cells(row, 7).Value = discountAmount
+                ActiveSheet.Cells(row, 8).Value = fineAmount
+                ActiveSheet.Cells(row, 9).Value = interestAmount
+                ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(dueDate)
+                ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(Format(expirationDate, "yyyy-mm-ddThh:mm:ss"))
+                ActiveSheet.Cells(row, 12).Value = invoice("brcode")
+                ActiveSheet.Cells(row, 13).Value = id
+                ActiveSheet.Cells(row, 14).Value = fee
+                ActiveSheet.Cells(row, 15).Value = CollectionToString(tags, ",")
+                
+                ActiveSheet.Cells(row, 16).Value = "PDF"
+                Set rng = ActiveSheet.Range("P" + CStr(row))
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=invoice("pdf"), SubAddress:="", TextToDisplay:="PDF"
+                
+            End If
+            row = row + 1
+        Next
+        query.Remove "ids"
+        initRow = initRow + 100
+    Loop Until (midRow >= lastRow)
+End Sub
+
 Public Sub sendCustomers()
     Dim customers As Collection
     Dim resp As response
