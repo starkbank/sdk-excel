@@ -67,8 +67,8 @@ Private Sub SearchButton_Click()
     End If
     
     'Table layout
-    Utils.applyStandardLayout ("K")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":K" & Rows.Count).ClearContents
+    Utils.applyStandardLayout ("N")
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":N" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -80,8 +80,11 @@ Private Sub SearchButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Código do Banco"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Agência"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Número de Conta"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Ids de Transação (Saída, Estorno)"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Detalhamento de falha"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Tipo de Conta"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Ids de Transação (Saída, Estorno)"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Detalhamento de falha"
     
     Call FreezeHeader
     
@@ -106,7 +109,7 @@ Private Sub SearchButton_Click()
 
     Do
         logRow = row
-        Set respJson = getTransfers(cursor, optionalParam)
+        Set respJson = V2getTransfers(cursor, optionalParam)
         If respJson.Exists("error") Then
             Unload Me
             Exit Sub
@@ -122,10 +125,11 @@ Private Sub SearchButton_Click()
         For Each transfer In transfers
             transferId = transfer("id")
             Dim created As String: created = transfer("created")
+            Dim accountType As String: accountType = transfer("accountType")
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
             ActiveSheet.Cells(row, 2).Value = transferId
             ActiveSheet.Cells(row, 3).Value = transfer("amount") / 100
-
+            
             Dim transferStatus As String: transferStatus = transfer("status")
             ActiveSheet.Cells(row, 4).Value = TransferGateway.getStatusInPt(transferStatus)
             ActiveSheet.Cells(row, 5).Value = transfer("name")
@@ -133,7 +137,10 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 7).Value = transfer("bankCode")
             ActiveSheet.Cells(row, 8).Value = transfer("branchCode")
             ActiveSheet.Cells(row, 9).Value = transfer("accountNumber")
-            ActiveSheet.Cells(row, 10).Value = Utils.CollectionToString(Utils.correctTransferTags(transfer("transactionIds")), ",")
+            ActiveSheet.Cells(row, 10).Value = getAccountTypePT(transfer("accountType"))
+            ActiveSheet.Cells(row, 11).Value = Utils.CollectionToString(transfer("transactionIds"), ",")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(transfer("tags"))
+            ActiveSheet.Cells(row, 13).Value = transfer("description")
             
             If DetailedCheckBox.Value = True And transferStatus = "failed" Then
                 logsFailedByTransfer.Add transferId, New Dictionary
@@ -176,7 +183,7 @@ Private Sub SearchButton_Click()
                         errors = errors + sep + errorMessage
                         sep = ","
                     Next
-                    ActiveSheet.Cells(logRow, 11).Value = errors
+                    ActiveSheet.Cells(logRow, 14).Value = errors
                 End If
                 logRow = logRow + 1
             Next

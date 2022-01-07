@@ -67,8 +67,8 @@ Private Sub DownloadButton_Click()
     End If
     
     ActiveSheet.Cells.UnMerge
-    Call Utils.applyStandardLayout("H")
-    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
+    Call Utils.applyStandardLayout("I")
+    ActiveSheet.Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":I" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data"
