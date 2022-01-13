@@ -21,7 +21,7 @@ Public Sub ExportFile()
     today = Format(Date, "dd/mm/yyyy")
     today = dateFormatter(today, 1, 4, 9)
     
-    lastRow = ActiveSheet.Range("A9").CurrentRegion.Rows.Count + 8
+    lastRow = ActiveSheet.Range("A9").CurrentRegion.Rows.count + 8
     
     outputFileName = "CNAB400_" & "20" & dateFormatter(today, 5, 3, 1, "-") & ".RET"
     outputPath = Application.DefaultFilePath & outputFileName

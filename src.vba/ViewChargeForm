@@ -55,7 +55,7 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = " Data de Emissão"
@@ -99,8 +99,9 @@ Private Sub SearchButton_Click()
 
     Do
         logRow = row
-        Set respJson = getCharges(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        Set respJson = V2ChargeGateway.getCharges(cursor, optionalParam)
+
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -110,16 +111,15 @@ Private Sub SearchButton_Click()
             cursor = respJson("cursor")
         End If
 
-        Set charges = respJson("charges")
-
+        Set charges = respJson("boletos")
         For Each charge In charges
 
             Dim id As String: id = charge("id")
             Dim amount As Double: amount = charge("amount") / 100
             Dim fee As Double: fee = charge("fee") / 100
-            Dim issueDate As String: issueDate = charge("issueDate")
+            Dim issueDate As String: issueDate = charge("created")
             Dim chargeStatus As String: chargeStatus = charge("status")
-            Dim dueDate As String: dueDate = charge("dueDate")
+            Dim dueDate As String: dueDate = charge("due")
             Dim tags As Collection: Set tags = charge("tags")
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
@@ -169,8 +169,8 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "chargeIds", keys
-            Set respJson = getChargeLogs("", logsParam)
-            If respJson.Exists("error") Then
+            Set respJson = ChargeGateway.getChargeLogs("", logsParam)
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"
                 Exit Sub
             End If
@@ -182,8 +182,8 @@ Private Sub SearchButton_Click()
             Next
             
             logsParam("events") = "registered"
-            Set respJson = getChargeLogs("", logsParam)
-            If respJson.Exists("error") Then
+            Set respJson = ChargeGateway.getChargeLogs("", logsParam)
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos criados!"
                 Exit Sub
             End If

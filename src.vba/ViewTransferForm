@@ -68,7 +68,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("N")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":N" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":N" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -110,7 +110,7 @@ Private Sub SearchButton_Click()
     Do
         logRow = row
         Set respJson = V2getTransfers(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -163,7 +163,7 @@ Private Sub SearchButton_Click()
             Next
             logsParam.Add "transferIds", keys
             Set respJson = getTransferLogs("", logsParam)
-            If respJson.Exists("error") Then
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de transferências com falha!"
                 Exit Sub
             End If

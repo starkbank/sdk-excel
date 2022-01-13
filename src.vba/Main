@@ -1,3 +1,4 @@
+
 Public Sub signIn()
     If OpensslRoutine Then
         SignInForm.Show
@@ -20,7 +21,7 @@ Public Sub signOut()
     Application.ScreenUpdating = False
     Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
     
-    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
+    If response("error").count <> 0 And response("error")("code") <> "invalidAccessToken" Then
         MsgBox response("error")("message"), , "Erro"
         Exit Sub
     End If
@@ -41,13 +42,14 @@ Public Sub signOut()
     clearAll
     Application.ScreenUpdating = True
     MsgBox response("success")("message"), , "Sucesso"
+    
 End Sub
 
 Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Principal" And WS.name <> "Aux" Then
             WS.Cells.UnMerge
-            WS.Range("A10:Z" & Rows.Count).ClearContents
+            WS.Range("A10:Z" & Rows.count).ClearContents
             If WS.name = "InputLog" Then
                 WS.Range("B:B").ClearContents
             End If
@@ -112,7 +114,7 @@ Public Sub searchCustomers()
     
     'Table layout
     Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.Count).ClearContents
+    Range("A10:L" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
@@ -204,7 +206,7 @@ Public Sub createCharges()
     ActiveWindow.FreezePanes = True
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -278,7 +280,7 @@ Public Sub createInvoices()
     ActiveWindow.FreezePanes = True
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -346,7 +348,7 @@ Public Sub updateInvoices()
     ActiveWindow.FreezePanes = True
     ActiveSheet.Range("C10:D" & Range("A10").End(xlDown).row).ClearContents
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -403,7 +405,7 @@ Public Sub SearchInvoicesByIds()
     Dim invoiceId As String
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "M").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.count, "M").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -492,7 +494,7 @@ Public Sub sendCustomers()
     ActiveWindow.FreezePanes = True
 
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -546,7 +548,7 @@ Public Sub searchChargePayments()
 End Sub
 
 Public Sub searchPaymentRequests()
-    If Not isSignedin() Then
+    If Not isSignedin Then
         MsgBox "Acesso negado. Faça login novamente.", , "Erro"
         Exit Sub
     End If

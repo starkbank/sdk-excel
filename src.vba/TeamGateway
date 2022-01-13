@@ -7,7 +7,7 @@ Public Function getTeams(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -28,7 +28,7 @@ Public Function getTeams(cursor As String, optionalParam As Dictionary)
 End Function
 
 Public Sub clearOrders()
-    Sheets("Transferências Com Aprovação").Range("A10:Z" & Rows.Count).ClearContents
+    Sheets("Transferências Com Aprovação").Range("A10:Z" & Rows.count).ClearContents
 End Sub
 
 Public Function getAccountType(accountType As Variant) As String
@@ -108,8 +108,8 @@ Public Function createOrders(teamId As String)
             externalIds.Add calculatedExternalId
         End If
         
-        If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row) Then
-            If orderNumbers.Count = 0 Then
+        If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.count, "A").End(xlUp).row) Then
+            If orderNumbers.count = 0 Then
                 Set orders = Nothing
                 Set orderNumbers = Nothing
                 Set externalIds = Nothing
@@ -127,7 +127,7 @@ Public Function createOrders(teamId As String)
                 createOrders = resp.json()("message")
                 returnMessage = returnMessage + rowsMessage(startRow, currentRow) + resp.json()("message") + Chr(10)
                 Dim j As Integer
-                For j = 1 To externalIds.Count
+                For j = 1 To externalIds.count
                     ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 10).Value = externalIds.Item(j)
                 Next j
                 
@@ -186,7 +186,7 @@ Public Function getOrdersByTransfer(cursor As String, optionalParam As Dictionar
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))

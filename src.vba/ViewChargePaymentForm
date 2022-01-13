@@ -47,7 +47,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("H")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -76,8 +76,8 @@ Private Sub SearchButton_Click()
     row = TableFormat.HeaderRow() + 1
 
     Do
-        Set respJson = ChargePaymentGateway.getChargePayments(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        Set respJson = V2ChargePaymentGateway.getChargePayments(cursor, optionalParam)
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If

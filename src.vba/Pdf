@@ -22,7 +22,7 @@ Public Sub downloadSelectedTransferPdfs()
     service = "transfer"
     
     initRow = Utils.max(Selection.row, 10)
-    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    lastRow = Utils.min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhuma transferência válida selecionada"
@@ -39,7 +39,7 @@ Public Sub downloadSelectedChargePdfs()
     service = "charge"
     
     initRow = Utils.max(Selection.row, 10)
-    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    lastRow = Utils.min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhum boleto válido selecionado"
@@ -56,7 +56,7 @@ Public Sub downloadSelectedChargePaymentPdfs()
     service = "charge-payment"
     
     initRow = Utils.max(Selection.row, 10)
-    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    lastRow = Utils.min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhum pagamento válido selecionado"
@@ -73,7 +73,7 @@ Public Sub downloadSelectedInvoicePdfs()
     service = "invoice"
     
     initRow = Utils.max(Selection.row, 10)
-    lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
+    lastRow = Utils.min(Selection.row + Selection.Rows.count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.count + 8)
     
     If initRow > lastRow Then
         MsgBox "Nenhuma Invoice válida selecionada"
@@ -173,7 +173,7 @@ Public Sub downloadAllPdfs(service As String)
     
     idColumn = ColumnId(service)
     initRow = 10
-    lastRow = ActiveSheet.Range(idColumn + "9").CurrentRegion.Rows.Count + 8
+    lastRow = ActiveSheet.Range(idColumn + "9").CurrentRegion.Rows.count + 8
 
     Call downloadPdfRange(service, initRow, lastRow)
 End Sub

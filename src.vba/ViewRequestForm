@@ -8,7 +8,11 @@ Private Sub UserForm_Initialize()
     
     Do
         Set respJson = getCostCenters(cursor, New Dictionary)
-    
+        
+        If respJson("errors").count <> 0 Then
+            Exit Sub
+        End If
+        
         cursor = ""
         If respJson("cursor") <> "" Then
             cursor = respJson("cursor")
@@ -65,7 +69,7 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("M")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":M" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":M" & Rows.count).ClearContents
     
     'Date parameters
     If after <> "--" Then

@@ -10,7 +10,7 @@ Public Function DebugModeOn()
 End Function
 
 Public Function CurrentDebugRow()
-    CurrentDebugRow = Sheets("InputLog").Range("A9").CurrentRegion.Rows.Count + 9
+    CurrentDebugRow = Sheets("InputLog").Range("A9").CurrentRegion.Rows.count + 9
 End Function
 
 Public Sub DebugPrint(header As String, content As String)

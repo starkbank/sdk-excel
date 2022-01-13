@@ -60,7 +60,7 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.Count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.count).ClearContents
     
     'Headers definition
     
@@ -112,14 +112,14 @@ Private Sub SearchButton_Click()
         Events = Events + "overdue,"
     End If
     If OptionButtonEventCredited.Value Then
-        Events = Events + "bank,"
+        Events = Events + "credited,"
     End If
     
     row = TableFormat.HeaderRow() + 1
-    If Events <> "bank," Then
-        optionalParam.Add "events", Events
+    If Events <> "credited," Then
+        optionalParam.Add "types", Events
         Do
-            Set respJson = getChargeLogs(cursor, optionalParam)
+            Set respJson = V2ChargeGateway.getChargeLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
@@ -129,16 +129,16 @@ Private Sub SearchButton_Click()
     
             For Each chargeLog In logs
                 
-                Set charge = chargeLog("charge")
+                Set charge = chargeLog("boleto")
                 
-                logEvent = chargeLog("event")
+                logEvent = chargeLog("type")
                 id = charge("id")
                 amount = charge("amount") / 100
                 fee = charge("fee") / 100
                 eventDate = chargeLog("created")
-                issueDate = charge("issueDate")
+                issueDate = charge("created")
                 chargeStatus = charge("status")
-                dueDate = charge("dueDate")
+                dueDate = charge("due")
                 Set tags = charge("tags")
                 
                 ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
@@ -163,11 +163,12 @@ Private Sub SearchButton_Click()
         Unload Me
         Exit Sub
     End If
-    optionalParam.Add "events", Events
+
+    optionalParam.Add "types", Events
     Do
         logRow = row
-        Set respJson = getChargeLogs(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        Set respJson = V2ChargeGateway.getChargeLogs(cursor, optionalParam)
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -180,18 +181,18 @@ Private Sub SearchButton_Click()
         Set logs = respJson("logs")
 
         For Each chargeLog In logs
-            Set charge = chargeLog("charge")
+            Set charge = chargeLog("boleto")
             
             eventDate = chargeLog("created")
-            logEvent = chargeLog("event")
+            logEvent = chargeLog("type")
             id = charge("id")
             amount = charge("amount") / 100
             fee = charge("fee") / 100
-            issueDate = charge("issueDate")
+            issueDate = charge("created")
             chargeStatus = charge("status")
-            dueDate = charge("dueDate")
+            dueDate = charge("due")
             Set tags = charge("tags")
-
+            
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
             ActiveSheet.Cells(row, 2).Value = ChargeGateway.getEventInPt(logEvent)
             ActiveSheet.Cells(row, 3).Value = charge("name")
@@ -237,13 +238,19 @@ Private Sub SearchButton_Click()
             keys = keys + sep + chargeId
             sep = ","
         Next
-        logsParam.Add "chargeIds", keys
+        logsParam.Add "boletoIds", keys
+        
+        If after <> "--" Then
+            logsParam.Add "after", after
+        End If
+        If before <> "--" Then
+            logsParam.Add "before", before
+        End If
         
         Do
-            logsParam("events") = "register"
-            logsParam("cursor") = registeredCursor
-            Set respJson = getChargeLogs("", logsParam)
-            If respJson.Exists("error") Then
+            logsParam("types") = "credited,"
+            Set respJson = V2ChargeGateway.getChargeLogs(registeredCursor, logsParam)
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
             End If
@@ -252,12 +259,12 @@ Private Sub SearchButton_Click()
             End If
             Set registeredLogs = respJson("logs")
             For Each registeredLog In registeredLogs
-                Set logsRegisteredByCharge(registeredLog("charge")("id")) = registeredLog
+                Set logsRegisteredByCharge(registeredLog("boleto")("id")) = registeredLog
             Next
         Loop While registeredCursor <> ""
         
         For Each chargeLog In logs
-            Set charge = chargeLog("charge")
+            Set charge = chargeLog("boleto")
             If charge("status") = "paid" Then
                 Call setChargeEventInfo(charge, logsPaidByCharge(charge("id")), logsRegisteredByCharge(charge("id")), logRow)
             End If
@@ -284,7 +291,7 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     
     amount = charge("amount") / 100
     
-    nominalAmount = createdLog("charge")("amount") / 100
+    nominalAmount = createdLog("boleto")("amount") / 100
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount

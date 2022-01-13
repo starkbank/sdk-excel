@@ -34,7 +34,7 @@ Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -47,7 +47,7 @@ Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
     Set resp = V2Rest.getRequest("/v2/cost-center", query, New Dictionary)
     
     If resp.Status <> 200 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     
     Set getCostCenters = resp.json()
@@ -63,7 +63,7 @@ Public Function getPaymentRequests(cursor As String, optionalParam As Dictionary
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.Count > 0 Then
+    If optionalParam.count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
