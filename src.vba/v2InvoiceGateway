@@ -51,7 +51,7 @@ Public Function getInvoices(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -90,7 +90,7 @@ Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -102,7 +102,7 @@ Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
     
     Set resp = V2Rest.getRequest("/v2/invoice/log", query, New Dictionary)
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set getInvoiceLogs = resp.json()
 
@@ -117,7 +117,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -130,7 +130,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Set resp = V2Rest.getRequest("/v2/invoice/customer", query, New Dictionary)
     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set getCustomers = resp.json()
 
@@ -233,13 +233,13 @@ Public Function order(amount As Long, name As String, taxId As String, dueDate A
     Dim dict As New Dictionary
     Dim descriptions As New Collection
     
-    If description1.count > 0 Then
+    If description1.Count > 0 Then
         descriptions.Add description1
     End If
-    If description2.count > 0 Then
+    If description2.Count > 0 Then
         descriptions.Add description2
     End If
-    If description3.count > 0 Then
+    If description3.Count > 0 Then
         descriptions.Add description3
     End If
     
@@ -344,7 +344,7 @@ Public Function getEventLog(invoiceId As String, logEvent As String, optionalPar
     If invoiceId <> "" Then
         query = "?events=" + logEvent + "&invoiceIds=" + invoiceId
     End If
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))

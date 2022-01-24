@@ -8,7 +8,7 @@ Public Function getCharges(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
     
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -36,7 +36,7 @@ Public Function getChargeLogs(cursor As String, optionalParam As Dictionary)
         query = "?cursor=" + cursor
     End If
 
-    If optionalParam.count > 0 Then
+    If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
                 query = "?" + key + "=" + CStr(optionalParam(key))
@@ -52,4 +52,169 @@ Public Function getChargeLogs(cursor As String, optionalParam As Dictionary)
     End If
     Set getChargeLogs = resp.json()
 
+End Function
+
+Public Function V2getEventLog(chargeId As String, logEvent As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    Dim elem As Variant
+    
+    query = ""
+    If chargeId <> "" Then
+        query = "?events=" + logEvent + "&chargeIds=" + chargeId
+    End If
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    Set resp = V2Rest.getRequest("/v2/boleto/log", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getEventLog = resp.json()
+
+End Function
+
+Public Function createCharges(charges As Collection)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    
+    dict.Add "boletos", charges
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set createCharges = V2Rest.postRequest("/v2/boleto", payload, New Dictionary)
+    
+End Function
+
+Public Function getCustomers(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = V2Rest.getRequest("/v2/boleto/customer", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getCustomers = resp.json()
+
+End Function
+
+Public Function getOrders(initRow As Long, midRow As Long) As Collection
+    Dim orders As New Collection
+    
+    For Each obj In SheetParser.longDict(initRow, midRow)
+        Dim name As String
+        Dim taxId As String
+        Dim city As String
+        Dim district As String
+        Dim stateCode As String
+        Dim zipCode As String
+        Dim streetLine1 As String
+        Dim streetLine2 As String
+        Dim amount As Long
+        Dim customerId As String
+        Dim due As String
+        Dim fine As Single: fine = 2
+        Dim interest As Single: interest = 1
+        Dim overdueLimit As Long: overdueLimit = 59
+        Dim description1 As Dictionary: Set description1 = New Dictionary
+        Dim description2 As Dictionary: Set description2 = New Dictionary
+        Dim description3 As Dictionary: Set description3 = New Dictionary
+        Dim tags() As String
+        Dim order As Dictionary
+        'Dim optionalParam As Disctionary
+        
+        If obj("Valor") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
+            End
+        End If
+        name = obj("Nome do Cliente")
+        taxId = obj("CPF/CNPJ")
+        streetLine1 = obj("Logradouro")
+        streetLine2 = obj("Complemento")
+        district = obj("Bairro")
+        city = obj("Cidade")
+        stateCode = obj("Estado")
+        zipCode = obj("CEP")
+        amount = getAmountLong((obj("Valor")))
+        due = Utils.DateToSendingFormat(Format(obj("Data de Vencimento"), "dd/mm/yyyy"))
+        
+        If obj("Tags") <> "" Then
+            tags = Split(obj("Tags"), ",")
+        End If
+        
+        If obj("Multa") <> "" Then
+            fine = Utils.SingleFrom((obj("Multa")))
+        End If
+        
+        If obj("Juros ao Mês") <> "" Then
+            interest = Utils.SingleFrom((obj("Juros ao Mês")))
+        End If
+        
+        If obj("Dias para Baixa Automática") <> "" Then
+            overdueLimit = Utils.IntegerFrom((obj("Dias para Baixa Automática")))
+        End If
+        
+        If obj("Descrição 1") <> "" Then
+            description1.Add "text", obj("Descrição 1")
+        End If
+        If obj("Valor 1") <> "" Then
+            description1.Add "amount", getAmountLong((obj("Valor 1")))
+        End If
+        
+        If obj("Descrição 2") <> "" Then
+            description2.Add "text", obj("Descrição 2")
+        End If
+        If obj("Valor 2") <> "" Then
+            description2.Add "amount", getAmountLong((obj("Valor 2")))
+        End If
+        
+        If obj("Descrição 3") <> "" Then
+            description3.Add "text", obj("Descrição 3")
+        End If
+        If obj("Valor 3") <> "" Then
+            description3.Add "amount", getAmountLong((obj("Valor 3")))
+        End If
+        
+        Set order = ChargeGateway.order(name, taxId, amount, due, fine, interest, overdueLimit, streetLine1, streetLine2, district, city, stateCode, zipCode, description1, description2, description3, tags)
+  
+        orders.Add order
+    Next
+    Set getOrders = orders
+End Function
+
+Public Function createCustomers(customers As Collection)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    
+    dict.Add "customers", customers
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set createCustomers = V2Rest.postRequest("/v2/boleto/customer", payload, New Dictionary)
+    
 End Function

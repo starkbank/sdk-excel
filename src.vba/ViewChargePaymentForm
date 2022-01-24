@@ -43,11 +43,17 @@ Private Sub SearchButton_Click()
     Dim after As String: after = Utils.DateToSendingFormat(afterInput)
     Dim before As String: before = Utils.DateToSendingFormat(beforeInput)
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+    
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
     'Table layout
     Utils.applyStandardLayout ("H")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":H" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"

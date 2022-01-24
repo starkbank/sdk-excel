@@ -21,7 +21,7 @@ Public Sub signOut()
     Application.ScreenUpdating = False
     Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
     
-    If response("error").count <> 0 And response("error")("code") <> "invalidAccessToken" Then
+    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
         MsgBox response("error")("message"), , "Erro"
         Exit Sub
     End If
@@ -49,7 +49,7 @@ Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Principal" And WS.name <> "Aux" Then
             WS.Cells.UnMerge
-            WS.Range("A10:Z" & Rows.count).ClearContents
+            WS.Range("A10:Z" & Rows.Count).ClearContents
             If WS.name = "InputLog" Then
                 WS.Range("B:B").ClearContents
             End If
@@ -112,9 +112,14 @@ Public Sub searchCustomers()
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
     'Table layout
     Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.count).ClearContents
+    Range("A10:L" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
@@ -131,7 +136,7 @@ Public Sub searchCustomers()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
     
     With ActiveWindow
-        .SplitColumn = 12
+        '.SplitColumn = 12
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
@@ -139,7 +144,7 @@ Public Sub searchCustomers()
     row = 10
 
     Do
-        Set respJson = ChargeGateway.getCustomers(cursor, optionalParam)
+        Set respJson = V2ChargeGateway.getCustomers(cursor, optionalParam)
 
         cursor = ""
         If respJson("cursor") <> "" Then
@@ -190,7 +195,7 @@ Public Sub createCharges()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Data de Vencimento"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Multa"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Juros ao Mês"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Juro ao Mês"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Dias para Baixa Automática"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Descrição 1"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Valor 1"
@@ -198,15 +203,21 @@ Public Sub createCharges()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Valor 2"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Descrição 3"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Valor 3"
+
+
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
     
     With ActiveWindow
-        .SplitColumn = 12
+        '.SplitColumn = 20
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -274,13 +285,13 @@ Public Sub createInvoices()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Valor 3"
     
     With ActiveWindow
-        .SplitColumn = 13
+        '.SplitColumn = 13
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -307,7 +318,7 @@ Public Sub createInvoices()
             MsgBox messageBox, , "Erro"
             End
         Else
-            MsgBox resp.error()("message"), , "Erro"
+            MsgBox resp.errors()("errors")(1)("message"), , "Erro"
             
         End If
         
@@ -342,13 +353,13 @@ Public Sub updateInvoices()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Erro"
     
     With ActiveWindow
-        .SplitColumn = 4
+        '.SplitColumn = 4
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
     ActiveSheet.Range("C10:D" & Range("A10").End(xlDown).row).ClearContents
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -376,7 +387,7 @@ Public Sub updateInvoices()
             Next
             
         Else
-            MsgBox resp.error()("message"), , "Erro"
+            MsgBox resp.errors()("errors")(1)("message"), , "Erro"
             Exit Sub
             
         End If
@@ -405,7 +416,7 @@ Public Sub SearchInvoicesByIds()
     Dim invoiceId As String
     
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.count, "M").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "M").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
@@ -472,6 +483,11 @@ Public Sub sendCustomers()
     Dim respMessage As String
     Dim errorDescription As String
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
     Call Utils.applyStandardLayout("K")
     
     'Headers definition
@@ -488,25 +504,25 @@ Public Sub sendCustomers()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Tags"
     
     With ActiveWindow
-        .SplitColumn = 11
+        '.SplitColumn = 11
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
 
     initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
         Set customers = ChargeGateway.getCustomerOrders(initRow, midRow)
-        Set resp = ChargeGateway.createCustomers(customers)
+        Set resp = V2ChargeGateway.createCustomers(customers)
         
         If resp.Status = 200 Then
             respMessage = resp.json()("message")
             MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
             
-        ElseIf resp.error().Exists("errors") Then
-            Dim errors As Collection: Set errors = resp.error()("errors")
+        ElseIf resp.errors().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.errors()("errors")
             Dim error As Dictionary
             Dim errorList As String
             
@@ -516,11 +532,11 @@ Public Sub sendCustomers()
             Next
             
             Dim messageBox As String
-            messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+            messageBox = errorList
             MsgBox messageBox, , "Erro"
             End
         Else
-            Dim errorMessage As String: errorMessage = resp.error()("message")
+            Dim errorMessage As String: errorMessage = resp.errors()("message")
             errorDescription = Utils.correctErrorLine(errorMessage, initRow - 1)
             MsgBox errorDescription, , "Erro"
             

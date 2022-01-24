@@ -1,47 +1,3 @@
-Public Function getTeams(cursor As String, optionalParam As Dictionary)
-    Dim query As String
-    Dim resp As response
-    
-    query = ""
-    If cursor <> "" Then
-        query = "?cursor=" + cursor
-    End If
-    
-    If optionalParam.Count > 0 Then
-        For Each key In optionalParam
-            If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
-            Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
-            End If
-        Next
-    End If
-
-    Set resp = StarkBankApi.getRequest("/v1/team", query, New Dictionary)
-    
-    If resp.Status <> 200 Then
-        MsgBox resp.error()("message"), , "Erro"
-    End If
-    
-    Set getTeams = resp.json()
-
-End Function
-
-Public Sub clearOrders()
-    Sheets("Transferências Com Aprovação").Range("A10:Z" & Rows.Count).ClearContents
-End Sub
-
-Public Function getAccountType(accountType As Variant) As String
-    Select Case LCase(accountType)
-        Case "": getAccountType = "checking"
-        Case "corrente":  getAccountType = "checking"
-        Case "poupança":  getAccountType = "savings"
-        Case "pagamento":  getAccountType = "payment"
-        Case "salário":  getAccountType = "salary"
-        Case Else:  getAccountType = accountType
-    End Select
-End Function
-
 Public Function createOrders(teamId As String)
     Dim orders As New Collection
     Dim orderNumbers As New Collection
@@ -52,17 +8,20 @@ Public Function createOrders(teamId As String)
     Dim resp As response
     Dim payload As String
     Dim dict As New Dictionary
+    Dim request As Scripting.Dictionary
+    Dim requests As New Collection
     Dim returnMessage As String
     Dim warningMessage As String
     Dim errorMessage As String
     Dim anySent As Boolean
     
+    
     anySent = False
     returnMessage = ""
     warningMessage = ""
     errorMessage = ""
+
     
-    dict.Add "teamId", teamId
     iteration = 0
     startRow = TableFormat.HeaderRow() + 1
     
@@ -102,10 +61,16 @@ Public Function createOrders(teamId As String)
         If calculatedExternalId = externalId Then
             warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados!" + Chr(10) + Chr(10)
         Else
-            Set order = TeamGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, tags, description)
+            Set request = New Scripting.Dictionary
+            Set order = V2CostCenterGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, tags, description)
             orders.Add order
             orderNumbers.Add iteration
             externalIds.Add calculatedExternalId
+            request.Add "centerId", teamId
+            request.Add "type", "transfer"
+            request.Add "payment", order
+            requests.Add request
+            
         End If
         
         If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row) Then
@@ -115,13 +80,12 @@ Public Function createOrders(teamId As String)
                 Set externalIds = Nothing
                 GoTo nextIteration
             End If
-            dict.Add "orders", orders
             
+            dict.Add "requests", requests
             payload = JsonConverter.ConvertToJson(dict)
-            Set resp = StarkBankApi.postRequest("/v1/team/order", payload, New Dictionary)
+
+            Set resp = V2Rest.postRequest("/v2/payment-request", payload, New Dictionary)
             anySent = True
-            
-            dict.Remove "orders"
             
             If resp.Status = 200 Then
                 createOrders = resp.json()("message")
@@ -131,8 +95,8 @@ Public Function createOrders(teamId As String)
                     ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 10).Value = externalIds.Item(j)
                 Next j
                 
-            ElseIf resp.error().Exists("errors") Then
-                Dim errors As Collection: Set errors = resp.error()("errors")
+            ElseIf resp.errors().Exists("errors") Then
+                Dim errors As Collection: Set errors = resp.errors()("errors")
                 Dim error As Dictionary
                 Dim errorDescription As String
                 
@@ -142,7 +106,7 @@ Public Function createOrders(teamId As String)
                 Next
                 
             Else
-                errorDescription = Utils.correctErrorLine(resp.error()("message"), startRow)
+                errorDescription = Utils.correctErrorLine(resp.errors()("message"), startRow)
                 errorMessage = errorMessage + errorDescription + Chr(10)
         
             End If
@@ -176,40 +140,4 @@ Public Function order(amount As Long, taxId As String, name As String, bankCode 
     
     Set order = dict
     
-End Function
-
-Public Function getOrdersByTransfer(cursor As String, optionalParam As Dictionary)
-    Dim query As String
-    Dim resp As response
-    query = ""
-    If cursor <> "" Then
-        query = "?cursor=" + cursor
-    End If
-    
-    If optionalParam.Count > 0 Then
-        For Each key In optionalParam
-            If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
-            Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
-            End If
-        Next
-    End If
-    
-    Set resp = StarkBankApi.getRequest("/v1/team/order", query, New Dictionary)
-    
-    If resp.Status = 200 Then
-        Set getOrdersByTransfer = resp.json()
-    Else
-        MsgBox resp.error()("message"), , "Erro"
-    End If
-
-End Function
-
-Public Function calculateExternalId(amount As Long, name As String, taxId As String, bankCode As String, branchCode As String, accountNumber As String)
-    calculateExternalId = bankCode + branchCode + accountNumber + name + taxId + CStr(amount)
-End Function
-
-Public Function rowsMessage(startRow As Integer, currentRow As Integer)
-    rowsMessage = "Linhas " + CStr(startRow) + " a " + CStr(currentRow) + ": "
 End Function

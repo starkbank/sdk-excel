@@ -32,12 +32,17 @@ Public Sub displayMemberInfo()
     Dim envMessage As String
     Dim balanceMessage As String
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
     helloMessage = "Olá " + SessionGateway.getMemberName() + "!"
     workspaceMessage = "Workspace: " + SessionGateway.getWorkspace()
     workspaceId = "ID do Workspace: " + SessionGateway.getWorkspaceId()
     emailMessage = "E-mail: " + SessionGateway.getEmail()
     envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
-    balanceMessage = "Saldo: " + SessionGateway.getBalance()
+    balanceMessage = "Saldo: " + V2SessionGateway.getBalance()
     
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Credentials" And WS.name <> "InputLog" And WS.name <> "Aux" Then
@@ -93,9 +98,9 @@ Public Function getBalance()
     Dim AccountInfo As Dictionary
     Dim balanceMessage As String
     
-    Set AccountInfo = BankGateway.getAccount()
+    Set AccountInfo = V2BankGateway.getAccount()
     balanceMessage = "-"
-    If AccountInfo.count > 0 Then
+    If AccountInfo.Count > 0 Then
         Dim balance As Double
         balance = CDbl(AccountInfo("account")("balance"))
         balanceMessage = Utils.MoneyStringFrom(balance)

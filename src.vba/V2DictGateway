@@ -30,14 +30,14 @@ Public Sub ListKeys()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "externalId"
     
     With ActiveWindow
-        .SplitColumn = 10
+        '.SplitColumn = 10
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
     
     initRow = HeaderRow() + 1
     row = initRow
-    lastRow = ActiveSheet.Cells(Rows.count, "A").End(xlUp).row
+    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     
     dictKeyCount = lastRow - initRow + 1
     If dictKeyCount > 50 Then
@@ -93,17 +93,17 @@ Public Sub moveToTransfer()
             validTransfers.Add transfer
         End If
     Next
-    If validTransfers.count = 0 Then
+    If validTransfers.Count = 0 Then
         MsgBox "Não há nenhuma Chave Pix válida para mover para a aba de Transferências com Aprovação", vbExclamation
         Exit Sub
     End If
     
-    If MsgBox("Foram encontradas " & validTransfers.count & " Chaves Pix válidas. Deseja mover para a aba de Transferências com Aprovação? Dados na aba de Transferências com Aprovação serão apagados.", vbYesNo) = vbNo Then
+    If MsgBox("Foram encontradas " & validTransfers.Count & " Chaves Pix válidas. Deseja mover para a aba de Transferências com Aprovação? Dados na aba de Transferências com Aprovação serão apagados.", vbYesNo) = vbNo Then
         Exit Sub
     End If
     
     Worksheets("Transferências com Aprovação").Activate
-    Sheets("Transferências com Aprovação").Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":I" & Rows.count).ClearContents
+    Sheets("Transferências com Aprovação").Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":I" & Rows.Count).ClearContents
     
     row = HeaderRow() + 1
     For Each transfer In validTransfers
@@ -127,5 +127,5 @@ Public Function getDictKey(keyId As String)
 End Function
 
 Public Sub clearDictKeys()
-    Sheets("Consulta de Chaves Pix").Range("A10:Z" & Rows.count).ClearContents
+    Sheets("Consulta de Chaves Pix").Range("A10:Z" & Rows.Count).ClearContents
 End Sub

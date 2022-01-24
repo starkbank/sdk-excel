@@ -16,7 +16,7 @@ End Function
 
 Public Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
-    If c.count <> 0 Then
+    If c.Count <> 0 Then
         For Each el In c
             elString = elString + el + Delimiter
         Next
@@ -314,7 +314,7 @@ Public Function correctTransferTags(tags As Collection)
             index = index + 1
             pathBool = False
             Set allMatches = .Execute(tag)
-            If allMatches.count <> 0 Then
+            If allMatches.Count <> 0 Then
                 pathBool = True
             End If
             If pathBool = True Then

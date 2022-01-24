@@ -26,6 +26,13 @@ End Sub
 
 Private Sub SearchButton_Click()
     ' On Error Resume Next
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+    
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
     
@@ -60,7 +67,7 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.Count).ClearContents
     
     'Headers definition
     
@@ -99,12 +106,7 @@ Private Sub SearchButton_Click()
     End If
     
     Dim Events As String: Events = ""
-'    If OptionButtonEventCreated.Value Then
-'        Events = Events + "register,"
-'    End If
-'    If OptionButtonEventRegistered.Value Then
-'        Events = Events + "registered,"
-'    End If
+
     If OptionButtonEventCanceled.Value Then
         Events = Events + "canceled,"
     End If
@@ -156,7 +158,7 @@ Private Sub SearchButton_Click()
     
                 ActiveSheet.Cells(row, 16).Value = "PDF"
                 Set rng = ActiveSheet.Range("P" + CStr(row))
-                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
                 row = row + 1
             Next
         Loop While cursor <> ""
@@ -209,7 +211,7 @@ Private Sub SearchButton_Click()
 
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
             ActiveSheet.Cells(row, 18).Value = charge("streetLine2")

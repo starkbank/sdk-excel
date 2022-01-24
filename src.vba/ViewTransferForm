@@ -48,6 +48,12 @@ Private Sub SearchButton_Click()
     
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+    
     If beforeInput = "" Then
         beforeInput = Format(Date, "dd/mm/yyyy")
         If afterInput = "" Then
@@ -68,7 +74,7 @@ Private Sub SearchButton_Click()
     
     'Table layout
     Utils.applyStandardLayout ("N")
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":N" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":N" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Data de Criação"
@@ -106,7 +112,7 @@ Private Sub SearchButton_Click()
     End If
 
     row = TableFormat.HeaderRow() + 1
-
+    
     Do
         logRow = row
         Set respJson = V2getTransfers(cursor, optionalParam)
@@ -162,7 +168,7 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "transferIds", keys
-            Set respJson = getTransferLogs("", logsParam)
+            Set respJson = V2TransferGateway.getTransferLogs("", logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de transferências com falha!"
                 Exit Sub
@@ -179,7 +185,7 @@ Private Sub SearchButton_Click()
                     Dim errors As String: errors = ""
                     Dim errorMessage As Variant
                     sep = ""
-                    For Each errorMessage In logsFailedByTransfer(transfer("id"))("errors")
+                    For Each errorMessage In logsFailedByTransfer(transfer("transferid"))("errors")
                         errors = errors + sep + errorMessage
                         sep = ","
                     Next

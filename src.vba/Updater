@@ -36,7 +36,7 @@ Public Function OpensslRoutine()
         ViewOpensslForm.Show
         Exit Function
     End If
-    If dir(getOpensslDir()) = "" Then
+    If Dir(getOpensslDir()) = "" Then
         ViewOpensslForm.Show
         Exit Function
     End If
@@ -121,12 +121,12 @@ Private Function RenameCurrent()
     
     baseName = fso.GetBaseName(ThisWorkbook.name)
     overwriteLatest = vbYes
-    Debug.Print dir(ThisWorkbook.path & "/starkbank-sdk.xlsm")
+    Debug.Print Dir(ThisWorkbook.path & "/starkbank-sdk.xlsm")
     If baseName = "starkbank-sdk" Then
         newName = baseName + "_OLD.xlsm"
         ThisWorkbook.SaveAs ThisWorkbook.path & "/" & newName
         Kill oldName
-    ElseIf dir(ThisWorkbook.path & "/starkbank-sdk.xlsm") <> "" Then
+    ElseIf Dir(ThisWorkbook.path & "/starkbank-sdk.xlsm") <> "" Then
         overwriteMessage = "O arquivo starkbank-sdk.xlsm será sobrescrito. Dados na planilha serão excluídos. Continuar?"
         overwriteLatest = MsgBox(overwriteMessage, vbYesNo)
     End If

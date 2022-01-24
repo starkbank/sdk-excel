@@ -32,6 +32,13 @@ End Sub
 
 Private Sub SearchButton_Click()
     ' On Error Resume Next
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+    
     Dim afterInput As String: afterInput = AfterTextBox.Value
     Dim beforeInput As String: beforeInput = BeforeTextBox.Value
     
@@ -55,7 +62,7 @@ Private Sub SearchButton_Click()
     'Table layout
     Utils.applyStandardLayout ("V")
     ActiveSheet.Hyperlinks.Delete
-    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.count).ClearContents
+    Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":V" & Rows.Count).ClearContents
     
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = " Data de Emissão"
@@ -136,7 +143,7 @@ Private Sub SearchButton_Click()
             
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v1/charge/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             If DetailedCheckBox.Value = True Then
                 ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
@@ -161,15 +168,15 @@ Private Sub SearchButton_Click()
             Dim keys As String
             Dim sep As String
             Set logsParam = New Dictionary
-            logsParam.Add "events", "paid"
+            logsParam.Add "types", "paid"
             keys = ""
             sep = ""
             For Each chargeId In logsPaidByCharge.keys()
                 keys = keys + sep + chargeId
                 sep = ","
             Next
-            logsParam.Add "chargeIds", keys
-            Set respJson = ChargeGateway.getChargeLogs("", logsParam)
+            logsParam.Add "boletoIds", keys
+            Set respJson = V2ChargeGateway.getChargeLogs("", logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"
                 Exit Sub
@@ -178,11 +185,11 @@ Private Sub SearchButton_Click()
             Set chargeLogs = respJson("logs")
             
             For Each chargeLog In chargeLogs
-                Set logsPaidByCharge(chargeLog("charge")("id")) = chargeLog
+                Set logsPaidByCharge(chargeLog("boleto")("id")) = chargeLog
             Next
             
-            logsParam("events") = "registered"
-            Set respJson = ChargeGateway.getChargeLogs("", logsParam)
+            logsParam("types") = "registered"
+            Set respJson = V2ChargeGateway.getChargeLogs("", logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos criados!"
                 Exit Sub
@@ -191,7 +198,7 @@ Private Sub SearchButton_Click()
             Set chargeLogs = respJson("logs")
             
             For Each chargeLog In chargeLogs
-                Set logsRegisteredByCharge(chargeLog("charge")("id")) = chargeLog
+                Set logsRegisteredByCharge(chargeLog("boleto")("id")) = chargeLog
             Next
             For Each charge In charges
                 If charge("status") = "paid" Then
@@ -246,8 +253,6 @@ Public Sub setPaidBoletoInfo(ByVal charge As Object, row As Long)
     End If
 End Sub
 
-
-
 Public Sub setChargeInfo(ByVal charge As Object, ByVal paidLog As Dictionary, ByVal createdLog As Dictionary, row As Long)
     Dim nominalAmount As Double
     Dim fine As Double
@@ -263,7 +268,7 @@ Public Sub setChargeInfo(ByVal charge As Object, ByVal paidLog As Dictionary, By
     paidDate = paidLog("created")
     ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
     
-    nominalAmount = createdLog("charge")("amount") / 100
+    nominalAmount = createdLog("boleto")("amount") / 100
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount
