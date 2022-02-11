@@ -417,3 +417,12 @@ Public Function getGitDir()
         End If
     Next i
 End Function
+
+Public Function countSpaces(code As String)
+    countSpaces = 0
+    For i = 1 To Len(code)
+        If Mid(code, i, 1) = " " Then
+            countSpaces = countSpaces + 1
+        End If
+    Next i
+End Function
