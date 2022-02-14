@@ -1,3 +1,10 @@
+Sub UserForm_Activate()
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+End Sub
 
 Private Sub AfterTextBox_Change()
     Static reentry As Boolean
@@ -89,12 +96,6 @@ Private Sub DownloadButton_Click()
     End If
 
     row = TableFormat.HeaderRow() + 1
-    
-    If Not isSignedin() Then
-        MsgBox "Acesso negado, faça login novamente."
-        Unload Me
-        Exit Sub
-    End If
     
     Do
         Set respJson = V2BankGateway.getTransaction(cursor, optionalParam)

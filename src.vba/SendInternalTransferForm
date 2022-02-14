@@ -27,6 +27,11 @@ Private Sub UserForm_Initialize()
         Next
 
     Loop While cursor <> ""
+    
+'    If respJson.Exists("errors") Then
+'        Unload Me
+'        Exit Sub
+'    End If
 
 End Sub
 

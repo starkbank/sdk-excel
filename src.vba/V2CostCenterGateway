@@ -63,13 +63,14 @@ Public Function createOrders(teamId As String)
             warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados!" + Chr(10) + Chr(10)
         Else
             Set request = New Scripting.Dictionary
-            Set order = V2CostCenterGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, tags, description)
+            Set order = V2CostCenterGateway.order(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, description)
             orders.Add order
             orderNumbers.Add iteration
             externalIds.Add calculatedExternalId
             request.Add "centerId", teamId
             request.Add "type", "transfer"
             request.Add "payment", order
+            request.Add "tags", tags
             requests.Add request
             
         End If
@@ -126,7 +127,7 @@ nextIteration:
     End If
 End Function
 
-Public Function order(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, accountType As String, tags() As String, description As String) As Dictionary
+Public Function order(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, accountType As String, description As String) As Dictionary
     Dim dict As New Dictionary
     
     dict.Add "amount", amount
@@ -136,7 +137,6 @@ Public Function order(amount As Long, taxId As String, name As String, bankCode 
     dict.Add "branchCode", branchCode
     dict.Add "accountNumber", accountNumber
     dict.Add "accountType", accountType
-    dict.Add "tags", tags
     dict.Add "description", description
     
     Set order = dict
@@ -192,18 +192,24 @@ Public Function createChargePayments(teamId As String)
         description = obj("Descrição")
         externalId = obj("externalId")
         
+        calculatedExternalId = code + name + taxId + scheduledDate
         
-
-        Set request = New Scripting.Dictionary
-        Set chargePayment = V2CostCenterGateway.chargePayment(code, taxId, tags(), description)
-        chargePayments.Add chargePayment
-        chargePaymentNumbers.Add iteration
-        externalIds.Add calculatedExternalId
-        request.Add "centerId", teamId
-        request.Add "type", "boleto-payment"
-        request.Add "payment", chargePayment
-        request.Add "due", Utils.DateToSendingFormat(Format(scheduledDate, "dd/mm/yyyy"))
-        requests.Add request
+        If calculatedExternalId = externalId Then
+            warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados!" + Chr(10) + Chr(10)
+        Else
+            Set request = New Scripting.Dictionary
+            Set chargePayment = V2CostCenterGateway.chargePayment(code, taxId, tags(), description)
+            chargePayments.Add chargePayment
+            chargePaymentNumbers.Add iteration
+            externalIds.Add calculatedExternalId
+            request.Add "centerId", teamId
+            request.Add "type", "boleto-payment"
+            request.Add "payment", chargePayment
+            request.Add "due", Utils.DateToSendingFormat(Format(scheduledDate, "dd/mm/yyyy"))
+            request.Add "tags", tags
+            requests.Add request
+            
+        End If
 
         If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row) Then
             If chargePaymentNumbers.Count = 0 Then
@@ -327,13 +333,8 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
 
     End If
 
-
-    If anySent Then
-        MsgBox returnMessage + Chr(10) + errorMessage
-    Else
-        MsgBox "O pedido listado já foi enviado"
-    End If
-
+    MsgBox returnMessage + Chr(10) + errorMessage
+    
 End Function
 
 Public Function internalTransfer(amount As Long, description As String, externalId As String, receiverId As String, tags() As String) As Dictionary

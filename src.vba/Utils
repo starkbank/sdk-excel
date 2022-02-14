@@ -343,7 +343,18 @@ IsInArray = False
 End Function
 
 Public Function isSignedin()
-    isSignedin = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
+    isSignedin = True
+    
+    If Not areCredentialsStored Then
+        isSignedin = False
+        Exit Function
+    End If
+    
+    balance = V2SessionGateway.getBalance()
+    
+    If balance = "-" Then
+        isSignedin = False
+    End If
 End Function
 
 Function GetFolder() As String
@@ -425,4 +436,8 @@ Public Function countSpaces(code As String)
             countSpaces = countSpaces + 1
         End If
     Next i
+End Function
+
+Public Function areCredentialsStored()
+    areCredentialsStored = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
 End Function
