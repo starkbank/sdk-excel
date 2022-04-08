@@ -114,7 +114,7 @@ Public Function getTransfersFromSheet() As Collection
         Dim branchCode As String
         Dim accountNumber As String
         Dim tags() As String
-        Dim transfer As Dictionary
+        Dim Transfer As Dictionary
         
         If obj("Valor") = "" Then
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
@@ -129,14 +129,14 @@ Public Function getTransfersFromSheet() As Collection
         accountNumber = Trim(obj("Conta"))
         tags = Split(obj("Tags"), ",")
         
-        Set transfer = TransferGateway.transfer(amount, taxId, name, bankCode, branchCode, accountNumber, tags)
-        transfers.Add transfer
+        Set Transfer = TransferGateway.Transfer(amount, taxId, name, bankCode, branchCode, accountNumber, tags)
+        transfers.Add Transfer
         
     Next
     Set getTransfersFromSheet = transfers
 End Function
 
-Public Function transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
+Public Function Transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
     Dim dict As New Dictionary
     
     dict.Add "amount", amount
@@ -147,7 +147,7 @@ Public Function transfer(amount As Long, taxId As String, name As String, bankCo
     dict.Add "accountNumber", accountNumber
     dict.Add "tags", tags
     
-    Set transfer = dict
+    Set Transfer = dict
     
 End Function
 

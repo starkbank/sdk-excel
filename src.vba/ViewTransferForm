@@ -40,13 +40,19 @@ Private Sub SearchButton_Click()
     Dim transfers As Collection
     Dim transferLogs As Collection
     Dim logsFailedByTransfer As Dictionary: Set logsFailedByTransfer = New Dictionary
-    Dim transfer As Object
+    Dim Transfer As Object
     Dim transferLog As Object
     Dim row As Long
     Dim initialRow As Long
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     
     Call InputLogGateway.saveDates(afterInput, beforeInput)
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
     
     If beforeInput = "" Then
         beforeInput = Format(Date, "dd/mm/yyyy")
@@ -106,11 +112,11 @@ Private Sub SearchButton_Click()
     End If
 
     row = TableFormat.HeaderRow() + 1
-
+    
     Do
         logRow = row
         Set respJson = V2getTransfers(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -122,25 +128,25 @@ Private Sub SearchButton_Click()
 
         Set transfers = respJson("transfers")
 
-        For Each transfer In transfers
-            transferId = transfer("id")
-            Dim created As String: created = transfer("created")
-            Dim accountType As String: accountType = transfer("accountType")
+        For Each Transfer In transfers
+            transferId = Transfer("id")
+            Dim created As String: created = Transfer("created")
+            Dim accountType As String: accountType = Transfer("accountType")
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
             ActiveSheet.Cells(row, 2).Value = transferId
-            ActiveSheet.Cells(row, 3).Value = transfer("amount") / 100
+            ActiveSheet.Cells(row, 3).Value = Transfer("amount") / 100
             
-            Dim transferStatus As String: transferStatus = transfer("status")
+            Dim transferStatus As String: transferStatus = Transfer("status")
             ActiveSheet.Cells(row, 4).Value = TransferGateway.getStatusInPt(transferStatus)
-            ActiveSheet.Cells(row, 5).Value = transfer("name")
-            ActiveSheet.Cells(row, 6).Value = transfer("taxId")
-            ActiveSheet.Cells(row, 7).Value = transfer("bankCode")
-            ActiveSheet.Cells(row, 8).Value = transfer("branchCode")
-            ActiveSheet.Cells(row, 9).Value = transfer("accountNumber")
-            ActiveSheet.Cells(row, 10).Value = getAccountTypePT(transfer("accountType"))
-            ActiveSheet.Cells(row, 11).Value = Utils.CollectionToString(transfer("transactionIds"), ",")
-            ActiveSheet.Cells(row, 12).Value = CollectionToString(transfer("tags"))
-            ActiveSheet.Cells(row, 13).Value = transfer("description")
+            ActiveSheet.Cells(row, 5).Value = Transfer("name")
+            ActiveSheet.Cells(row, 6).Value = Transfer("taxId")
+            ActiveSheet.Cells(row, 7).Value = Transfer("bankCode")
+            ActiveSheet.Cells(row, 8).Value = Transfer("branchCode")
+            ActiveSheet.Cells(row, 9).Value = Transfer("accountNumber")
+            ActiveSheet.Cells(row, 10).Value = getAccountTypePT(Transfer("accountType"))
+            ActiveSheet.Cells(row, 11).Value = Utils.CollectionToString(Transfer("transactionIds"), ",")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(Transfer("tags"))
+            ActiveSheet.Cells(row, 13).Value = Transfer("description")
             
             If DetailedCheckBox.Value = True And transferStatus = "failed" Then
                 logsFailedByTransfer.Add transferId, New Dictionary
@@ -162,8 +168,8 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "transferIds", keys
-            Set respJson = getTransferLogs("", logsParam)
-            If respJson.Exists("error") Then
+            Set respJson = V2TransferGateway.getTransferLogs("", logsParam)
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de transferências com falha!"
                 Exit Sub
             End If
@@ -174,12 +180,12 @@ Private Sub SearchButton_Click()
                 Set logsFailedByTransfer(transferLog("transferId")) = transferLog
             Next
             
-            For Each transfer In transfers
-                If transfer("status") = "failed" Then
+            For Each Transfer In transfers
+                If Transfer("status") = "failed" Then
                     Dim errors As String: errors = ""
                     Dim errorMessage As Variant
                     sep = ""
-                    For Each errorMessage In logsFailedByTransfer(transfer("id"))("errors")
+                    For Each errorMessage In logsFailedByTransfer(Transfer("transferid"))("errors")
                         errors = errors + sep + errorMessage
                         sep = ","
                     Next

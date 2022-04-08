@@ -38,7 +38,7 @@ Public Function getRequest(path As String, query As String, headers As Dictionar
         headers.Add key, defaultHeaders()(key)
     Next
     
-    Set getRequest = Request.fetch(url, "GET", headers, "")
+    Set getRequest = request.fetch(url, "GET", headers, "")
 End Function
 
 Public Function postRequest(path As String, payload As String, headers As Dictionary)
@@ -48,7 +48,7 @@ Public Function postRequest(path As String, payload As String, headers As Dictio
         headers.Add key, defaultHeaders()(key)
     Next
     
-    Set postRequest = Request.fetch(url, "POST", headers, payload)
+    Set postRequest = request.fetch(url, "POST", headers, payload)
 End Function
 
 Public Function deleteRequest(path As String, query As String, headers As Dictionary)
@@ -58,7 +58,7 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
         headers.Add key, defaultHeaders()(key)
     Next
     
-    Set deleteRequest = Request.fetch(url, "DELETE", headers, "")
+    Set deleteRequest = request.fetch(url, "DELETE", headers, "")
 End Function
 
 Public Function downloadRequest(path As String, filepath As String, headers As Dictionary, fallbackName As String) As Boolean
@@ -68,7 +68,7 @@ Public Function downloadRequest(path As String, filepath As String, headers As D
         headers.Add key, pdfHeaders()(key)
     Next
     
-    downloadRequest = Request.download(url, filepath, headers, fallbackName)
+    downloadRequest = request.download(url, filepath, headers, fallbackName)
 End Function
 
 Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)
@@ -79,12 +79,12 @@ Public Function uploadRequest(path As String, payload As String, headers As Dict
     Next
     headers("Content-Type") = "multipart/form-data; boundary=" + boundary
     
-    Set uploadRequest = Request.fetch(url, "POST", headers, payload)
+    Set uploadRequest = request.fetch(url, "POST", headers, payload)
 End Function
 
 Public Function externalPostRequest(url As String, payload As String)
     Dim headers As Dictionary: Set headers = New Dictionary
     headers.Add "Content-Type", "Application/json"
     
-    Set externalPostRequest = Request.fetch(url, "POST", headers, payload)
+    Set externalPostRequest = request.fetch(url, "POST", headers, payload)
 End Function

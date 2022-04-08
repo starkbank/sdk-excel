@@ -21,9 +21,38 @@ Public Function V2getTransfers(cursor As String, optionalParam As Dictionary)
     Set resp = V2Rest.getRequest("/v2/transfer", query, New Dictionary)
     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set V2getTransfers = resp.json()
+    
+End Function
+
+Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
+
+    Dim query As String
+    Dim resp As response
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = V2Rest.getRequest("/v2/transfer/log", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getTransferLogs = resp.json()
     
 End Function
 
@@ -35,4 +64,39 @@ Public Function getAccountTypePT(accountType As Variant) As String
         Case "salary":  getAccountTypPTe = "salário"
         Case Else:  getAccountTypePT = accountType
     End Select
+End Function
+
+Public Function createTransfers(payload As String, signature As String)
+    Dim resp As response
+    Dim headers As New Dictionary
+    
+    '--------------- Include signature in headers -----------------
+    headers.Add "Digital-Signature", signature
+    
+    '--------------- Send request ---------------------------------
+    Set resp = V2Rest.postRequest("/v2/transfer", payload, headers)
+    
+    If resp.Status = 200 Then
+        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
+    
+    ElseIf resp.errors().Exists("errors") Then
+        Dim errors As Collection: Set errors = resp.errors()("errors")
+        Dim error As Dictionary
+        Dim errorList As String
+        Dim errorDescription As String
+        
+        For Each error In errors
+            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
+            errorList = errorList & errorDescription & vbNewLine
+        Next
+        
+        Dim messageBox As String
+        messageBox = errorList
+        MsgBox messageBox, , "Erro"
+    Else
+        MsgBox resp.errors()("errors")(1)("message"), vbExclamation, "Erro"
+    End If
+    
+    Set createTransfers = resp.json()
+    
 End Function

@@ -8,10 +8,9 @@ O arquivo contém nove abas com diversas funcionalidades:
 3) Gera ordens de transferência com aprovação;
 4) Executa transferências sem passar por aprovação;
 5) Consulta pagamentos de boleto por status;
-6) Executa pagamentos de boleto sem passar por aprovação;
-7) Consulta a lista de clientes cadastrados como pagadores de boleto;
-8) Consulta boletos por status, incluindo geração de arquivo CNAB400;
-9) Emissão de boletos;
+6) Consulta a lista de clientes cadastrados como pagadores de boleto;
+7) Consulta boletos por status, incluindo geração de arquivo CNAB400;
+8) Emissão de boletos;
 
 ----------------------------------------------------------------------------------------------------------------------------------
 Excel client to integrate with Stark Bank API
@@ -23,7 +22,6 @@ The file consists in nine tabs with different features:
 3) Creates transfer orders with approval;
 4) Executes transfers without approval;
 5) Gets charge payments by status;
-6) Executes charge payments without approval;
-7) Gets list of customers registered as charge payers;
-8) Gets charges by status, including generation of CNAB400 file;
-9) Issues new charges;
+6) Gets list of customers registered as charge payers;
+7) Gets charges by status, including generation of CNAB400 file;
+8) Issues new charges;

@@ -53,15 +53,15 @@ Public Function ISODATEZ(iso As String) As String
     ISODATEZ = dtString
 End Function
 
-Public Function applyStandardLayout(col As String)
-    ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
-    ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
-    ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
-End Function
+Public Sub applyStandardLayout(ByVal col As String)
+    ' Set ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
+    ' Set ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
+    ' Set ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
+End Sub
 
 Public Function applyLockedLayout(col1 As String, col2 As String)
-    ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
-    ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
+    ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
+    ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
 End Function
 
 Public Function formatDateInUserForm(dateString As String)
@@ -343,7 +343,18 @@ IsInArray = False
 End Function
 
 Public Function isSignedin()
-    isSignedin = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
+    isSignedin = True
+    
+    If Not areCredentialsStored Then
+        isSignedin = False
+        Exit Function
+    End If
+    
+    balance = V2SessionGateway.getBalance()
+    
+    If balance = "-" Then
+        isSignedin = False
+    End If
 End Function
 
 Function GetFolder() As String
@@ -416,4 +427,17 @@ Public Function getGitDir()
             getGitDir = Result(i)
         End If
     Next i
+End Function
+
+Public Function countSpaces(code As String)
+    countSpaces = 0
+    For i = 1 To Len(code)
+        If Mid(code, i, 1) = " " Then
+            countSpaces = countSpaces + 1
+        End If
+    Next i
+End Function
+
+Public Function areCredentialsStored()
+    areCredentialsStored = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
 End Function

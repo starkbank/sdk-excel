@@ -30,7 +30,7 @@ Public Sub ListKeys()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "externalId"
     
     With ActiveWindow
-        .SplitColumn = 10
+        '.SplitColumn = 10
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
@@ -86,11 +86,11 @@ End Sub
 
 Public Sub moveToTransfer()
     Dim transfers As Collection: Set transfers = SheetParser.dict()
-    Dim transfer As Variant
+    Dim Transfer As Variant
     Dim validTransfers As Collection: Set validTransfers = New Collection
-    For Each transfer In transfers
-        If transfer("Nome") <> "" And transfer("Tipo de Conta") <> "" Then
-            validTransfers.Add transfer
+    For Each Transfer In transfers
+        If Transfer("Nome") <> "" And Transfer("Tipo de Conta") <> "" Then
+            validTransfers.Add Transfer
         End If
     Next
     If validTransfers.Count = 0 Then
@@ -106,16 +106,16 @@ Public Sub moveToTransfer()
     Sheets("Transferências com Aprovação").Range("A" & CStr(TableFormat.HeaderRow() + 1) & ":I" & Rows.Count).ClearContents
     
     row = HeaderRow() + 1
-    For Each transfer In validTransfers
-        Sheets("Transferências com Aprovação").Cells(row, 1).Value = transfer("Nome")
-        Sheets("Transferências com Aprovação").Cells(row, 2).Value = transfer("CPF/CNPJ")
-        Sheets("Transferências com Aprovação").Cells(row, 3).Value = transfer("Valor")
-        Sheets("Transferências com Aprovação").Cells(row, 4).Value = transfer("ISPB")
-        Sheets("Transferências com Aprovação").Cells(row, 5).Value = transfer("Agência")
-        Sheets("Transferências com Aprovação").Cells(row, 6).Value = transfer("Conta")
-        Sheets("Transferências com Aprovação").Cells(row, 7).Value = transfer("Tipo de Conta")
-        Sheets("Transferências com Aprovação").Cells(row, 8).Value = transfer("Tags")
-        Sheets("Transferências com Aprovação").Cells(row, 9).Value = transfer("Descrição")
+    For Each Transfer In validTransfers
+        Sheets("Transferências com Aprovação").Cells(row, 1).Value = Transfer("Nome")
+        Sheets("Transferências com Aprovação").Cells(row, 2).Value = Transfer("CPF/CNPJ")
+        Sheets("Transferências com Aprovação").Cells(row, 3).Value = Transfer("Valor")
+        Sheets("Transferências com Aprovação").Cells(row, 4).Value = Transfer("ISPB")
+        Sheets("Transferências com Aprovação").Cells(row, 5).Value = Transfer("Agência")
+        Sheets("Transferências com Aprovação").Cells(row, 6).Value = Transfer("Conta")
+        Sheets("Transferências com Aprovação").Cells(row, 7).Value = Transfer("Tipo de Conta")
+        Sheets("Transferências com Aprovação").Cells(row, 8).Value = Transfer("Tags")
+        Sheets("Transferências com Aprovação").Cells(row, 9).Value = Transfer("Descrição")
         row = row + 1
     Next
     

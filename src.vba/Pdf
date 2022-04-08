@@ -4,11 +4,11 @@ Public Sub downloadAllTransferPdfs()
 End Sub
 
 Public Sub downloadAllChargePdfs()
-    downloadAllPdfs ("charge")
+    downloadAllPdfs ("boleto")
 End Sub
 
 Public Sub downloadAllChargePaymentPdfs()
-    downloadAllPdfs ("charge-payment")
+    downloadAllPdfs ("boleto-payment")
 End Sub
 
 Public Sub downloadAllInvoicePdfs()
@@ -36,7 +36,7 @@ Public Sub downloadSelectedChargePdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
-    service = "charge"
+    service = "boleto"
     
     initRow = Utils.max(Selection.row, 10)
     lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
@@ -53,7 +53,7 @@ Public Sub downloadSelectedChargePaymentPdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
-    service = "charge-payment"
+    service = "boleto-payment"
     
     initRow = Utils.max(Selection.row, 10)
     lastRow = Utils.min(Selection.row + Selection.Rows.Count - 1, ActiveSheet.Range(ColumnId(service) + "9").CurrentRegion.Rows.Count + 8)
@@ -89,24 +89,11 @@ Public Function downloadSinglePdf(service, id As String, folder As String, fallb
     Dim path As String
     Dim filepath As String
     Dim version As String
-    
-    Select Case service
-        Case "invoice"
-            version = "v2"
-        Case Else
-            version = "v1"
-    End Select
-    
-    path = "/" + version + "/" + service + "/" + id + "/pdf"
+
+    path = "/v2/" + service + "/" + id + "/pdf"
     filepath = folder + "/"
-    
-    Select Case service
-        Case "invoice"
-            downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
-        Case Else
-            downloadSinglePdf = StarkBankApi.downloadRequest(path, filepath, New Dictionary, fallbackName)
-    End Select
-    
+    downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
+
 End Function
 
 Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
@@ -191,13 +178,13 @@ Public Function ColumnId(service As String)
         Case "transfer"
             Worksheets("Consulta de Transferências").Activate
             ColumnId = "B"
-        Case "charge"
+        Case "boleto"
             Worksheets("Consulta de Boletos Emitidos").Activate
             ColumnId = "M"
         Case "invoice"
             Worksheets("Consulta de Invoices Emitidas").Activate
             ColumnId = "M"
-        Case "charge-payment"
+        Case "boleto-payment"
             Worksheets("Consulta de Pagamento Boletos").Activate
             ColumnId = "H"
         Case Else

@@ -9,8 +9,8 @@ Public Function error()
     If Status = 200 Then
         Set error = JsonConverter.ParseJson("{}")
     End If
-    
     Set error = json()("error")
+
 End Function
 
 Public Function errors()

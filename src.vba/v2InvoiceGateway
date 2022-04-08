@@ -102,7 +102,7 @@ Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
     
     Set resp = V2Rest.getRequest("/v2/invoice/log", query, New Dictionary)
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set getInvoiceLogs = resp.json()
 
@@ -130,7 +130,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Set resp = V2Rest.getRequest("/v2/invoice/customer", query, New Dictionary)
     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set getCustomers = resp.json()
 
@@ -355,7 +355,7 @@ Public Function getEventLog(invoiceId As String, logEvent As String, optionalPar
     End If
     Set resp = StarkBankApi.getRequest("/v2/invoice/log", query, New Dictionary)
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     Set getEventLog = resp.json()
 

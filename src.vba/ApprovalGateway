@@ -47,7 +47,7 @@ Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
     Set resp = V2Rest.getRequest("/v2/cost-center", query, New Dictionary)
     
     If resp.Status <> 200 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     
     Set getCostCenters = resp.json()

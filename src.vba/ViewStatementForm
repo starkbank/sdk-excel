@@ -1,3 +1,10 @@
+Sub UserForm_Activate()
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+End Sub
 
 Private Sub AfterTextBox_Change()
     Static reentry As Boolean
@@ -31,14 +38,11 @@ Private Sub DownloadButton_Click()
     Dim before As String
     
     Dim cursor As String
-    Dim teamCursor As String
     Dim transact As Dictionary
     Dim transactions As Collection
     Dim row As Integer
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     Dim respJson As Dictionary: Set respJson = New Dictionary
-    Dim sign As Integer
-    Dim teams As Collection
     
     Dim transactionType As String
     Dim transactionCreated As String
@@ -93,17 +97,9 @@ Private Sub DownloadButton_Click()
 
     row = TableFormat.HeaderRow() + 1
     
-    Set respJson = getTeams("", New Dictionary)
-    If respJson.Exists("error") Then
-        Unload Me
-        Exit Sub
-    End If
-    
-    Set teams = respJson("teams")
-    
     Do
-        Set respJson = getTransaction(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        Set respJson = V2BankGateway.getTransaction(cursor, optionalParam)
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -122,7 +118,7 @@ Private Sub DownloadButton_Click()
         
             Dim initialRow As Integer
             Dim created As String: created = transact("created")
-            Dim path As String:  path = transact("path")
+            Dim path As String:  path = transact("source")
 
             Dim tags As Collection: Set tags = transact("tags")
             Dim tagsStr As String: tagsStr = CollectionToString(tags, ",")
@@ -132,40 +128,33 @@ Private Sub DownloadButton_Click()
             transactionId = transact("id")
             transactionFee = CDbl(transact("fee")) / 100
             balance = CDbl(transact("balance")) / 100
-            transactionType = getTransactionType(splitPath, teams, tags)
+            transactionType = getTransactionType(splitPath, tags)
+
+            ActiveSheet.Cells(row, 1).Value = transactionCreated
+            ActiveSheet.Cells(row, 2).Value = transactionType
             
-            conditionTeam = (splitPath(0) = "team")
-            conditionTransferRequest = (splitPath(0) = "transfer-request")
-            If (conditionTeam Or conditionTransferRequest) And DetailedCheckBox.Value = True Then
-                initialRow = row
-                row = getTransfersInTransaction(path, transactionCreated, transactionId, transactionFee, transactionType, balance, row)
-                
-            Else
-                sign = transactionSign(transact("flow"))
-                ActiveSheet.Cells(row, 1).Value = transactionCreated
-                ActiveSheet.Cells(row, 2).Value = transactionType
-                If UBound(splitPath) > LBound(splitPath) Then
-                    ActiveSheet.Cells(row, 3).Value = splitPath(1)
-                End If
-                ActiveSheet.Cells(row, 4).Value = CDbl(transact("amount")) / 100 * sign
-                If sign > 0 Then
-                    ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
-                Else
-                    ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
-                End If
-                ActiveSheet.Cells(row, 5).Value = balance
-                If balance > 0 Then
-                    ActiveSheet.Cells(row, 5).Font.Color = RGB(0, 140, 0)
-                Else
-                    ActiveSheet.Cells(row, 5).Font.Color = RGB(180, 0, 0)
-                End If
-                ActiveSheet.Cells(row, 6).Value = transact("description")
-                ActiveSheet.Cells(row, 7).Value = transactionId
-                ActiveSheet.Cells(row, 8).Value = transactionFee
-                ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
-                
-                row = row + 1
+            If UBound(splitPath) > LBound(splitPath) Then
+                ActiveSheet.Cells(row, 3).Value = splitPath(1)
             End If
+              
+            ActiveSheet.Cells(row, 4).Value = CDbl(transact("amount")) / 100
+            If transact("amount") > 0 Then
+                ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
+            Else
+                ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
+            End If
+            ActiveSheet.Cells(row, 5).Value = balance
+            If balance > 0 Then
+                ActiveSheet.Cells(row, 5).Font.Color = RGB(0, 140, 0)
+            Else
+                ActiveSheet.Cells(row, 5).Font.Color = RGB(180, 0, 0)
+            End If
+            ActiveSheet.Cells(row, 6).Value = transact("description")
+            ActiveSheet.Cells(row, 7).Value = transactionId
+            ActiveSheet.Cells(row, 8).Value = transactionFee
+            ActiveSheet.Cells(row, 9).Value = CollectionToString(tags, ",")
+            
+            row = row + 1
 
         Next
 
@@ -175,90 +164,7 @@ Private Sub DownloadButton_Click()
 
 End Sub
 
-Private Function getTransfersInTransaction(path As String, transactionCreated As String, transactionId As String, transactionFee As Double, transactionType As String, balance As Double, row As Integer) As Integer
-    Dim transfers As Collection
-    Dim cursor As String
-    Dim transfer As Object
-    Dim transferDescription As String
-    Dim requestId As String
-    Dim initialRow As Integer
-    Dim transferFee As Double
-    Dim transferTags As Collection
-    Dim getTransferParam As Dictionary: Set getTransferParam = New Dictionary
-    Dim splitPath() As String
-    Dim sign As Integer
-    Dim chargebackBool As Boolean
-
-    sign = -1
-    splitPath = Split(path, "/")
-    requestId = splitPath(1)
-    chargebackBool = False
-    getTransferParam.Add "transactionIds", transactionId
-    If isChargeback(splitPath) Then
-        sign = 1
-        getTransferParam.Add "status", "failed"
-        chargebackBool = True
-    End If
-
-    Do
-        Set transferRespJson = TransferGateway.getTransfers(cursor, getTransferParam)
-
-        cursor = ""
-        If transferRespJson("cursor") <> "" Then
-            cursor = transferRespJson("cursor")
-        End If
-
-        Set transfers = transferRespJson("transfers")
-        
-        ActiveSheet.Cells(row, 4).Value = balance
-        If balance > 0 Then
-            ActiveSheet.Cells(row, 4).Font.Color = RGB(0, 140, 0)
-        Else
-            ActiveSheet.Cells(row, 4).Font.Color = RGB(180, 0, 0)
-        End If
-        
-        For Each transfer In transfers
-            transferFee = transfer("fee")
-            Set transferTags = transfer("tags")
-            If transferTags.Count() <> 0 Then
-                Set transferTags = correctTransferTags(transferTags)
-            End If
-            transferTagsStr = CollectionToString(transferTags, ",")
-            transferDescription = createDescription(transfer("name"), transfer("taxId"), chargebackBool)
-
-            ActiveSheet.Cells(row, 1).Value = transactionCreated
-            ActiveSheet.Cells(row, 2).Value = transactionType
-            ActiveSheet.Cells(row, 3).Value = transfer("amount") / 100 * sign
-            If sign > 0 Then
-                ActiveSheet.Cells(row, 3).Font.Color = RGB(0, 140, 0)
-            Else
-                ActiveSheet.Cells(row, 3).Font.Color = RGB(180, 0, 0)
-            End If
-    
-            If IsEmpty(ActiveSheet.Cells(row, 4)) = True Then
-                ActiveSheet.Cells(row, 4).Value = 0
-            End If
-            
-            ActiveSheet.Cells(row, 5).Value = transferDescription
-            ActiveSheet.Cells(row, 6).Value = transactionId
-            
-            If chargebackBool Then
-                ActiveSheet.Cells(row, 7).Value = 0
-            Else
-                ActiveSheet.Cells(row, 7).Value = transferFee / 100
-            End If
-            
-            ActiveSheet.Cells(row, 8).Value = transferTagsStr
-
-            row = row + 1
-            initialRow = row
-        Next
-    Loop While cursor <> ""
-
-    getTransfersInTransaction = row
-End Function
-
-Private Function getTransactionType(list() As String, ByRef teams As Collection, ByRef tags As Collection)
+Private Function getTransactionType(list() As String, ByRef tags As Collection)
     Dim transactionType As String
     Select Case list(0)
         Case "self"
@@ -291,16 +197,6 @@ Private Function getTransactionType(list() As String, ByRef teams As Collection,
                     transactionType = "Transf. com aprovação"
                 End If
             Next
-        Case "team"
-            Dim teamName As String
-            Dim team As Dictionary
-            teamName = ""
-            For Each team In teams
-                If team("id") = list(1) Then
-                    teamName = team("name")
-                End If
-            Next
-            transactionType = "Transf. com aprovação: Time " & teamName
         Case Else
             transactionType = "Outros"
     End Select
@@ -315,14 +211,6 @@ Private Function createDescription(name As String, taxId As String, isChargeback
     createDescription = "Transferência para " & name & ". CPF/CNPJ: " & taxId & "."
     If isChargeback Then
         createDescription = "Estorno de saldo por falha de " + createDescription
-    End If
-End Function
-
-Private Function transactionSign(flow As String) As Integer
-    transactionSign = 1
-
-    If flow = "out" Then
-        transactionSign = -1
     End If
 End Function
 

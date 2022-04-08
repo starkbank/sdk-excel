@@ -101,7 +101,7 @@ Private Sub SearchButton_Click()
     Do
         logRow = row
         Set respJson = getInvoices(cursor, optionalParam)
-        If respJson.Exists("error") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If

@@ -8,7 +8,11 @@ Private Sub UserForm_Initialize()
     
     Do
         Set respJson = getCostCenters(cursor, New Dictionary)
-    
+        
+        If respJson.Exists("errors") Then
+            Exit Sub
+        End If
+        
         cursor = ""
         If respJson("cursor") <> "" Then
             cursor = respJson("cursor")

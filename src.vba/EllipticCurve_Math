@@ -20,7 +20,7 @@ Public Function randomPointOnCurve(px As String, py As String, n As String, a As
         Set randomPointOnCurve = Result
     Else
         Result.Add "success", New Dictionary
-        Result.Add "error", resp.error()
+        Result.Add "error", resp.errors()
         Set randomPointOnCurve = Result
     End If
 

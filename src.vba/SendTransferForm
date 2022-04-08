@@ -24,6 +24,12 @@ Private Sub ConfirmButton_Click()
     
     Call FreezeHeader
     
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Unload Me
+        Exit Sub
+    End If
+    
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
     Dim workspace As String: workspace = SessionGateway.getWorkspace()
@@ -50,7 +56,7 @@ Private Sub ConfirmButton_Click()
     End If
     
     '--------------- Read privateKey -----------------
-    If dir(myFile) <> vbNullString Then
+    If Dir(myFile) <> vbNullString Then
         Open myFile For Input As #1
         Do Until EOF(1)
             Line Input #1, textLine
@@ -90,7 +96,7 @@ Private Sub ConfirmButton_Click()
     
     '--------------- Create transfers -----------------
     Dim respJson As Dictionary
-    Set respJson = TransferGateway.createTransfers(payload, signature64)
+    Set respJson = V2TransferGateway.createTransfers(payload, signature64)
     
     Unload Me
     Exit Sub

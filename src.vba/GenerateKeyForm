@@ -1,5 +1,4 @@
 
-
 Private Sub BrowseFolderKeys_Click()
     Dim myFile As String
     myFile = Utils.GetFolder()
@@ -25,9 +24,9 @@ Private Sub keyGeneration(diropenssl As String, dirkeys As String)
     Dim pathPublicKey As String
     Dim pathPrivateKey As String
     
-    If dir(diropenssl + "\openssl.exe") <> "" Then
+    If Dir(diropenssl + "\openssl.exe") <> "" Then
         opensslPath = diropenssl + "\openssl.exe"
-    ElseIf dir(diropenssl + "\bin\openssl.exe") <> "" Then
+    ElseIf Dir(diropenssl + "\bin\openssl.exe") <> "" Then
         opensslPath = diropenssl + "\bin\openssl.exe"
     Else
         GoTo eh

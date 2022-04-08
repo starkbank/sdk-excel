@@ -27,6 +27,10 @@ Private Sub CreateLogButton_Click()
     MsgBox "Arquivo salvo com sucesso em:" + vbNewLine + filepath
 End Sub
 
+Private Sub Label2_Click()
+
+End Sub
+
 Public Sub UserForm_Activate():
     If DebugModeOn() Then
         DebugCheckBox.Value = True
