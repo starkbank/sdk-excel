@@ -53,15 +53,15 @@ Public Function ISODATEZ(iso As String) As String
     ISODATEZ = dtString
 End Function
 
-Public Function applyStandardLayout(ByVal col As String)
-    ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
-    ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
-    ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
-End Function
+Public Sub applyStandardLayout(ByVal col As String)
+    ' Set ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
+    ' Set ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
+    ' Set ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
+End Sub
 
 Public Function applyLockedLayout(col1 As String, col2 As String)
-    ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
-    ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
+    ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
+    ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
 End Function
 
 Public Function formatDateInUserForm(dateString As String)
