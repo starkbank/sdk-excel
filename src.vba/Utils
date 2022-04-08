@@ -53,7 +53,7 @@ Public Function ISODATEZ(iso As String) As String
     ISODATEZ = dtString
 End Function
 
-Public Function applyStandardLayout(col As String)
+Public Function applyStandardLayout(ByVal col As String)
     ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
     ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
     ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)

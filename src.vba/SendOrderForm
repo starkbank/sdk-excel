@@ -33,8 +33,6 @@ Private Sub SendButton_Click()
     Dim respMessage As String
     Dim teamInfo As String: teamInfo = TeamBox.Value
 
-    Call Utils.applyStandardLayout("I")
-
     'Headers definition
     ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
