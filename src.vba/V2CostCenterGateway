@@ -88,6 +88,7 @@ Public Function createOrders(teamId As String)
             End If
             
             dict.Add "requests", requests
+            Set requests = New Collection
             payload = JsonConverter.ConvertToJson(dict)
 
             Set resp = V2Rest.postRequest("/v2/payment-request", payload, New Dictionary)
