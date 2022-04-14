@@ -83,6 +83,10 @@ Public Function createOrders(teamId As String)
                 GoTo nextIteration
             End If
             
+            If dict.Exists("requests") Then
+                dict.RemoveAll
+            End If
+            
             dict.Add "requests", requests
             payload = JsonConverter.ConvertToJson(dict)
 
