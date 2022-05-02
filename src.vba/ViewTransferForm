@@ -177,15 +177,15 @@ Private Sub SearchButton_Click()
             Set transferLogs = respJson("logs")
             
             For Each transferLog In transferLogs
-                Set logsFailedByTransfer(transferLog("transferId")) = transferLog
+                Set logsFailedByTransfer(transferLog("transfer")("id")) = transferLog
             Next
             
             For Each Transfer In transfers
                 If Transfer("status") = "failed" Then
                     Dim errors As String: errors = ""
-                    Dim errorMessage As Variant
+                    Dim errorMessage As Variant: errorMessage = ""
                     sep = ""
-                    For Each errorMessage In logsFailedByTransfer(Transfer("transferid"))("errors")
+                    For Each errorMessage In logsFailedByTransfer(Transfer("id"))("errors")
                         errors = errors + sep + errorMessage
                         sep = ","
                     Next
