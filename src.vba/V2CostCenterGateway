@@ -70,7 +70,12 @@ Public Function createOrders(teamId As String)
             request.Add "centerId", teamId
             request.Add "type", "transfer"
             request.Add "payment", order
-            request.Add "tags", tags
+            
+            lengthTags = UBound(tags) - LBound(tags) + 1
+            If lengthTags <> 0 Then
+                request.Add "tags", tags
+            End If
+            
             requests.Add request
             
         End If
@@ -142,7 +147,10 @@ Public Function order(amount As Long, taxId As String, name As String, bankCode 
     dict.Add "branchCode", branchCode
     dict.Add "accountNumber", accountNumber
     dict.Add "accountType", accountType
-    dict.Add "description", description
+    
+    If description <> "" Then
+        dict.Add "description", description
+    End If
     
     Set order = dict
     
