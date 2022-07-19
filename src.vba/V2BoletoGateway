@@ -1,0 +1,321 @@
+Public Function createBoletos(boletos As Collection)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    
+    
+    dict.Add "boletos", boletos
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set createBoletos = V2Rest.postRequest("/v2/boleto", payload, New Dictionary)
+    
+End Function
+
+Public Function getOrders(initRow As Long, midRow As Long) As Collection
+    Dim boletos As New Collection
+    
+    For Each obj In SheetParser.longDict(initRow, midRow)
+        Dim name As String
+        Dim taxId As String
+        Dim streetLine1 As String
+        Dim streetLine2 As String
+        Dim district As String
+        Dim city As String
+        Dim stateCode As String
+        Dim zipCode As String
+        Dim amount As Long
+        Dim due As String
+        Dim fine As Single: fine = 2
+        Dim interest As Single: interest = 1
+        Dim overdueLimit As Long: overdueLimit = 59
+        Dim description1 As Dictionary: Set description1 = New Dictionary
+        Dim description2 As Dictionary: Set description2 = New Dictionary
+        Dim description3 As Dictionary: Set description3 = New Dictionary
+        Dim boleto As Dictionary
+        
+        
+        If obj("Nome") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
+            End
+        End If
+        name = obj("Nome")
+        taxId = obj("CPF/CNPJ")
+        streetLine1 = obj("Logradouro")
+        streetLine2 = obj("Complemento")
+        district = obj("Bairo")
+        city = obj("Cidade")
+        stateCode = obj("Código do Estado")
+        zipCode = obj("CEP")
+        amount = getAmountLong((obj("Valor")))
+        due = Utils.DateToSendingFormat(Format(obj("Data de Vencimento"), "dd/mm/yyyy"))
+        
+        If obj("Multa") <> "" Then
+            fine = Utils.SingleFrom((obj("Multa")))
+        End If
+        
+        If obj("Juros ao Mês") <> "" Then
+            interest = Utils.SingleFrom((obj("Juros ao Mês")))
+        End If
+        
+        If obj("Dias para Baixa Automática") <> "" Then
+            overdueLimit = Utils.IntegerFrom((obj("Dias para Baixa Automática")))
+        End If
+        
+        If obj("Descrição 1") <> "" Then
+            description1.Add "text", obj("Descrição 1")
+        End If
+        If obj("Valor 1") <> "" Then
+            description1.Add "amount", getAmountLong((obj("Valor 1")))
+        End If
+        
+        If obj("Descrição 2") <> "" Then
+            description2.Add "text", obj("Descrição 2")
+        End If
+        If obj("Valor 2") <> "" Then
+            description2.Add "amount", getAmountLong((obj("Valor 2")))
+        End If
+        
+        If obj("Descrição 3") <> "" Then
+            description3.Add "text", obj("Descrição 3")
+        End If
+        If obj("Valor 3") <> "" Then
+            description3.Add "amount", getAmountLong((obj("Valor 3")))
+        End If
+        
+        Set boleto = V2BoletoGateway.boleto(name, taxId, streetLine1, streetLine2, district, city, stateCode, zipCode, amount, due, fine, interest, overdueLimit, description1, description2, description3)
+  
+        boletos.Add boleto
+    Next
+    Set getOrders = boletos
+    
+End Function
+
+
+Public Function boleto(name As String, taxId As String, streetLine1 As String, streetLine2 As String, district As String, city As String, stateCode As String, zipCode As String, amount As Long, due As String, fine As Single, interest As Single, overdueLimit As Long, description1 As Dictionary, description2 As Dictionary, description3 As Dictionary) As Dictionary
+    Dim descriptions As New Collection
+    Dim dict As New Dictionary
+
+
+    If description1.Count > 0 Then
+        descriptions.Add description1
+    End If
+    If description2.Count > 0 Then
+        descriptions.Add description2
+    End If
+    If description3.Count > 0 Then
+        descriptions.Add description3
+    End If
+
+    dict.Add "name", name
+    dict.Add "taxId", taxId
+    dict.Add "streetLine1", streetLine1
+    dict.Add "streetLine2", streetLine2
+    dict.Add "district", district
+    dict.Add "city", city
+    dict.Add "stateCode", stateCode
+    dict.Add "zipCode", zipCode
+    dict.Add "amount", amount
+    dict.Add "due", due
+    dict.Add "fine", fine
+    dict.Add "interest", interest
+    dict.Add "overdueLimit", overdueLimit
+    dict.Add "descriptions", descriptions
+    
+    Set boleto = dict
+End Function
+
+Public Sub clearBoletoEmission()
+    Sheets("Emissão de Boletos").Range("A10:Z" & Rows.Count).ClearContents
+End Sub
+
+Public Function getBoletoLogs(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+
+
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+
+    Set resp = V2Rest.getRequest("/v2/boleto/log", query, New Dictionary)
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    
+    Set getBoletoLogs = resp.json()
+End Function
+
+Public Function getEventInPt(Status As String)
+    Select Case Status
+        Case "paid":  getEventInPt = "pago"
+        Case "bank":  getEventInPt = "creditado"
+        Case "register":  getEventInPt = "criado (pendente de registro)"
+        Case "registered":  getEventInPt = "registrado"
+        Case "overdue":  getEventInPt = "vencido"
+        Case "cancel":  getEventInPt = "em cancelamento"
+        Case "canceled":  getEventInPt = "cancelado"
+        Case "failed":  getEventInPt = "falha"
+        Case "unknown":  getEventInPt = "desconhecido"
+        Case Else:  getEventInPt = Status
+        
+    End Select
+End Function
+
+Public Sub clearBoletoHistory()
+    Sheets("Histórico de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
+End Sub
+
+Public Function getBoletos(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = V2Rest.getRequest("/v2/boleto", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getBoletos = resp.json()
+
+End Function
+
+Public Function getStatus(Status As String)
+    Select Case Status
+        Case "Todos": getStatus = "all"
+        Case "Pagos":  getStatus = "paid"
+        Case "Pendentes de Registro":  getStatus = "created"
+        Case "Registrados":  getStatus = "registered"
+        Case "Vencidos":  getStatus = "overdue"
+        Case "Cancelados":  getStatus = "canceled"
+    End Select
+    
+End Function
+
+Public Function getStatusInPt(Status As String)
+    Select Case Status
+        Case "paid":  getStatusInPt = "pago"
+        Case "created":  getStatusInPt = "pendente de registro"
+        Case "registered":  getStatusInPt = "registrado"
+        Case "overdue":  getStatusInPt = "vencido"
+        Case "canceled":  getStatusInPt = "cancelado"
+        Case "failed":  getStatusInPt = "falha"
+        Case "unknown":  getStatusInPt = "desconhecido"
+    End Select
+    
+End Function
+
+Public Function getEventLog(boletoId As String, logEvent As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    Dim elem As Variant
+    
+    
+    query = ""
+    If boletoId <> "" Then
+        query = "?events=" + logEvent + "&chargeIds=" + boletoId
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
+    If resp.Status >= 300 Then
+        MsgBox resp.error()("message"), , "Erro"
+    End If
+    Set getEventLog = resp.json()
+
+End Function
+
+Public Sub clearBoletoSearch()
+    Sheets("Consulta de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
+End Sub
+
+Public Function getOccurrenceId(statusCode As String)
+    Select Case statusCode
+        Case "pendente de registro"
+            getOccurrenceId = "00"
+        Case "registrado"
+            getOccurrenceId = "02"
+        Case "vencido"
+            getOccurrenceId = "02"
+        Case "falha"
+            getOccurrenceId = "03"
+        Case "pago"
+            getOccurrenceId = "06"
+        Case "cancelado"
+            getOccurrenceId = "09"
+        Case Else
+            getOccurrenceId = "99"
+    End Select
+End Function
+
+Public Function getStatusFromId(id As String)
+    Select Case id
+        Case "00":  getStatusFromId = "register"
+        Case "02":  getStatusFromId = "registered"
+        Case "03":  getStatusFromId = "failed"
+        Case "06":  getStatusFromId = "paid"
+        Case "09":  getStatusFromId = "canceled"
+        Case Else:  getStatusFromId = "unknown"
+    End Select
+End Function
+
+Public Function getCustomers(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = V2Rest.getRequest("/v2/boleto/customer", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getCustomers = resp.json()
+
+End Function

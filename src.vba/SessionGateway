@@ -108,7 +108,6 @@ Public Function getBalance()
     getBalance = balanceMessage
 End Function
 
-
 Public Function sessionPrivateKeyContent() As String
     Dim sessionPrivateKeyPath
     sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"

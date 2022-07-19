@@ -23,7 +23,7 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     Exit Function
 eh:
     resp.Status = 404
-    resp.content = "{""error"":{""code"":""connectionError"",""message"":""Verifique sua conexão de internet!""}}"
+    resp.content = "{""errors"":[{""code"":""connectionError"",""message"":""Verifique sua conexão de internet!""}]}"
     Set fetch = resp
 End Function
 

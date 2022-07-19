@@ -361,4 +361,6 @@ Public Function getEventLog(invoiceId As String, logEvent As String, optionalPar
 
 End Function
 
-
+Public Sub clearInvoiceEmission()
+    Sheets("Emissão de Invoice Pix").Range("A10:Z" & Rows.Count).ClearContents
+End Sub

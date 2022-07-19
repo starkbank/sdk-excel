@@ -121,7 +121,7 @@ Private Sub SearchButton_Click()
     If Events <> "credited," Then
         optionalParam.Add "types", Events
         Do
-            Set respJson = V2ChargeGateway.getChargeLogs(cursor, optionalParam)
+            Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
@@ -144,7 +144,7 @@ Private Sub SearchButton_Click()
                 Set tags = charge("tags")
                 
                 ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-                ActiveSheet.Cells(row, 2).Value = ChargeGateway.getEventInPt(logEvent)
+                ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
                 ActiveSheet.Cells(row, 3).Value = charge("name")
                 ActiveSheet.Cells(row, 4).Value = charge("taxId")
                 ActiveSheet.Cells(row, 5).Value = amount
@@ -169,7 +169,7 @@ Private Sub SearchButton_Click()
     optionalParam.Add "types", Events
     Do
         logRow = row
-        Set respJson = V2ChargeGateway.getChargeLogs(cursor, optionalParam)
+        Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
         If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
@@ -196,7 +196,7 @@ Private Sub SearchButton_Click()
             Set tags = charge("tags")
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-            ActiveSheet.Cells(row, 2).Value = ChargeGateway.getEventInPt(logEvent)
+            ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
             ActiveSheet.Cells(row, 3).Value = charge("name")
             ActiveSheet.Cells(row, 4).Value = charge("taxId")
             
@@ -250,8 +250,8 @@ Private Sub SearchButton_Click()
         End If
         
         Do
-            logsParam("types") = "credited,"
-            Set respJson = V2ChargeGateway.getChargeLogs(registeredCursor, logsParam)
+            logsParam("types") = "registered,"
+            Set respJson = V2BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
@@ -281,7 +281,7 @@ Private Sub SearchButton_Click()
     Unload Me
 End Sub
 
-Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionary, ByVal createdLog As Dictionary, row As Long)
+Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionary, ByVal registeredLog As Dictionary, row As Long)
     Dim nominalAmount As Double
     Dim fine As Double
     Dim amount As Double
@@ -293,7 +293,11 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     
     amount = charge("amount") / 100
     
-    nominalAmount = createdLog("boleto")("amount") / 100
+    nominalAmount = amount
+    If Not VarType(registeredLog("boleto")) = 0 Then
+        nominalAmount = registeredLog("boleto")("amount") / 100
+    End If
+    
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount
