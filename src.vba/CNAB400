@@ -112,21 +112,6 @@ Private Sub DebugDict()
     Debug.Print "Total Amount:", totalAmount
 End Sub
 
-Private Function getLogOccurrenceDate(statusCode As String, chargeId As String) As String
-    Dim respMessage As Variant
-    Dim logEvent As String
-    Set respMessage = ChargeGateway.getChargeLog(chargeId, New Dictionary)
-    
-    For Each elem In respMessage("logs")
-        logEvent = elem("event")
-        If (statusCode = ChargeGateway.getStatusInPt(logEvent)) Then
-            getLogOccurrenceDate = elem("created")
-            Exit Function
-        End If
-    Next
-    
-End Function
-
 Private Sub getLogOccurrenceDates(lastRow As Integer, logEvent As String)
     Dim chunk As String
     Dim respMessage As Dictionary
@@ -143,8 +128,8 @@ Private Sub getLogOccurrenceDates(lastRow As Integer, logEvent As String)
         statusCode = Cells(i, "D").Value
         chargeId = CStr(Cells(i, "M").Value)
         
-        occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
-        If ChargeGateway.getStatusFromId(occurrenceId) = logEvent Then
+        occurrenceId = V2BoletoGateway.getOccurrenceId(statusCode)
+        If V2BoletoGateway.getStatusFromId(occurrenceId) = logEvent Then
             j = j + 1
             chunk = chunk & chargeId & ","
             If j >= 100 Then
@@ -160,7 +145,7 @@ Private Sub getLogOccurrenceDates(lastRow As Integer, logEvent As String)
 End Sub
 
 Private Sub insertOccurrenceDict(chunk As String, logEvent As String)
-    Set respMessage = ChargeGateway.getEventLog(chunk, logEvent, New Dictionary)
+    Set respMessage = V2BoletoGateway.getEventLog(chunk, logEvent, New Dictionary)
     
     For Each elem In respMessage("logs")
         occurrenceDateDict.Add CStr(elem("charge")("id")), elem("created")
@@ -238,7 +223,7 @@ Private Sub outputPrintTransactionOne(outputFile As Integer, i As Integer)
     typeTaxId = getTaxIdType(taxId)
     taxId = TaxIdFormatting(taxId)
     
-    occurrenceId = ChargeGateway.getOccurrenceId(statusCode)
+    occurrenceId = V2BoletoGateway.getOccurrenceId(statusCode)
     
     numberDict(occurrenceId) = numberDict(occurrenceId) + 1
     

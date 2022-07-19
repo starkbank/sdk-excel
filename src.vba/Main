@@ -104,168 +104,103 @@ Public Sub keyUpload()
     SendKeyForm.Show
 End Sub
 
-Public Sub searchCustomers()
-    On Error Resume Next
-    
-    Dim cursor As String
-    Dim customers As Collection
-    Dim row As Integer
-    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
-    
-    If Not isSignedin() Then
-        MsgBox "Acesso negado, faça login novamente."
-        Exit Sub
-    End If
-    
-    'Table layout
-    Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.Count).ClearContents
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
-    
-    With ActiveWindow
-        '.SplitColumn = 12
-        .SplitRow = 9
-    End With
-    ActiveWindow.FreezePanes = True
-    
-    row = 10
-
-    Do
-        Set respJson = V2ChargeGateway.getCustomers(cursor, optionalParam)
-
-        cursor = ""
-        If respJson("cursor") <> "" Then
-            cursor = respJson("cursor")
-        End If
-
-        Set customers = respJson("customers")
-
-        For Each customer In customers
-
-            ActiveSheet.Cells(row, 1).Value = customer("id")
-            ActiveSheet.Cells(row, 2).Value = customer("name")
-            ActiveSheet.Cells(row, 3).Value = customer("taxId")
-            ActiveSheet.Cells(row, 4).Value = customer("email")
-            ActiveSheet.Cells(row, 5).Value = customer("phone")
-            
-            Dim address As Dictionary: Set address = customer("address")
-            
-            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
-            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
-            ActiveSheet.Cells(row, 8).Value = address("district")
-            ActiveSheet.Cells(row, 9).Value = address("city")
-            ActiveSheet.Cells(row, 10).Value = address("stateCode")
-            ActiveSheet.Cells(row, 11).Value = address("zipCode")
-
-            Dim tags As Collection: Set tags = customer("tags")
-            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
-
-            row = row + 1
-        Next
-
-    Loop While cursor <> ""
-     
-End Sub
-
-Public Sub createCharges()
-    Dim charges As Collection
+Public Sub createBoletos()
+    Dim boletos As Collection
     Dim resp As response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
     Dim respMessage As String
-    
-    Call Utils.applyStandardLayout("L")
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Valor"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Data de Vencimento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Multa"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Juro ao Mês"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Dias para Baixa Automática"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Descrição 1"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Valor 1"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Descrição 2"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Valor 2"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Descrição 3"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Valor 3"
 
 
     If Not isSignedin() Then
         MsgBox "Acesso negado, faça login novamente."
         Exit Sub
     End If
-    
+
+    Call Utils.applyStandardLayout("L")
+
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Bairo"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Código do Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Valor"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Data de Vencimento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Multa"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Juro ao Mês"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 13).Value = "Dias para Baixa Automática"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 14).Value = "Descrição 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 15).Value = "Valor 1"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 16).Value = "Descrição 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 17).Value = "Valor 2"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 18).Value = "Descrição 3"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 19).Value = "Valor 3"
+
     With ActiveWindow
-        '.SplitColumn = 20
         .SplitRow = 9
     End With
     ActiveWindow.FreezePanes = True
-    
+
+    anySent = False
+    returnMessage = ""
+    warningMessage = ""
+    errorMessage = ""
+
     initRow = 10
     lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
-        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
-        Set charges = ChargeGateway.getOrders(initRow, midRow)
-        Set resp = ChargeGateway.createCharges(charges)
+        midRow = IIf(midRow + 50 >= lastRow, lastRow, midRow + 50)
+        Set boletos = V2BoletoGateway.getOrders(initRow, midRow)
+        Set resp = V2BoletoGateway.createBoletos(boletos)
         
         If resp.Status = 200 Then
             respMessage = resp.json()("message")
             MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
             
-        ElseIf resp.error().Exists("errors") Then
-            Dim errors As Collection: Set errors = resp.error()("errors")
+        ElseIf resp.errors().Exists("errors") Then
+            Dim errors As Collection: Set errors = resp.errors()("errors")
             Dim error As Dictionary
             Dim errorList As String
             Dim errorDescription As String
             
             For Each error In errors
-                errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow) - 1)
+                errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
             
             Dim messageBox As String
-            messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
+            messageBox = errorList
             MsgBox messageBox, , "Erro"
             End
         Else
-            MsgBox resp.error()("message"), , "Erro"
+            MsgBox resp.errors()("errors")(1)("message"), , "Erro"
             
         End If
         
-        initRow = initRow + 100
+        initRow = initRow + 50
     Loop Until (midRow >= lastRow)
-     
+
 End Sub
 
 Public Sub createInvoices()
-
-    If Not isSignedin Then
-        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
-        Exit Sub
-    End If
-    
     Dim invoices As Collection
     Dim resp As response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
     Dim respMessage As String
+
+
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
     
     Call Utils.applyStandardLayout("M")
     
@@ -397,6 +332,82 @@ Public Sub updateInvoices()
      
 End Sub
 
+Public Sub searchCustomers()
+    On Error Resume Next
+    
+    Dim cursor As String
+    Dim customers As Collection
+    Dim row As Integer
+    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
+    'Table layout
+    Utils.applyStandardLayout ("L")
+    Range("A10:L" & Rows.Count).ClearContents
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
+    
+    With ActiveWindow
+        '.SplitColumn = 12
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+    
+    row = 10
+
+    Do
+        Set respJson = V2BoletoGateway.getCustomers(cursor, optionalParam)
+
+        cursor = ""
+        If respJson("cursor") <> "" Then
+            cursor = respJson("cursor")
+        End If
+
+        Set customers = respJson("customers")
+
+        For Each customer In customers
+
+            ActiveSheet.Cells(row, 1).Value = customer("id")
+            ActiveSheet.Cells(row, 2).Value = customer("name")
+            ActiveSheet.Cells(row, 3).Value = customer("taxId")
+            ActiveSheet.Cells(row, 4).Value = customer("email")
+            ActiveSheet.Cells(row, 5).Value = customer("phone")
+            
+            Dim address As Dictionary: Set address = customer("address")
+            
+            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
+            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
+            ActiveSheet.Cells(row, 8).Value = address("district")
+            ActiveSheet.Cells(row, 9).Value = address("city")
+            ActiveSheet.Cells(row, 10).Value = address("stateCode")
+            ActiveSheet.Cells(row, 11).Value = address("zipCode")
+
+            Dim tags As Collection: Set tags = customer("tags")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
+
+            row = row + 1
+        Next
+
+    Loop While cursor <> ""
+     
+End Sub
+
 Public Sub SearchInvoicesByIds()
 
     If Not isSignedin Then
@@ -472,79 +483,6 @@ Public Sub SearchInvoicesByIds()
         query.Remove "ids"
         initRow = initRow + 100
     Loop Until (midRow >= lastRow)
-End Sub
-
-Public Sub sendCustomers()
-    Dim customers As Collection
-    Dim resp As response
-    Dim initRow As Long
-    Dim midRow As Long
-    Dim lastRow As Long
-    Dim respMessage As String
-    Dim errorDescription As String
-    
-    If Not isSignedin() Then
-        MsgBox "Acesso negado, faça login novamente."
-        Exit Sub
-    End If
-    
-    Call Utils.applyStandardLayout("K")
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "E-mail"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Telefone"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Logradouro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Complemento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Bairro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Cidade"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Estado"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "CEP"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "Tags"
-    
-    With ActiveWindow
-        '.SplitColumn = 11
-        .SplitRow = 9
-    End With
-    ActiveWindow.FreezePanes = True
-
-    initRow = 10
-    lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
-    midRow = initRow - 1
-    Do
-        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
-        Set customers = ChargeGateway.getCustomerOrders(initRow, midRow)
-        Set resp = V2ChargeGateway.createCustomers(customers)
-        
-        If resp.Status = 200 Then
-            respMessage = resp.json()("message")
-            MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
-            
-        ElseIf resp.errors().Exists("errors") Then
-            Dim errors As Collection: Set errors = resp.errors()("errors")
-            Dim error As Dictionary
-            Dim errorList As String
-            
-            For Each error In errors
-                errorDescription = Utils.correctErrorLine(error("message"), initRow - 1)
-                errorList = errorList & errorDescription & Chr(10)
-            Next
-            
-            Dim messageBox As String
-            messageBox = errorList
-            MsgBox messageBox, , "Erro"
-            End
-        Else
-            Dim errorMessage As String: errorMessage = resp.errors()("message")
-            errorDescription = Utils.correctErrorLine(errorMessage, initRow - 1)
-            MsgBox errorDescription, , "Erro"
-            
-        End If
-        
-        initRow = initRow + 100
-    Loop Until (midRow >= lastRow)
-    
 End Sub
 
 Public Sub executeTransfers()

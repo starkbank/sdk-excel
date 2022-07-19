@@ -24,7 +24,6 @@ Private Sub UserForm_Initialize()
     Me.StatusBox.AddItem "Registrados"
     Me.StatusBox.AddItem "Vencidos"
     Me.StatusBox.AddItem "Cancelados"
-    
     Me.StatusBox.Value = "Todos"
     Me.AfterTextBox.Value = InputLogGateway.getAfterDate()
     Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
@@ -91,7 +90,7 @@ Private Sub SearchButton_Click()
     Call FreezeHeader
     
     'Optional parameters
-    Dim Status As String: Status = ChargeGateway.getStatus(statusString)
+    Dim Status As String: Status = V2BoletoGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
@@ -106,7 +105,7 @@ Private Sub SearchButton_Click()
 
     Do
         logRow = row
-        Set respJson = V2ChargeGateway.getCharges(cursor, optionalParam)
+        Set respJson = V2BoletoGateway.getBoletos(cursor, optionalParam)
 
         If respJson.Exists("errors") Then
             Unload Me
@@ -132,7 +131,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 2).Value = charge("name")
             ActiveSheet.Cells(row, 3).Value = charge("taxId")
-            ActiveSheet.Cells(row, 4).Value = ChargeGateway.getStatusInPt(chargeStatus)
+            ActiveSheet.Cells(row, 4).Value = V2BoletoGateway.getStatusInPt(chargeStatus)
             ActiveSheet.Cells(row, 5).Value = amount
             
             ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
@@ -156,7 +155,7 @@ Private Sub SearchButton_Click()
                 If chargeStatus = "paid" Then
                     logsPaidByCharge.Add id, New Dictionary
                     logsRegisteredByCharge.Add id, New Dictionary
-                    ' Call setPaidBoletoInfo(charge, row)
+'                    Call setPaidBoletoInfo(charge, row)
                 End If
             End If
             
@@ -176,7 +175,7 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "boletoIds", keys
-            Set respJson = V2ChargeGateway.getChargeLogs("", logsParam)
+            Set respJson = V2BoletoGateway.getBoletoLogs("", logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"
                 Exit Sub
@@ -189,7 +188,7 @@ Private Sub SearchButton_Click()
             Next
             
             logsParam("types") = "registered"
-            Set respJson = V2ChargeGateway.getChargeLogs("", logsParam)
+            Set respJson = V2BoletoGateway.getBoletoLogs("", logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos criados!"
                 Exit Sub
@@ -227,7 +226,7 @@ Public Sub setPaidBoletoInfo(ByVal charge As Object, row As Long)
     Dim createdLog As Dictionary
     Dim id As String: id = charge("id")
     
-    Set logs = ChargeGateway.getEventLog(id, "register,paid", New Dictionary)("logs")
+    Set logs = V2BoletoGateway.getEventLog(id, "registered,paid", New Dictionary)("logs")
     Set createdLog = logs(2)
     Set paidLog = logs(1)
     
@@ -243,6 +242,7 @@ Public Sub setPaidBoletoInfo(ByVal charge As Object, row As Long)
         ActiveSheet.Cells(row, 7).Value = discount
         ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
     End If
+    
     If deltaAmount > 0 Then
         fine = charge("fine") / 100 * nominalAmount
         interest = amount - fine - nominalAmount
@@ -268,7 +268,11 @@ Public Sub setChargeInfo(ByVal charge As Object, ByVal paidLog As Dictionary, By
     paidDate = paidLog("created")
     ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(paidDate)
     
-    nominalAmount = createdLog("boleto")("amount") / 100
+    nominalAmount = amount
+    If Not VarType(createdLog("boleto")) = 0 Then
+        nominalAmount = createdLog("boleto")("amount") / 100
+    End If
+
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount
@@ -285,5 +289,6 @@ Public Sub setChargeInfo(ByVal charge As Object, ByVal paidLog As Dictionary, By
         ActiveSheet.Cells(row, 8).Font.Color = RGB(0, 140, 0)
         ActiveSheet.Cells(row, 9).Font.Color = RGB(0, 140, 0)
     End If
+    
 End Sub
 

@@ -21,7 +21,6 @@ Public Function createOrders(teamId As String)
     returnMessage = ""
     warningMessage = ""
     errorMessage = ""
-
     
     iteration = 0
     startRow = TableFormat.HeaderRow() + 1
@@ -332,7 +331,6 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
 
         ActiveSheet.Cells(TableFormat.HeaderRow() + 1, 10).Value = externalId
 
-
     ElseIf resp.errors().Exists("errors") Then
         Dim errors As Collection: Set errors = resp.errors()("errors")
         Dim error As Dictionary
@@ -343,11 +341,10 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
 
     Else
         errorMessage = resp.errors()("message") + Chr(10)
-
     End If
 
     MsgBox returnMessage + Chr(10) + errorMessage
-    
+
 End Function
 
 Public Function internalTransfer(amount As Long, description As String, externalId As String, receiverId As String, tags() As String) As Dictionary
