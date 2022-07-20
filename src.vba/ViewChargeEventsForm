@@ -121,7 +121,7 @@ Private Sub SearchButton_Click()
     If Events <> "credited," Then
         optionalParam.Add "types", Events
         Do
-            Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
+            Set respJson = V2BoletoeGateway.getBoletoLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
@@ -158,7 +158,7 @@ Private Sub SearchButton_Click()
     
                 ActiveSheet.Cells(row, 16).Value = "PDF"
                 Set rng = ActiveSheet.Range("P" + CStr(row))
-                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=V2Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
                 row = row + 1
             Next
         Loop While cursor <> ""
@@ -211,7 +211,7 @@ Private Sub SearchButton_Click()
 
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=V2Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
             ActiveSheet.Cells(row, 18).Value = charge("streetLine2")
@@ -293,11 +293,7 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     
     amount = charge("amount") / 100
     
-    nominalAmount = amount
-    If Not VarType(registeredLog("boleto")) = 0 Then
-        nominalAmount = registeredLog("boleto")("amount") / 100
-    End If
-    
+    nominalAmount = registeredLog("boleto")("amount") / 100
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount

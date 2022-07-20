@@ -17,7 +17,7 @@ Public Function getTransaction(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2/transaction", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/transaction", query, New Dictionary)
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -29,7 +29,7 @@ End Function
 Public Function getAccount()
     Dim resp As response
     
-    Set resp = V2Rest.getRequest("/V2/balance/", "", New Dictionary)
+    Set resp = V2Rest.getRequest("/V2-faks/balance/", "", New Dictionary)
     
     If resp.Status = 200 Then
         Set getAccount = resp.json()
@@ -48,7 +48,7 @@ Public Function postTransaction(payload As String, signature As String)
     headers.Add "Digital-Signature", signature
     
     '--------------- Send request ---------------------------------
-    Set resp = V2Rest.postRequest("/v2/transaction", payload, headers)
+    Set resp = V2Rest.postRequest("/v2-faks/transaction", payload, headers)
     
     If resp.Status = 200 Then
         MsgBox "Transferência interna executada com sucesso!", , "Sucesso"

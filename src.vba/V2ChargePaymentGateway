@@ -1,3 +1,25 @@
+Public Function getStatus(Status As String)
+    Select Case Status
+        Case "Todos": getStatus = "all"
+        Case "Criados":  getStatus = "created"
+        Case "Cancelados":  getStatus = "canceled"
+        Case "Processando":  getStatus = "processing"
+        Case "Pagos":  getStatus = "success"
+        Case "Falha":  getStatus = "failed"
+    End Select
+End Function
+
+Public Function getStatusInPt(Status As String)
+    Select Case Status
+        Case "created":  getStatusInPt = "criado"
+        Case "canceled":  getStatusInPt = "cancelado"
+        Case "processing":  getStatusInPt = "processando"
+        Case "success":  getStatusInPt = "pago"
+        Case "failed":  getStatusInPt = "falha"
+        Case "unknown":  getStatusInPt = "desconhecido"
+    End Select
+End Function
+
 Public Function createPayments(payload As String, signature As String)
     Dim resp As response
     Dim headers As New Dictionary
@@ -6,7 +28,7 @@ Public Function createPayments(payload As String, signature As String)
     headers.Add "Digital-Signature", signature
     
     '--------------- Send request ---------------------------------
-    Set resp = V2Rest.postRequest("/v2/boleto-payment", payload, headers)
+    Set resp = V2Rest.postRequest("/v2-faks/boleto-payment", payload, headers)
     
     If resp.Status = 200 Then
         createPayments = resp.json()("message")
@@ -52,7 +74,7 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
     End If
     
 
-    Set resp = V2Rest.getRequest("/v2/boleto-payment", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/boleto-payment", query, New Dictionary)
      
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), vbExclamation, "Erro"

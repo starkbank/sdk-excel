@@ -7,7 +7,7 @@ End Sub
 
 Public Sub signOut()
     On Error Resume Next
-    Dim response As Dictionary
+    Dim respJson As Dictionary
     
     message1 = "Você quer mesmo encerrar a sessão? "
     message2 = "Dados que não foram salvos serão apagados."
@@ -19,14 +19,15 @@ Public Sub signOut()
     End If
     
     Application.ScreenUpdating = False
-    Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
+    Set respJson = V2SessionGateway.deleteSession()
     
-    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
-        MsgBox response("error")("message"), , "Erro"
+    ' Here You may need an error treatment
+    If respJson.Exists("errors") Then
+        MsgBox respJson("errors")(1)("message")
         Exit Sub
     End If
     
-    Call SessionGateway.saveSession("", "", "", "", "", "")
+    Call V2SessionGateway.saveSession("", "", "", "", "", "")
     For Each WS In ThisWorkbook.Worksheets
         If WS.name <> "Credentials" And WS.name <> "InputLog" And WS.name <> "Aux" Then
         
@@ -41,7 +42,10 @@ Public Sub signOut()
     clearDates
     clearAll
     Application.ScreenUpdating = True
-    MsgBox response("success")("message"), , "Sucesso"
+    Dim p As String
+    p = JsonConverter.ConvertToJson(respJson)
+    
+    MsgBox "Sucesso"
     
 End Sub
 
@@ -104,6 +108,82 @@ Public Sub keyUpload()
     SendKeyForm.Show
 End Sub
 
+Public Sub searchCustomers()
+    On Error Resume Next
+    
+    Dim cursor As String
+    Dim customers As Collection
+    Dim row As Integer
+    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
+    'Table layout
+    Utils.applyStandardLayout ("L")
+    Range("A10:L" & Rows.Count).ClearContents
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
+    
+    With ActiveWindow
+        '.SplitColumn = 12
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+    
+    row = 10
+
+    Do
+        Set respJson = V2ChargeGateway.getCustomers(cursor, optionalParam)
+
+        cursor = ""
+        If respJson("cursor") <> "" Then
+            cursor = respJson("cursor")
+        End If
+
+        Set customers = respJson("customers")
+
+        For Each customer In customers
+
+            ActiveSheet.Cells(row, 1).Value = customer("id")
+            ActiveSheet.Cells(row, 2).Value = customer("name")
+            ActiveSheet.Cells(row, 3).Value = customer("taxId")
+            ActiveSheet.Cells(row, 4).Value = customer("email")
+            ActiveSheet.Cells(row, 5).Value = customer("phone")
+            
+            Dim address As Dictionary: Set address = customer("address")
+            
+            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
+            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
+            ActiveSheet.Cells(row, 8).Value = address("district")
+            ActiveSheet.Cells(row, 9).Value = address("city")
+            ActiveSheet.Cells(row, 10).Value = address("stateCode")
+            ActiveSheet.Cells(row, 11).Value = address("zipCode")
+
+            Dim tags As Collection: Set tags = customer("tags")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
+
+            row = row + 1
+        Next
+
+    Loop While cursor <> ""
+     
+End Sub
+
 Public Sub createBoletos()
     Dim boletos As Collection
     Dim resp As response
@@ -155,7 +235,7 @@ Public Sub createBoletos()
     lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
-        midRow = IIf(midRow + 50 >= lastRow, lastRow, midRow + 50)
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
         Set boletos = V2BoletoGateway.getOrders(initRow, midRow)
         Set resp = V2BoletoGateway.createBoletos(boletos)
         
@@ -183,9 +263,9 @@ Public Sub createBoletos()
             
         End If
         
-        initRow = initRow + 50
+        initRow = initRow + 100
     Loop Until (midRow >= lastRow)
-
+     
 End Sub
 
 Public Sub createInvoices()
@@ -329,82 +409,6 @@ Public Sub updateInvoices()
         
         initRow = initRow + 100
     Loop Until (midRow >= lastRow)
-     
-End Sub
-
-Public Sub searchCustomers()
-    On Error Resume Next
-    
-    Dim cursor As String
-    Dim customers As Collection
-    Dim row As Integer
-    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
-    
-    If Not isSignedin() Then
-        MsgBox "Acesso negado, faça login novamente."
-        Exit Sub
-    End If
-    
-    'Table layout
-    Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.Count).ClearContents
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
-    
-    With ActiveWindow
-        '.SplitColumn = 12
-        .SplitRow = 9
-    End With
-    ActiveWindow.FreezePanes = True
-    
-    row = 10
-
-    Do
-        Set respJson = V2BoletoGateway.getCustomers(cursor, optionalParam)
-
-        cursor = ""
-        If respJson("cursor") <> "" Then
-            cursor = respJson("cursor")
-        End If
-
-        Set customers = respJson("customers")
-
-        For Each customer In customers
-
-            ActiveSheet.Cells(row, 1).Value = customer("id")
-            ActiveSheet.Cells(row, 2).Value = customer("name")
-            ActiveSheet.Cells(row, 3).Value = customer("taxId")
-            ActiveSheet.Cells(row, 4).Value = customer("email")
-            ActiveSheet.Cells(row, 5).Value = customer("phone")
-            
-            Dim address As Dictionary: Set address = customer("address")
-            
-            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
-            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
-            ActiveSheet.Cells(row, 8).Value = address("district")
-            ActiveSheet.Cells(row, 9).Value = address("city")
-            ActiveSheet.Cells(row, 10).Value = address("stateCode")
-            ActiveSheet.Cells(row, 11).Value = address("zipCode")
-
-            Dim tags As Collection: Set tags = customer("tags")
-            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
-
-            row = row + 1
-        Next
-
-    Loop While cursor <> ""
      
 End Sub
 

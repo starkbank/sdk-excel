@@ -98,8 +98,8 @@ Public Function getTaxIdType(taxId As String) As String
     getTaxIdType = idType
 End Function
 
-Public Function ZeroPad(S As Variant, n As Integer) As String
-    ZeroPad = Format(CStr(S), String(n, "0"))
+Public Function ZeroPad(s As Variant, n As Integer) As String
+    ZeroPad = Format(CStr(s), String(n, "0"))
 End Function
 
 Private Sub DebugDict()
@@ -150,7 +150,7 @@ Private Sub insertOccurrenceDict(chunk As String, logEvent As String)
     For Each elem In respMessage("logs")
         occurrenceDateDict.Add CStr(elem("charge")("id")), elem("created")
     Next
-End Sub
+End Function
 
 Public Function dateFormatter(inputDate As String, p1 As Integer, p2 As Integer, p3 As Integer, Optional sep As String = "") As String
     dateFormatter = Mid(inputDate, p1, 2) & sep & Mid(inputDate, p2, 2) & sep & Mid(inputDate, p3, 2)
@@ -176,7 +176,7 @@ Private Sub outputPrintHeader(outputFile As Integer)
     Dim workspaceId As String
     Dim companyName As String
     
-    workspaceId = SessionGateway.getWorkspaceId()
+    workspaceId = V2SessionGateway.getWorkspaceId()
     companyId = ZeroPad(workspaceId, 20)
     
     companyName = OwnerGateway.getOwnerName(workspaceId, New Dictionary)

@@ -44,7 +44,7 @@ Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
         Next
     End If
 
-    Set resp = V2Rest.getRequest("/v2/cost-center", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/cost-center", query, New Dictionary)
     
     If resp.Status <> 200 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -73,7 +73,7 @@ Public Function getPaymentRequests(cursor As String, optionalParam As Dictionary
         Next
     End If
 
-    Set resp = V2Rest.getRequest("/v2/payment-request", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/payment-request", query, New Dictionary)
     
     If resp.Status <> 200 Then
         Dim errors As Collection: Set errors = resp.errors()("errors")

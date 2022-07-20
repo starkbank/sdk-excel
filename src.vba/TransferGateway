@@ -1,21 +1,3 @@
-Public Function getStatus(Status As String)
-    Select Case Status
-        Case "Todos": getStatus = "all"
-        Case "Sucesso":  getStatus = "success"
-        Case "Processando":  getStatus = "processing"
-        Case "Falha":  getStatus = "failed"
-    End Select
-End Function
-
-Public Function getStatusInPt(Status As String)
-    Select Case Status
-        Case "success":  getStatusInPt = "sucesso"
-        Case "processing":  getStatusInPt = "processando"
-        Case "failed":  getStatusInPt = "falha"
-        Case "unknown":  getStatusInPt = "desconhecido"
-        Case "canceled": getStatusInPt = "cancelado"
-    End Select
-End Function
 
 Public Function getTransfers(cursor As String, optionalParam As Dictionary)
 
@@ -101,54 +83,6 @@ Public Function getOrders(cursor As String, optionalParam As Dictionary)
     End If
     Set getOrders = resp.json()
 
-End Function
-
-Public Function getTransfersFromSheet() As Collection
-    Dim transfers As New Collection
-    
-    For Each obj In SheetParser.dict
-        Dim amount As Long
-        Dim taxId As String
-        Dim name As String
-        Dim bankCode As String
-        Dim branchCode As String
-        Dim accountNumber As String
-        Dim tags() As String
-        Dim Transfer As Dictionary
-        
-        If obj("Valor") = "" Then
-            MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
-            Unload SendTransferForm
-            End
-        End If
-        amount = getAmountLong((obj("Valor")))
-        taxId = Trim(obj("CPF/CNPJ"))
-        name = Trim(obj("Nome"))
-        bankCode = Trim(obj("Código do Banco"))
-        branchCode = Trim(obj("Agência"))
-        accountNumber = Trim(obj("Conta"))
-        tags = Split(obj("Tags"), ",")
-        
-        Set Transfer = TransferGateway.Transfer(amount, taxId, name, bankCode, branchCode, accountNumber, tags)
-        transfers.Add Transfer
-        
-    Next
-    Set getTransfersFromSheet = transfers
-End Function
-
-Public Function Transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
-    Dim dict As New Dictionary
-    
-    dict.Add "amount", amount
-    dict.Add "taxId", taxId
-    dict.Add "name", name
-    dict.Add "bankCode", bankCode
-    dict.Add "branchCode", branchCode
-    dict.Add "accountNumber", accountNumber
-    dict.Add "tags", tags
-    
-    Set Transfer = dict
-    
 End Function
 
 Public Function createTransfers(payload As String, signature As String)

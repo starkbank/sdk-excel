@@ -163,15 +163,15 @@ Public Function readLength(strHexa As String) As String
     readLength = respArray
 End Function
 
-Public Function encodeSequence(r() As Byte, S() As Byte) As Byte()
+Public Function encodeSequence(r() As Byte, s() As Byte) As Byte()
     rLen = UBound(r, 1) - LBound(r, 1) + 1
-    sLen = UBound(S, 1) - LBound(S, 1) + 1
+    sLen = UBound(s, 1) - LBound(s, 1) + 1
     Dim totalLen As Integer: totalLen = rLen + sLen
     
     Dim encodedLength() As Byte: encodedLength = encodeLength(totalLen)
     encodedLengthInHexa = BytesToHex(encodedLength)
     
-    encodeSequence = HexToBytes("30" & encodedLengthInHexa & BytesToHex(r) & BytesToHex(S))
+    encodeSequence = HexToBytes("30" & encodedLengthInHexa & BytesToHex(r) & BytesToHex(s))
 
 End Function
 

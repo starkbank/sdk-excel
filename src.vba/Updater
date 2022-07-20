@@ -5,7 +5,7 @@ Public Sub UpdateRoutine()
     Dim updateAvailable As Boolean
     On Error GoTo Err
     
-    currentVersion = getCurrentVersion()
+    currentVersion = "v" + getCurrentVersion()
     repoVersion = getLatestRepoVersion()
     
     Debug.Print "Current:", currentVersion

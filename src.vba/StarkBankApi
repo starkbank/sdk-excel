@@ -5,7 +5,7 @@ Public Enum Environment
 End Enum
 
 Public Function baseUrl()
-    Select Case SessionGateway.getEnvironment()
+    Select Case V2SessionGateway.getEnvironment()
         Case development: baseUrl = "https://development.api.starkbank.com"
         Case sandbox:     baseUrl = "https://sandbox.api.starkbank.com"
         Case production:  baseUrl = "https://api.starkbank.com"
@@ -17,7 +17,7 @@ Public Function defaultHeaders()
     Set Result = New Dictionary
     Result.Add "Content-Type", "Application/json"
     Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Token", SessionGateway.getAccessToken()
+    Result.Add "Access-Token", V2SessionGateway.getAccessToken()
     
     Set defaultHeaders = Result
 End Function
@@ -26,7 +26,7 @@ Public Function pdfHeaders()
     Dim Result As Dictionary
     Set Result = New Dictionary
     Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Token", SessionGateway.getAccessToken()
+    Result.Add "Access-Token", V2SessionGateway.getAccessToken()
     
     Set pdfHeaders = Result
 End Function

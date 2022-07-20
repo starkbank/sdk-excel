@@ -17,7 +17,6 @@ Public Sub saveSession(workspace As String, email As String, envString As String
     Sheets("Credentials").Cells(11, 1) = "Session Private"
     Sheets("Credentials").Cells(12, 1) = "Session Public"
     Sheets("Credentials").Cells(13, 1) = "Access ID"
-       
 End Sub
 
 Public Sub saveAccessToken(accessToken As String)
@@ -32,16 +31,17 @@ Public Sub displayMemberInfo()
     Dim envMessage As String
     Dim balanceMessage As String
     
+    
     If Not isSignedin() Then
         MsgBox "Acesso negado, faça login novamente."
         Exit Sub
     End If
     
-    helloMessage = "Olá " + SessionGateway.getMemberName() + "!"
-    workspaceMessage = "Workspace: " + SessionGateway.getWorkspace()
-    workspaceId = "ID do Workspace: " + SessionGateway.getWorkspaceId()
-    emailMessage = "E-mail: " + SessionGateway.getEmail()
-    envMessage = "Ambiente: " + SessionGateway.getEnvironmentString()
+    helloMessage = "Olá " + V2SessionGateway.getMemberName() + "!"
+    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspace()
+    workspaceId = "ID do Workspace: " + V2SessionGateway.getWorkspaceId()
+    emailMessage = "E-mail: " + V2SessionGateway.getEmail()
+    envMessage = "Ambiente: " + V2SessionGateway.getEnvironmentString()
     balanceMessage = "Saldo: " + V2SessionGateway.getBalance()
     
     For Each WS In ThisWorkbook.Worksheets
@@ -64,7 +64,6 @@ Public Function getAccessToken()
     Else
         getAccessToken = accessToken
     End If
-    
 End Function
 
 Public Function getEnvironment()
@@ -153,9 +152,14 @@ Public Function getAccessId() As String
 End Function
 
 Public Sub RenewSessionKeys()
-    Sheets("Credentials").Cells(11, 2) = sessionPrivateKeyContent
-    Sheets("Credentials").Cells(12, 2) = sessionPublicKeyContent
-    DeleteTempKeys
+    Dim ecdsa As ElipticCurve.Gateway
+    
+    
+    Set ecdsa = New ElipticCurve.Gateway
+    sessionPrivateKey = ecdsa.getPrivateKey()
+    sessionPublicKey = ecdsa.getPublicKey()
+    Sheets("Credentials").Cells(11, 2) = sessionPrivateKey
+    Sheets("Credentials").Cells(12, 2) = sessionPublicKey
 End Sub
 
 Public Sub DeleteSessionKeys()
@@ -198,5 +202,142 @@ Public Sub postSessionV1()
     accessId = Result("success")("session")("id")
     
     Sheets("Credentials").Cells(13, 2) = "session/" + accessId
-    
 End Sub
+
+Public Function createSession(email As String, password As String, workspace As String)
+    Dim sessionPublicKey As String
+    Dim secret As String
+    Dim uuid As String: uuid = "30cfd70f-a42b-49de-856d-b5cb93926a93"
+    Dim ecdsa As ElipticCurve.Gateway
+    Dim memberPrivateKey As String
+    Dim memberPublicKey As String
+    Dim resp As response
+    Dim dict As Dictionary
+    Dim error As Dictionary
+    Dim accessToken As String
+    
+    RenewSessionKeys
+    sessionPublicKey = V2SessionGateway.getSessionPublicKeyContent()
+
+    Set ecdsa = New ElipticCurve.Gateway
+    secret = uuid + email + password
+    memberPrivateKey = ecdsa.getPrivateKeyFromSecret(secret)
+    memberPublicKey = ecdsa.getPublicKey()
+
+    Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+    
+    If Not resp.Status = 200 Then
+        Dim errors As Collection: Set errors = resp.errors()("errors")
+        If errors(1)("code") = "missingCredentials" Then
+            Set dict = getAccesToken(email, password, workspace)
+            accessToken = dict("success")("accessToken")
+            
+            Set resp = postPublicKeyTransition(memberPublicKey, accessToken)
+            Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+        End If
+    End If
+    
+    Set createSession = resp.json()
+End Function
+
+Public Function postSession(memberPrivateKey As String, sessionPublicKey As String, email As String)
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim resp As response
+    Dim url As String: url = V2Rest.baseUrl() + "/v2-faks/session" 'TODO: remove -faks
+    Dim headers As New Dictionary
+    
+
+    dict.Add "platform", "web"
+    dict.Add "expiration", 5184000
+    dict.Add "publicKey", sessionPublicKey
+
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set headers = sessionHeaders(payload, memberPrivateKey, email)
+    Set postSession = request.fetch(url, "POST", headers, payload)
+End Function
+
+Public Function postPublicKeyTransition(memberPublicKey As String, accessToken As String)
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim resp As response
+    Dim url As String: url = V2Rest.baseUrl() + "/v1/auth/public-key-transition"
+    Dim headers As New Dictionary
+    
+    
+    dict.Add "publicKey", memberPublicKey
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set headers = defaultV1Headers(accessToken)
+    Set postPublicKeyTransition = request.fetch(url, "POST", headers, payload)
+End Function
+
+Public Function getAccesToken(email As String, password As String, workspace As String)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim Result As New Dictionary
+    Dim headers As Dictionary
+    Dim url As String: url = V2Rest.baseUrl() + "/v1/auth/access-token"
+    
+    
+    dict.Add "email", email
+    dict.Add "password", password
+    dict.Add "platform", "web"
+    dict.Add "workspace", workspace
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    headers = defaultV1Headers("")
+    
+    Set resp = request.fetch(url, "POST", headers, payload)
+
+    If resp.Status = 200 Then
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
+    Else
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
+    End If
+    Set getAccesToken = Result
+End Function
+
+Public Function sessionHeaders(payload As String, memberPrivateKey As String, email As String)
+    Dim Result As Dictionary
+    Set Result = New Dictionary
+    Dim accessTime As Long
+    Dim signature As String
+    Dim ecdsa As ElipticCurve.Gateway
+    Dim currentVersion As String
+    Dim accessId As String: accessId = "person/" + email
+    
+    
+    accessTime = toUnix(Now)
+    message = accessId + ":" + CStr(accessTime) + ":" + payload
+    
+    Set ecdsa = New ElipticCurve.Gateway
+    signature = ecdsa.sign(message, memberPrivateKey)
+
+    Result.Add "Content-Type", "Application/json"
+    Result.Add "Accept-Language", "pt-BR"
+    Result.Add "Access-Time", accessTime
+    Result.Add "Access-Id", accessId
+    Result.Add "Access-Signature", signature
+    Result.Add "Platform-Id", "excel"
+    Result.Add "Platform-Version", Updater.getCurrentVersion()
+    
+    Set sessionHeaders = Result
+End Function
+
+Public Function defaultV1Headers(accesToken As String)
+    Dim Result As Dictionary: Set Result = New Dictionary
+    
+    
+    Result.Add "Content-Type", "Application/json"
+    Result.Add "Accept-Language", "pt-BR"
+    If Not accesToken = "" Then
+        Result.Add "Access-Token", accesToken
+    End If
+    
+    Set defaultV1Headers = Result
+End Function

@@ -90,7 +90,7 @@ Public Function downloadSinglePdf(service, id As String, folder As String, fallb
     Dim filepath As String
     Dim version As String
 
-    path = "/v2/" + service + "/" + id + "/pdf"
+    path = "/v2-faks/" + service + "/" + id + "/pdf"
     filepath = folder + "/"
     downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
 

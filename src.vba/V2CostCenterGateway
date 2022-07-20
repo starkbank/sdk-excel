@@ -95,7 +95,7 @@ Public Function createOrders(teamId As String)
             Set requests = New Collection
             payload = JsonConverter.ConvertToJson(dict)
 
-            Set resp = V2Rest.postRequest("/v2/payment-request", payload, New Dictionary)
+            Set resp = V2Rest.postRequest("/v2-faks/payment-request", payload, New Dictionary)
             anySent = True
             
             If resp.Status = 200 Then
@@ -234,7 +234,7 @@ Public Function createChargePayments(teamId As String)
             dict.Add "requests", requests
             payload = JsonConverter.ConvertToJson(dict)
 
-            Set resp = V2Rest.postRequest("/v2/payment-request", payload, New Dictionary)
+            Set resp = V2Rest.postRequest("/v2-faks/payment-request", payload, New Dictionary)
             anySent = True
 
             If resp.Status = 200 Then
@@ -322,7 +322,7 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
     dict.Add "requests", requests
     payload = JsonConverter.ConvertToJson(dict)
 
-    Set resp = V2Rest.postRequest("/v2/payment-request", payload, New Dictionary)
+    Set resp = V2Rest.postRequest("/v2-faks/payment-request", payload, New Dictionary)
 
     If resp.Status = 200 Then
         anySent = True
@@ -330,6 +330,7 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
         returnMessage = resp.json()("message")
 
         ActiveSheet.Cells(TableFormat.HeaderRow() + 1, 10).Value = externalId
+
 
     ElseIf resp.errors().Exists("errors") Then
         Dim errors As Collection: Set errors = resp.errors()("errors")
@@ -341,10 +342,11 @@ Public Function createInternalTransfer(teamId As String, amount As Long, descrip
 
     Else
         errorMessage = resp.errors()("message") + Chr(10)
+
     End If
 
     MsgBox returnMessage + Chr(10) + errorMessage
-
+    
 End Function
 
 Public Function internalTransfer(amount As Long, description As String, externalId As String, receiverId As String, tags() As String) As Dictionary

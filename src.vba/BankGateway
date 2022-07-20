@@ -31,7 +31,7 @@ Public Function getAccount()
     Dim baseUrl As String
     Dim workspaceId As String
     
-    workspaceId = SessionGateway.getWorkspaceId()
+    workspaceId = V2SessionGateway.getWorkspaceId()
     
     baseUrl = "/v1/bank/account/" + workspaceId
     

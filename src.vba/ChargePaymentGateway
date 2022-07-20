@@ -1,24 +1,4 @@
-Public Function getStatus(Status As String)
-    Select Case Status
-        Case "Todos": getStatus = "all"
-        Case "Criados":  getStatus = "created"
-        Case "Cancelados":  getStatus = "canceled"
-        Case "Processando":  getStatus = "processing"
-        Case "Pagos":  getStatus = "success"
-        Case "Falha":  getStatus = "failed"
-    End Select
-End Function
 
-Public Function getStatusInPt(Status As String)
-    Select Case Status
-        Case "created":  getStatusInPt = "criado"
-        Case "canceled":  getStatusInPt = "cancelado"
-        Case "processing":  getStatusInPt = "processando"
-        Case "success":  getStatusInPt = "pago"
-        Case "failed":  getStatusInPt = "falha"
-        Case "unknown":  getStatusInPt = "desconhecido"
-    End Select
-End Function
 
 Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
     Dim query As String

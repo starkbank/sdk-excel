@@ -7,9 +7,10 @@ Public Function createBoletos(boletos As Collection)
     dict.Add "boletos", boletos
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set createBoletos = V2Rest.postRequest("/v2/boleto", payload, New Dictionary)
+    Set createBoletos = V2Rest.postRequest("/v2-faks/boleto", payload, New Dictionary)
     
 End Function
+
 
 Public Function getOrders(initRow As Long, midRow As Long) As Collection
     Dim boletos As New Collection
@@ -148,12 +149,12 @@ Public Function getBoletoLogs(cursor As String, optionalParam As Dictionary)
         Next
     End If
 
-    Set resp = V2Rest.getRequest("/v2/boleto/log", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
-    
     Set getBoletoLogs = resp.json()
+
 End Function
 
 Public Function getEventInPt(Status As String)
@@ -196,7 +197,7 @@ Public Function getBoletos(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2/boleto", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/boleto", query, New Dictionary)
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -230,38 +231,6 @@ Public Function getStatusInPt(Status As String)
     
 End Function
 
-Public Function getEventLog(boletoId As String, logEvent As String, optionalParam As Dictionary)
-    Dim query As String
-    Dim resp As response
-    Dim elem As Variant
-    
-    
-    query = ""
-    If boletoId <> "" Then
-        query = "?events=" + logEvent + "&chargeIds=" + boletoId
-    End If
-    
-    If optionalParam.Count > 0 Then
-        For Each key In optionalParam
-            If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
-            Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
-            End If
-        Next
-    End If
-    Set resp = StarkBankApi.getRequest("/v1/charge/log", query, New Dictionary)
-    If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
-    End If
-    Set getEventLog = resp.json()
-
-End Function
-
-Public Sub clearBoletoSearch()
-    Sheets("Consulta de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
-End Sub
-
 Public Function getOccurrenceId(statusCode As String)
     Select Case statusCode
         Case "pendente de registro"
@@ -292,15 +261,16 @@ Public Function getStatusFromId(id As String)
     End Select
 End Function
 
-Public Function getCustomers(cursor As String, optionalParam As Dictionary)
+Public Function getEventLog(boletoId As String, logType As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
+    Dim elem As Variant
+    
     
     query = ""
-    If cursor <> "" Then
-        query = "?cursor=" + cursor
+    If boletoId <> "" Then
+        query = "?type=" + logType + "&boletoIds=" + boletoId
     End If
-    
     If optionalParam.Count > 0 Then
         For Each key In optionalParam
             If query = "" Then
@@ -310,12 +280,14 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
             End If
         Next
     End If
-    
-    Set resp = V2Rest.getRequest("/v2/boleto/customer", query, New Dictionary)
-    
+    Set resp = V2Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
     If resp.Status >= 300 Then
-        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+        MsgBox resp.errors()(1)("message"), , "Erro"
     End If
-    Set getCustomers = resp.json()
+    Set getEventLog = resp.json()
 
 End Function
+
+Public Sub clearBoletoSearch()
+    Sheets("Consulta de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
+End Sub

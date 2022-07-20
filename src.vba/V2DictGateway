@@ -123,7 +123,7 @@ Public Sub moveToTransfer()
 End Sub
 
 Public Function getDictKey(keyId As String)
-    Set getDictKey = V2Rest.getRequest("/v2/dict-key/" & keyId, "", New Dictionary)
+    Set getDictKey = V2Rest.getRequest("/v2-faks/dict-key/" & keyId, "", New Dictionary)
 End Function
 
 Public Sub clearDictKeys()

@@ -21,8 +21,8 @@ Private Sub SendPublic_Click()
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
-    Dim workspace As String: workspace = SessionGateway.getWorkspace()
-    Dim email As String: email = SessionGateway.getEmail()
+    Dim workspace As String: workspace = V2SessionGateway.getWorkspace()
+    Dim email As String: email = V2SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
     If response("error").Count <> 0 Then
@@ -32,7 +32,7 @@ Private Sub SendPublic_Click()
         
     Dim accessToken As String: accessToken = response("success")("accessToken")
     Dim memberId As String: memberId = response("success")("member")("id")
-    Call SessionGateway.saveAccessToken(accessToken)
+    Call V2SessionGateway.saveAccessToken(accessToken)
     
     '----------- Validate mandatory inputs -----------
     If keyPath = vbNullString Then
@@ -40,7 +40,7 @@ Private Sub SendPublic_Click()
         Exit Sub
     End If
     
-    Set response = DigitalSignature.sendPublicKey(SessionGateway.getWorkspaceId(), memberId, Me.TokenBox.Value, keyPath)
+    Set response = DigitalSignature.sendPublicKey(V2SessionGateway.getWorkspaceId(), memberId, Me.TokenBox.Value, keyPath)
     
     If response("error").Count <> 0 Then
         MsgBox response("error")("message"), , "Erro"

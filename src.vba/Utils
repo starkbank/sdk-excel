@@ -396,14 +396,14 @@ Public Function ShellRun(sCmd As String) As String
     Set oOutput = oExec.StdOut
 
     'handle the results as they are written to and read from the StdOut object
-    Dim S As String
+    Dim s As String
     Dim sLine As String
     While Not oOutput.AtEndOfStream
         sLine = oOutput.ReadLine
-        If sLine <> "" Then S = S & sLine & vbCrLf
+        If sLine <> "" Then s = s & sLine & vbCrLf
     Wend
 
-    ShellRun = S
+    ShellRun = s
 
 End Function
 

@@ -12,3 +12,358 @@ Public Function getBalance()
     End If
     getBalance = balanceMessage
 End Function
+
+Public Sub saveSession(workspace As String, email As String, envString As String, sessionId As String, memberName As String, workspaceId As String)
+    Sheets("Credentials").Cells(1, 1) = "Workspace"
+    Sheets("Credentials").Cells(1, 2) = workspace
+    Sheets("Credentials").Cells(2, 1) = "E-mail"
+    Sheets("Credentials").Cells(2, 2) = email
+    Sheets("Credentials").Cells(3, 1) = "Environment"
+    Sheets("Credentials").Cells(3, 2) = envString
+    Sheets("Credentials").Cells(4, 1) = "SessionId"
+    Sheets("Credentials").Cells(4, 2) = sessionId
+    Sheets("Credentials").Cells(5, 1) = "Member.name"
+    Sheets("Credentials").Cells(5, 2) = memberName
+    Sheets("Credentials").Cells(6, 1) = "Workspace ID"
+    Sheets("Credentials").Cells(6, 2) = workspaceId
+    Sheets("Credentials").Cells(7, 1) = "Approval Date"
+    
+    Sheets("Credentials").Cells(11, 1) = "Session Private"
+    Sheets("Credentials").Cells(12, 1) = "Session Public"
+    Sheets("Credentials").Cells(13, 1) = "Access ID"
+End Sub
+
+Public Sub saveAccessToken(accessToken As String)
+    Sheets("Credentials").Cells(4, 1) = "AccessToken"
+    Sheets("Credentials").Cells(4, 2) = accessToken
+End Sub
+
+Public Sub displayMemberInfo()
+    Dim helloMessage As String
+    Dim workspaceMessage As String
+    Dim emailMessage As String
+    Dim envMessage As String
+    Dim balanceMessage As String
+    
+    
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
+    helloMessage = "Olá " + V2SessionGateway.getMemberName() + "!"
+    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspace()
+    workspaceId = "ID do Workspace: " + V2SessionGateway.getWorkspaceId()
+    emailMessage = "E-mail: " + V2SessionGateway.getEmail()
+    envMessage = "Ambiente: " + V2SessionGateway.getEnvironmentString()
+    balanceMessage = "Saldo: " + V2SessionGateway.getBalance()
+    
+    For Each WS In ThisWorkbook.Worksheets
+        If WS.name <> "Credentials" And WS.name <> "InputLog" And WS.name <> "Aux" Then
+            WS.Cells(2, 1).Value = helloMessage
+            WS.Cells(3, 1).Value = workspaceMessage
+            WS.Cells(4, 1).Value = workspaceId
+            WS.Cells(5, 1).Value = emailMessage
+            WS.Cells(6, 1).Value = envMessage
+            WS.Cells(7, 1).Value = balanceMessage
+        End If
+    Next
+End Sub
+
+Public Function getSessionId()
+    Dim sessionId As String: sessionId = Sheets("Credentials").Cells(4, 2)
+
+    If sessionId = "" Then
+        getSessionId = "Trash"
+    Else
+        getSessionId = sessionId
+    End If
+End Function
+
+Public Function getEnvironment()
+    Select Case getEnvironmentString()
+        Case "Produção": getEnvironment = production
+        Case "Sandbox":  getEnvironment = sandbox
+    End Select
+End Function
+
+Public Function getEnvironmentString()
+    getEnvironmentString = CStr(Sheets("Credentials").Cells(3, 2))
+End Function
+
+Public Function getWorkspace()
+    getWorkspace = CStr(Sheets("Credentials").Cells(1, 2))
+End Function
+
+Public Function getEmail()
+    getEmail = CStr(Sheets("Credentials").Cells(2, 2))
+End Function
+
+Public Function getMemberName()
+    getMemberName = CStr(Sheets("Credentials").Cells(5, 2))
+End Function
+
+Public Function getWorkspaceId()
+    getWorkspaceId = CStr(Sheets("Credentials").Cells(6, 2))
+End Function
+
+Public Function sessionPrivateKeyContent() As String
+    Dim sessionPrivateKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    Call Shell("""" + getOpensslDir() + """ ecparam -name secp256k1 -genkey -out """ + sessionPrivateKeyPath + """")
+    Application.Wait Now + #12:00:02 AM#
+    
+    Open sessionPrivateKeyPath For Input As #1
+    Do Until EOF(1)
+        Line Input #1, textLine
+        sessionPrivateKeyContent = sessionPrivateKeyContent & textLine & vbLf
+    Loop
+    Close #1
+    
+End Function
+
+Public Function sessionPublicKeyContent() As String
+    Dim sessionPrivateKeyPath
+    Dim sessionPublicKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
+    Call Shell("""" + getOpensslDir() + """ ec -in """ + sessionPrivateKeyPath + """ -pubout -out """ + sessionPublicKeyPath + """")
+    Application.Wait Now + #12:00:02 AM#
+    
+    Open sessionPublicKeyPath For Input As #1
+    Do Until EOF(1)
+        Line Input #1, textLine
+        sessionPublicKeyContent = sessionPublicKeyContent & textLine & vbLf
+    Loop
+    Close #1
+
+End Function
+
+Public Function getSessionPrivateKeyContent() As String
+    getSessionPrivateKeyContent = Sheets("Credentials").Cells(11, 2)
+End Function
+
+Public Function getSessionPublicKeyContent() As String
+    getSessionPublicKeyContent = Sheets("Credentials").Cells(12, 2)
+End Function
+
+Public Function getAccessId() As String
+    getAccessId = Sheets("Credentials").Cells(13, 2)
+End Function
+
+Public Sub RenewSessionKeys()
+    Dim ecdsa As ElipticCurve.Gateway
+    
+    
+    Set ecdsa = New ElipticCurve.Gateway
+    sessionPrivateKey = ecdsa.getPrivateKey()
+    sessionPublicKey = ecdsa.getPublicKey()
+    Sheets("Credentials").Cells(11, 2) = sessionPrivateKey
+    Sheets("Credentials").Cells(12, 2) = sessionPublicKey
+End Sub
+
+Public Sub DeleteSessionKeys()
+    Sheets("Credentials").Cells(11, 2) = ""
+    Sheets("Credentials").Cells(12, 2) = ""
+    DeleteTempKeys
+End Sub
+
+Public Sub DeleteTempKeys()
+    Dim sessionPrivateKeyPath
+    Dim sessionPublicKeyPath
+    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
+    sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
+    Kill sessionPrivateKeyPath
+    Kill sessionPublicKeyPath
+End Sub
+
+Public Function createSession(email As String, password As String, workspace As String)
+    Dim sessionPublicKey As String
+    Dim secret As String
+    Dim uuid As String: uuid = "30cfd70f-a42b-49de-856d-b5cb93926a93"
+    Dim ecdsa As ElipticCurve.Gateway
+    Dim memberPrivateKey As String
+    Dim memberPublicKey As String
+    Dim resp As response
+    Dim dict As Dictionary
+    Dim error As Dictionary
+    Dim accessToken As String
+    
+    
+    RenewSessionKeys
+    sessionPublicKey = V2SessionGateway.getSessionPublicKeyContent()
+
+    Set ecdsa = New ElipticCurve.Gateway
+    secret = uuid + email + password
+    memberPrivateKey = ecdsa.getPrivateKeyFromSecret(secret)
+    memberPublicKey = ecdsa.getPublicKey()
+
+    Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+    
+    If Not resp.Status = 200 Then
+        Dim errors As Collection: Set errors = resp.errors()("errors")
+        If errors(1)("code") = "missingCredentials" Then
+            Set dict = getAccesToken(email, password, workspace)
+            accessToken = dict("success")("accessToken")
+            
+            Set resp = postPublicKeyTransition(memberPublicKey, accessToken)
+            Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+        End If
+    End If
+    
+    Set createSession = resp.json()
+End Function
+
+Public Function postSession(memberPrivateKey As String, sessionPublicKey As String, email As String)
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim resp As response
+    Dim url As String: url = V2Rest.baseUrl() + "/v2-faks/session" 'TODO: remove -faks
+    Dim headers As New Dictionary
+    
+
+    dict.Add "platform", "web"
+    dict.Add "expiration", 5184000
+    dict.Add "publicKey", sessionPublicKey
+
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set headers = sessionHeaders(payload, memberPrivateKey, email)
+    Set postSession = request.fetch(url, "POST", headers, payload)
+End Function
+
+Public Function postPublicKeyTransition(memberPublicKey As String, accessToken As String)
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim resp As response
+    Dim url As String: url = V2Rest.baseUrl() + "/v1/auth/public-key-transition"
+    Dim headers As New Dictionary
+    
+    
+    dict.Add "publicKey", memberPublicKey
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set headers = defaultV1Headers(accessToken)
+    Set postPublicKeyTransition = request.fetch(url, "POST", headers, payload)
+End Function
+
+Public Function getAccesToken(email As String, password As String, workspace As String)
+    Dim resp As response
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim Result As New Dictionary
+    Dim headers As Dictionary
+    Dim url As String: url = V2Rest.baseUrl() + "/v1/auth/access-token"
+    
+    
+    dict.Add "email", email
+    dict.Add "password", password
+    dict.Add "platform", "web"
+    dict.Add "workspace", workspace
+    
+    payload = JsonConverter.ConvertToJson(dict)
+    Set headers = defaultV1Headers("")
+    
+    Set resp = request.fetch(url, "POST", headers, payload)
+
+    If resp.Status = 200 Then
+        Result.Add "success", resp.json()
+        Result.Add "error", New Dictionary
+    Else
+        Result.Add "success", New Dictionary
+        Result.Add "error", resp.error()
+    End If
+    Set getAccesToken = Result
+End Function
+
+Public Function sessionHeaders(payload As String, memberPrivateKey As String, email As String)
+    Dim Result As Dictionary
+    Set Result = New Dictionary
+    Dim accessTime As Long
+    Dim signature As String
+    Dim ecdsa As ElipticCurve.Gateway
+    Dim currentVersion As String
+    Dim accessId As String: accessId = "person/" + email
+    
+    
+    accessTime = toUnix(Now)
+    message = accessId + ":" + CStr(accessTime) + ":" + payload
+    
+    Set ecdsa = New ElipticCurve.Gateway
+    signature = ecdsa.sign(message, memberPrivateKey)
+
+    Result.Add "Content-Type", "Application/json"
+    Result.Add "Accept-Language", "pt-BR"
+    Result.Add "Access-Time", accessTime
+    Result.Add "Access-Id", accessId
+    Result.Add "Access-Signature", signature
+    Result.Add "Platform-Id", "excel"
+    Result.Add "Platform-Version", Updater.getCurrentVersion()
+    
+    Set sessionHeaders = Result
+End Function
+
+Public Function defaultV1Headers(accesToken As String)
+    Dim Result As Dictionary: Set Result = New Dictionary
+    
+    
+    Result.Add "Content-Type", "Application/json"
+    Result.Add "Accept-Language", "pt-BR"
+    If Not accesToken = "" Then
+        Result.Add "Access-Token", accesToken
+    End If
+    
+    Set defaultV1Headers = Result
+End Function
+
+Public Function requestWorkspaceId(workspace As String)
+    Dim query As String
+    Dim resp As response
+    
+    
+    query = "?username=" + workspace
+    payload = JsonConverter.ConvertToJson(dict)
+    
+    Set resp = V2Rest.getRequest("/v2-faks/workspace", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    
+    Set requestWorkspaceId = resp.json()
+End Function
+
+Public Function deleteSession()
+    Dim path As String
+    Dim accessId As String
+    Dim sessionId As String
+    Dim resp As response
+
+    
+    sessionId = V2SessionGateway.getSessionId()
+    Sheets("Credentials").Cells(13, 2) = "session/" + sessionId
+    
+    path = "/v2-faks/session/" + sessionId
+    Set resp = V2Rest.deleteRequest(path, "", New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    
+    Set deleteSession = resp.json()
+End Function
+
+Public Function requestMemberName(email As String)
+    Dim path As String
+    Dim resp As response
+    
+    
+    path = "/v2-faks/person/" + email
+    Set resp = V2Rest.getRequest(path, "", New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    
+    Set requestMemberName = resp.json()
+End Function

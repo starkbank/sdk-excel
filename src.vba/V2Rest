@@ -4,7 +4,7 @@ Public Function toUnix(dt) As Long
 End Function
 
 Public Function baseUrl()
-    Select Case SessionGateway.getEnvironment()
+    Select Case V2SessionGateway.getEnvironment()
         Case development: baseUrl = "https://development.api.starkbank.com"
         Case sandbox:     baseUrl = "https://sandbox.api.starkbank.com"
         Case production:  baseUrl = "https://api.starkbank.com"
@@ -17,25 +17,25 @@ Public Function defaultHeaders(payload As String)
     Dim accessTime As Long
     Dim message As String
     Dim currentVersion As String
+    Dim ecdsa As ElipticCurve.Gateway
     
-    
+
     accessTime = toUnix(Now)
-    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = V2SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Dim pk As PrivateKey: Set pk = New PrivateKey
-    pk.fromPem (getSessionPrivateKeyContent)
+    Set ecdsa = New ElipticCurve.Gateway
+    sessionPrivateKey = V2SessionGateway.getSessionPrivateKeyContent()
     
-    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
-    Dim signature64 As String: signature64 = signature.toBase64()
-    
-    currentVersion = Updater.getCurrentVersion()
+    Dim signature As String: signature = ecdsa.sign(message, sessionPrivateKey)
     
     Result.Add "Content-Type", "Application/json"
     Result.Add "Accept-Language", "pt-BR"
     Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", getAccessId()
-    Result.Add "Access-Signature", signature64
-    
+    Result.Add "Access-Id", V2SessionGateway.getAccessId()
+    Result.Add "Access-Signature", signature
+    Result.Add "Platform-Id", "excel"
+    Result.Add "Platform-Version", Updater.getCurrentVersion()
+
     Set defaultHeaders = Result
 End Function
 
@@ -46,9 +46,9 @@ Public Function pdfHeaders(payload As String)
     Dim message As String
     
     accessTime = toUnix(Now)
-    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = V2SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Dim pk As PrivateKey: Set pk = New PrivateKey
+    Dim pk As privateKey: Set pk = New privateKey
     pk.fromPem (getSessionPrivateKeyContent)
     
     Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
@@ -56,7 +56,7 @@ Public Function pdfHeaders(payload As String)
     
     Result.Add "Accept-Language", "pt-BR"
     Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", getAccessId()
+    Result.Add "Access-Id", V2SessionGateway.getAccessId()
     Result.Add "Access-Signature", signature64
     
     Set pdfHeaders = Result

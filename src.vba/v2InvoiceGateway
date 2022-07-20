@@ -61,7 +61,7 @@ Public Function getInvoices(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2/invoice", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/invoice", query, New Dictionary)
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -100,7 +100,7 @@ Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2/invoice/log", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/invoice/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
@@ -127,7 +127,7 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2/invoice/customer", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/invoice/customer", query, New Dictionary)
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -304,7 +304,7 @@ Public Function createInvoices(invoices As Collection)
     
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set createInvoices = V2Rest.postRequest("/v2/invoice", payload, New Dictionary)
+    Set createInvoices = V2Rest.postRequest("/v2-faks/invoice", payload, New Dictionary)
     
 End Function
 
@@ -318,7 +318,7 @@ Public Function updateInvoices(invoices As Collection)
     
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set updateInvoices = V2Rest.patchRequest("/v2/invoice", payload, New Dictionary)
+    Set updateInvoices = V2Rest.patchRequest("/v2-faks/invoice", payload, New Dictionary)
     
 End Function
 
@@ -331,7 +331,7 @@ Public Function createCustomers(customers As Collection)
     
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set createCustomers = StarkBankApi.postRequest("/v2/invoice/customer", payload, New Dictionary)
+    Set createCustomers = RestV2.postRequest("/v2-faks/invoice/customer", payload, New Dictionary)
     
 End Function
 
@@ -353,7 +353,7 @@ Public Function getEventLog(invoiceId As String, logEvent As String, optionalPar
             End If
         Next
     End If
-    Set resp = StarkBankApi.getRequest("/v2/invoice/log", query, New Dictionary)
+    Set resp = V2Rest.getRequest("/v2-faks/invoice/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
@@ -364,3 +364,5 @@ End Function
 Public Sub clearInvoiceEmission()
     Sheets("Emissão de Invoice Pix").Range("A10:Z" & Rows.Count).ClearContents
 End Sub
+
+

@@ -32,8 +32,8 @@ Private Sub ConfirmButton_Click()
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
-    Dim workspace As String: workspace = SessionGateway.getWorkspace()
-    Dim email As String: email = SessionGateway.getEmail()
+    Dim workspace As String: workspace = V2SessionGateway.getWorkspace()
+    Dim email As String: email = V2SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     
     If response("error").Count <> 0 Then
@@ -42,7 +42,7 @@ Private Sub ConfirmButton_Click()
     End If
         
     Dim accessToken As String: accessToken = response("success")("accessToken")
-    Call SessionGateway.saveAccessToken(accessToken)
+    Call V2SessionGateway.saveAccessToken(accessToken)
     
     '----------- Validate mandatory inputs -----------
     If externalId = vbNullString Then
@@ -74,7 +74,7 @@ Private Sub ConfirmButton_Click()
     Dim dict As New Dictionary, transactionDict As New Dictionary
     Dim transfers As Collection
     
-    Set transfers = TransferGateway.getTransfersFromSheet()
+    Set transfers = V2TransferGateway.getTransfersFromSheet()
     
     transactionDict.Add "externalId", externalId
     transactionDict.Add "description", description
@@ -87,7 +87,7 @@ Private Sub ConfirmButton_Click()
     
     '--------------- Sign body -----------------
     On Error GoTo eh
-    Dim pk As PrivateKey: Set pk = New PrivateKey
+    Dim pk As privateKey: Set pk = New privateKey
     pk.fromPem (privkeyStr)
     
     On Error Resume Next
