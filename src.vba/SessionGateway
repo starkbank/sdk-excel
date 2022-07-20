@@ -38,7 +38,7 @@ Public Sub displayMemberInfo()
     End If
     
     helloMessage = "Olá " + V2SessionGateway.getMemberName() + "!"
-    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspace()
+    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspaceName()
     workspaceId = "ID do Workspace: " + V2SessionGateway.getWorkspaceId()
     emailMessage = "E-mail: " + V2SessionGateway.getEmail()
     envMessage = "Ambiente: " + V2SessionGateway.getEnvironmentString()
@@ -77,7 +77,7 @@ Public Function getEnvironmentString()
     getEnvironmentString = CStr(Sheets("Credentials").Cells(3, 2))
 End Function
 
-Public Function getWorkspace()
+Public Function getWorkspaceName()
     getWorkspace = CStr(Sheets("Credentials").Cells(1, 2))
 End Function
 

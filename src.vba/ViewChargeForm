@@ -242,6 +242,7 @@ Public Sub setPaidBoletoInfo(ByVal charge As Object, row As Long)
         ActiveSheet.Cells(row, 7).Value = discount
         ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
     End If
+    
     If deltaAmount > 0 Then
         fine = charge("fine") / 100 * nominalAmount
         interest = amount - fine - nominalAmount

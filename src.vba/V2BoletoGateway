@@ -11,7 +11,6 @@ Public Function createBoletos(boletos As Collection)
     
 End Function
 
-
 Public Function getOrders(initRow As Long, midRow As Long) As Collection
     Dim boletos As New Collection
     
@@ -91,7 +90,6 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
     
 End Function
 
-
 Public Function boleto(name As String, taxId As String, streetLine1 As String, streetLine2 As String, district As String, city As String, stateCode As String, zipCode As String, amount As Long, due As String, fine As Single, interest As Single, overdueLimit As Long, description1 As Dictionary, description2 As Dictionary, description3 As Dictionary) As Dictionary
     Dim descriptions As New Collection
     Dim dict As New Dictionary
@@ -153,6 +151,7 @@ Public Function getBoletoLogs(cursor As String, optionalParam As Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
+    
     Set getBoletoLogs = resp.json()
 
 End Function
@@ -202,6 +201,7 @@ Public Function getBoletos(cursor As String, optionalParam As Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
+    
     Set getBoletos = resp.json()
 
 End Function
@@ -280,10 +280,12 @@ Public Function getEventLog(boletoId As String, logType As String, optionalParam
             End If
         Next
     End If
+    
     Set resp = V2Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()(1)("message"), , "Erro"
     End If
+    
     Set getEventLog = resp.json()
 
 End Function

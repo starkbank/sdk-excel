@@ -20,6 +20,7 @@ End Function
 Public Function Transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
     Dim dict As New Dictionary
     
+    
     dict.Add "amount", amount
     dict.Add "taxId", taxId
     dict.Add "name", name
@@ -33,9 +34,9 @@ Public Function Transfer(amount As Long, taxId As String, name As String, bankCo
 End Function
 
 Public Function V2getTransfers(cursor As String, optionalParam As Dictionary)
-
     Dim query As String
     Dim resp As response
+    
     
     query = ""
     If cursor <> "" Then
@@ -62,9 +63,9 @@ Public Function V2getTransfers(cursor As String, optionalParam As Dictionary)
 End Function
 
 Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
-
     Dim query As String
     Dim resp As response
+    
     
     query = ""
     If cursor <> "" Then
@@ -86,6 +87,7 @@ Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
+    
     Set getTransferLogs = resp.json()
     
 End Function

@@ -121,7 +121,7 @@ Private Sub SearchButton_Click()
     If Events <> "credited," Then
         optionalParam.Add "types", Events
         Do
-            Set respJson = V2BoletoeGateway.getBoletoLogs(cursor, optionalParam)
+            Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
@@ -293,7 +293,11 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     
     amount = charge("amount") / 100
     
-    nominalAmount = registeredLog("boleto")("amount") / 100
+    nominalAmount = amount
+    If Not VarType(registeredLog("boleto")) = 0 Then
+        nominalAmount = registeredLog("boleto")("amount") / 100
+    End If
+    
     deltaAmount = amount - nominalAmount
     
     ActiveSheet.Cells(row, 6).Value = nominalAmount

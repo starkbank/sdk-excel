@@ -32,7 +32,7 @@ Private Sub ConfirmButton_Click()
     
     '----------- Sign in again -----------
     Dim password As String: password = PasswordBox.Value
-    Dim workspace As String: workspace = V2SessionGateway.getWorkspace()
+    Dim workspace As String: workspace = V2SessionGateway.getWorkspaceName()
     Dim email As String: email = V2SessionGateway.getEmail()
     Set response = AuthGateway.createNewSession(workspace, email, password)
     

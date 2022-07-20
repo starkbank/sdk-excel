@@ -1,8 +1,4 @@
 
-Private Sub EmailBox_Change()
-
-End Sub
-
 Private Sub ForgotPasswordButton_Click()
     Dim workspace As String: workspace = WorkspaceBox.Value
     Dim envString As String: envString = EnvironmentBox.Value
@@ -37,7 +33,7 @@ Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Sandbox"
     
     Me.EmailBox.Value = V2SessionGateway.getEmail()
-    Me.WorkspaceBox.Value = V2SessionGateway.getWorkspace()
+    Me.WorkspaceBox.Value = V2SessionGateway.getWorkspaceName()
     Me.EnvironmentBox.Value = V2SessionGateway.getEnvironmentString()
     
 End Sub
@@ -50,8 +46,6 @@ Private Sub SendButton_Click()
     Dim accessToken As String
     Dim memberName As String
     Dim workspaceId As String
-    Dim resp As response
-    Dim respDict As Dictionary
     
     
     Call V2SessionGateway.saveSession(workspace, email, envString, "", "", "")
@@ -76,10 +70,10 @@ Private Sub SendButton_Click()
     organizationId = respJson("session")("organizationId")
     
     Sheets("Credentials").Cells(13, 2) = "session/" + sessionId + "/workspace/" + workspace
-    Set respJson = V2SessionGateway.requestWorkspaceId(workspace)
+    Set respJson = V2SessionGateway.getWorkspace(workspace)
     workspaceId = respJson("workspaces")(1)("id")
     
-    Set respJson = V2SessionGateway.requestMemberName(email)
+    Set respJson = V2SessionGateway.getPerson(email)
     memberName = respJson("person")("name")
     
     Call V2SessionGateway.saveSession(workspace, email, envString, CStr(sessionId), memberName, workspaceId)

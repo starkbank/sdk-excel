@@ -42,8 +42,6 @@ Public Sub signOut()
     clearDates
     clearAll
     Application.ScreenUpdating = True
-    Dim p As String
-    p = JsonConverter.ConvertToJson(respJson)
     
     MsgBox "Sucesso"
     
@@ -235,7 +233,7 @@ Public Sub createBoletos()
     lastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
     midRow = initRow - 1
     Do
-        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        midRow = IIf(midRow + 50 >= lastRow, lastRow, midRow + 50)
         Set boletos = V2BoletoGateway.getOrders(initRow, midRow)
         Set resp = V2BoletoGateway.createBoletos(boletos)
         
@@ -263,9 +261,9 @@ Public Sub createBoletos()
             
         End If
         
-        initRow = initRow + 100
+        initRow = initRow + 50
     Loop Until (midRow >= lastRow)
-     
+
 End Sub
 
 Public Sub createInvoices()

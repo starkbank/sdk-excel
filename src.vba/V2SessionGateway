@@ -52,7 +52,7 @@ Public Sub displayMemberInfo()
     End If
     
     helloMessage = "Olá " + V2SessionGateway.getMemberName() + "!"
-    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspace()
+    workspaceMessage = "Workspace: " + V2SessionGateway.getWorkspaceName()
     workspaceId = "ID do Workspace: " + V2SessionGateway.getWorkspaceId()
     emailMessage = "E-mail: " + V2SessionGateway.getEmail()
     envMessage = "Ambiente: " + V2SessionGateway.getEnvironmentString()
@@ -91,8 +91,8 @@ Public Function getEnvironmentString()
     getEnvironmentString = CStr(Sheets("Credentials").Cells(3, 2))
 End Function
 
-Public Function getWorkspace()
-    getWorkspace = CStr(Sheets("Credentials").Cells(1, 2))
+Public Function getWorkspaceName()
+    getWorkspaceName = CStr(Sheets("Credentials").Cells(1, 2))
 End Function
 
 Public Function getEmail()
@@ -105,38 +105,6 @@ End Function
 
 Public Function getWorkspaceId()
     getWorkspaceId = CStr(Sheets("Credentials").Cells(6, 2))
-End Function
-
-Public Function sessionPrivateKeyContent() As String
-    Dim sessionPrivateKeyPath
-    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
-    Call Shell("""" + getOpensslDir() + """ ecparam -name secp256k1 -genkey -out """ + sessionPrivateKeyPath + """")
-    Application.Wait Now + #12:00:02 AM#
-    
-    Open sessionPrivateKeyPath For Input As #1
-    Do Until EOF(1)
-        Line Input #1, textLine
-        sessionPrivateKeyContent = sessionPrivateKeyContent & textLine & vbLf
-    Loop
-    Close #1
-    
-End Function
-
-Public Function sessionPublicKeyContent() As String
-    Dim sessionPrivateKeyPath
-    Dim sessionPublicKeyPath
-    sessionPrivateKeyPath = getTempDir() + "\" + "sessionPrivateKey.pem"
-    sessionPublicKeyPath = getTempDir() + "\" + "sessionPublicKey.pem"
-    Call Shell("""" + getOpensslDir() + """ ec -in """ + sessionPrivateKeyPath + """ -pubout -out """ + sessionPublicKeyPath + """")
-    Application.Wait Now + #12:00:02 AM#
-    
-    Open sessionPublicKeyPath For Input As #1
-    Do Until EOF(1)
-        Line Input #1, textLine
-        sessionPublicKeyContent = sessionPublicKeyContent & textLine & vbLf
-    Loop
-    Close #1
-
 End Function
 
 Public Function getSessionPrivateKeyContent() As String
@@ -316,7 +284,7 @@ Public Function defaultV1Headers(accesToken As String)
     Set defaultV1Headers = Result
 End Function
 
-Public Function requestWorkspaceId(workspace As String)
+Public Function getWorkspace(workspace As String)
     Dim query As String
     Dim resp As response
     
@@ -330,7 +298,7 @@ Public Function requestWorkspaceId(workspace As String)
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     
-    Set requestWorkspaceId = resp.json()
+    Set getWorkspace = resp.json()
 End Function
 
 Public Function deleteSession()
@@ -353,7 +321,7 @@ Public Function deleteSession()
     Set deleteSession = resp.json()
 End Function
 
-Public Function requestMemberName(email As String)
+Public Function getPerson(email As String)
     Dim path As String
     Dim resp As response
     
@@ -365,5 +333,5 @@ Public Function requestMemberName(email As String)
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
     
-    Set requestMemberName = resp.json()
+    Set getPerson = resp.json()
 End Function
