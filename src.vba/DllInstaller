@@ -14,7 +14,9 @@ Public Sub installEcdsa()
     
     If isEcdsaInstalled() = False Then
         Dim FSO As Object
-        Dim SourceFileName As String, DestinFileName As String
+        Dim SourceFileDll As String, DestinationFileDll As String
+        Dim SourceFileTlb As String, DestinationFileTlb As String
+        Dim workbookPath As String
         
         
         MsgBox "Ecdsa não esta instalado."
@@ -23,13 +25,13 @@ Public Sub installEcdsa()
         workbookPath = ActiveWorkbook.path
         Set FSO = CreateObject("Scripting.Filesystemobject")
         
-        SourceFileNameDll = workbookPath + "\StarkBankEcdsa.dll"
-        DestinFileNameDll = "C:\Windows\System32\StarkBankEcdsa.dll"
-        FSO.MoveFile Source:=SourceFileNameDll, Destination:=DestinFileNameDll
+        SourceFileDll = workbookPath + "\StarkBankEcdsa.dll"
+        DestinationFileDll = "C:\Windows\System32\StarkBankEcdsa.dll"
+        FSO.MoveFile Source:=SourceFileDll, Destination:=DestinationFileDll
         
-        SourceFileNameTlb = workbookPath + "\StarkBankEcdsa.tlb"
-        DestinFileNameTlb = "C:\Windows\System32\StarkBankEcdsa.tlb"
-        FSO.MoveFile Source:=SourceFileNameTlb, Destination:=DestinFileNameTlb
+        SourceFileTlb = workbookPath + "\StarkBankEcdsa.tlb"
+        DestinationFileTlb = "C:\Windows\System32\StarkBankEcdsa.tlb"
+        FSO.MoveFile Source:=SourceFileTlb, Destination:=DestinationFileTlb
     End If
     
     Call Shell("reg " + path + "\StarkBankEcdsa.reg")
