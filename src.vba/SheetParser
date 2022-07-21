@@ -1,14 +1,18 @@
 Public Function headers()
     Dim columns As New Collection
+    
+    
     For Each elem In ActiveSheet.UsedRange.columns
         columns.Add ActiveSheet.Cells(TableFormat.HeaderRow(), elem.column).Value
     Next
+    
     Set headers = columns
 End Function
 
 Public Function dict()
-    Dim Result As New Collection
+    Dim result As New Collection
     Dim keys As Collection
+    
     
     Set keys = headers()
     
@@ -18,15 +22,16 @@ Public Function dict()
         For Each elem In ActiveSheet.UsedRange.columns
             obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
-        Result.Add obj
+        result.Add obj
     Next
     
-    Set dict = Result
+    Set dict = result
 End Function
 
 Public Function longDict(initRow, lastRow)
-    Dim Result As New Collection
+    Dim result As New Collection
     Dim keys As Collection
+    
     
     Set keys = headers()
     
@@ -36,8 +41,9 @@ Public Function longDict(initRow, lastRow)
         For Each elem In ActiveSheet.UsedRange.columns
             obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
-        Result.Add obj
+        result.Add obj
     Next
     
-    Set longDict = Result
+    Set longDict = result
+    
 End Function

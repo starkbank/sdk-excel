@@ -3,8 +3,9 @@ Public Sub UpdateRoutine()
     Dim repoVersion As String
     Dim updateQuestion As String
     Dim updateAvailable As Boolean
-    On Error GoTo Err
     
+    
+    On Error GoTo Err
     currentVersion = "v" + getCurrentVersion()
     repoVersion = getLatestRepoVersion()
     
@@ -12,40 +13,50 @@ Public Sub UpdateRoutine()
     Debug.Print "Remote:", repoVersion
     
     updateAvailable = SemVerCompare(currentVersion, repoVersion)
+    
     If Not updateAvailable Then
         Exit Sub
     End If
+    
     If AskUpdate(repoVersion) = vbNo Then
         MsgBox "Atualização cancelada."
         Exit Sub
     End If
+    
     If RenameCurrent() = vbYes Then
         Update (repoVersion)
     Else
         MsgBox "Atualização cancelada."
     End If
+    
     Exit Sub
 Err:
     MsgBox "Não foi possível verificar atualizações. Favor checar a conexão."
     Exit Sub
+    
 End Sub
 
 Public Function OpensslRoutine()
     OpensslRoutine = False
+    
     If getGitDir() = "" Then
         ViewOpensslForm.Show
         Exit Function
     End If
+    
     If Dir(getOpensslDir()) = "" Then
         ViewOpensslForm.Show
         Exit Function
     End If
+    
     OpensslRoutine = True
+    
 End Function
 
 Public Function UpdateVersionNumber(newVersion As String)
     Sheets("Credentials").Cells(9, 2) = newVersion
     Sheets("Principal").Cells(1, 7) = "SDK Stark Bank - " & newVersion
+    
 End Function
 
 Public Function SemVerCompare(currentVersion As String, repoVersion As String)
@@ -65,8 +76,9 @@ Public Function SemVerCompare(currentVersion As String, repoVersion As String)
     Dim minorBool As Boolean
     Dim patchBool As Boolean
     
-    On Error Resume Next
     
+    On Error Resume Next
+
     exp = "(v?)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
     With CreateObject("VBScript.RegExp")
         .Pattern = exp
@@ -75,6 +87,7 @@ Public Function SemVerCompare(currentVersion As String, repoVersion As String)
         Set allSubMatches1 = .Execute(currentVersion)(0).submatches
         Set allSubMatches2 = .Execute(repoVersion)(0).submatches
     End With
+    
     currentMajor = CLng(allSubMatches1(1))
     currentMinor = CLng(allSubMatches1(2))
     currentPatch = CLng(allSubMatches1(3))
@@ -88,38 +101,44 @@ Public Function SemVerCompare(currentVersion As String, repoVersion As String)
     patchBool = (repoMajor = currentMajor) And (repoMinor = currentMinor) And (repoPatch > currentPatch)
     
     SemVerCompare = False
+    
     If majorBool Or minorBool Or patchBool Then
         SemVerCompare = True
     End If
+    
 End Function
 
 Public Sub Update(repoVersion As String)
     Dim successMessage As String
     Dim overwriteLatest As Boolean
     
+    
     DownloadLatest
     OpenDownloaded
     CloseCurrent
     UpdateVersionNumber (repoVersion)
+    
 End Sub
 
 Public Function AskUpdate(repoVersion As String)
     updateQuestion1 = "Versão nova disponível para atualização: " + repoVersion + vbNewLine
     updateQuestion2 = "Atualizar agora? Você precisará transferir manualmente seus dados para a nova versão!"
     AskUpdate = MsgBox(updateQuestion1 + updateQuestion2, vbYesNo)
+    
 End Function
 
 Private Function RenameCurrent()
-    Dim fso As New Scripting.FileSystemObject
+    Dim FSO As New Scripting.FileSystemObject
     Dim baseName As String
     Dim newName As String
     Dim oldName As String
     Dim overwriteLatest As Integer
     Dim overwriteMessage As String
     
+    
     oldName = ThisWorkbook.FullName
     
-    baseName = fso.GetBaseName(ThisWorkbook.name)
+    baseName = FSO.GetBaseName(ThisWorkbook.name)
     overwriteLatest = vbYes
     Debug.Print Dir(ThisWorkbook.path & "/starkbank-sdk.xlsm")
     If baseName = "starkbank-sdk" Then
@@ -131,6 +150,7 @@ Private Function RenameCurrent()
         overwriteLatest = MsgBox(overwriteMessage, vbYesNo)
     End If
     RenameCurrent = overwriteLatest
+    
 End Function
 
 Public Sub DownloadLatest()
@@ -139,6 +159,7 @@ Public Sub DownloadLatest()
     Dim oStream As Object
     Dim content As String
     Dim WinHttpReq As Object
+    
     
     Set WinHttpReq = CreateObject("Msxml2.ServerXMLHTTP")
     WinHttpReq.Open "GET", path
@@ -152,34 +173,42 @@ Public Sub DownloadLatest()
         oStream.SaveToFile targetFile, 2
         oStream.Close
     End If
+    
 End Sub
 
 Private Sub OpenDownloaded()
     Workbooks.Open ThisWorkbook.path & "/starkbank-sdk.xlsm"
+    
 End Sub
 
 Private Sub CloseCurrent()
     ThisWorkbook.Close False
+    
 End Sub
 
 Public Sub UpdateOld()
     Dim successMessage As String
+    
+    
     DownloadLatest
     UpdateModules
     successMessage = "Atualização concluída."
     MsgBox successMessage, , "Sucesso"
+    
 End Sub
 
 Public Sub UpdateModules()
-    Dim VBProjTo As VBIDE.VBProject
-    Dim VBProjFrom As VBIDE.VBProject
+    Dim VBProjTo As VBIDE.vbProject
+    Dim VBProjFrom As VBIDE.vbProject
     
-    Set VBProjTo = ActiveWorkbook.VBProject
+    
+    Set VBProjTo = ActiveWorkbook.vbProject
     path = Application.ActiveWorkbook.path
     fromname = TempFilePath()
     
     Workbooks.Open fromname
-    Set VBProjFrom = ActiveWorkbook.VBProject
+    Set VBProjFrom = ActiveWorkbook.vbProject
+    
     For Each comp In VBProjFrom.VBComponents
         compType = ComponentTypeToString(comp.Type)
         CompName = comp.name
@@ -189,18 +218,22 @@ Public Sub UpdateModules()
             Debug.Print CopyModule(comp.name, VBProjFrom, VBProjTo, True)
         End If
     Next
+    
     ActiveWorkbook.Close False
     
 End Sub
 
 Private Function TempFilePath()
     TempFilePath = ThisWorkbook.path & "/" + "starkbank-sdk.xlsm"
+    
 End Function
 
 Public Function getLatestRepoVersion()
     Dim path As String
     Dim query As String
     Dim getTags As Variant
+    Dim resp As response
+    
     
     path = baseRepoPath()
     query = "/tags"
@@ -214,6 +247,7 @@ Public Function getLatestRepoVersion()
     End If
     
     getLatestRepoVersion = getTags(1)("name")
+    
 End Function
 
 Public Function getLatestRepoFile()
@@ -221,6 +255,7 @@ Public Function getLatestRepoFile()
     Dim query As String
     Dim content As String
     Dim getTags As Variant
+    
     
     path = baseRepoPath()
     path = "/starkbank/sdk-excel"
@@ -237,16 +272,24 @@ Public Function getLatestRepoFile()
     getLatestRepoFile = content
 End Function
 
+
 Public Function getCurrentVersion()
     getCurrentVersion = CStr(Sheets("Credentials").Cells(9, 2))
+    
 End Function
 
 Public Function getRepoRequest(base As String, path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseRepoUrl(base) + path + query
+    
+    
     Set getRepoRequest = updateFetch(url, "GET", headers, "")
+    
 End Function
 
 Public Function updateFetch(url As String, method As String, headers As Dictionary, payload As String)
+    Dim resp As response
+    
+    
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     
@@ -256,7 +299,6 @@ Public Function updateFetch(url As String, method As String, headers As Dictiona
     
     objHTTP.send payload
     
-    Dim resp As response
     Set resp = New response
     
     resp.Status = objHTTP.Status
@@ -266,7 +308,6 @@ Public Function updateFetch(url As String, method As String, headers As Dictiona
 
 End Function
 
-
 Public Function baseRepoUrl(repoString As String)
     Select Case repoString
         Case "api"
@@ -274,46 +315,55 @@ Public Function baseRepoUrl(repoString As String)
         Case Else
             baseRepoUrl = "https://github.com"
     End Select
+    
 End Function
 
 Public Function baseRepoPath()
     baseRepoPath = "/starkbank/sdk-excel"
+    
 End Function
 
 Public Sub CopyTestModule()
     Dim moduleName As String
     Dim fromname As String
     Dim path As String
-    Dim VBProjTo As VBIDE.VBProject
-    Dim VBProjFrom As VBIDE.VBProject
+    Dim VBProjTo As VBIDE.vbProject
+    Dim VBProjFrom As VBIDE.vbProject
     
-    Set VBProjTo = ActiveWorkbook.VBProject
+    
+    Set VBProjTo = ActiveWorkbook.vbProject
     path = Application.ActiveWorkbook.path
     fromname = TempFilePath()
     moduleName = "TestModule"
     
     Workbooks.Open fromname
-    Set VBProjFrom = ActiveWorkbook.VBProject
+    Set VBProjFrom = ActiveWorkbook.vbProject
     Debug.Print CopyModule(moduleName, VBProjFrom, VBProjTo, True)
     ActiveWorkbook.Close (False)
     ImportedTest moduleName
+    
 End Sub
 
 Public Sub ImportedTest(moduleName As String)
     Dim zero As Integer
+    
+    
     zero = SimpleTest()
-    ActiveWorkbook.VBProject.VBComponents.Remove ActiveWorkbook.VBProject.VBComponents(moduleName)
+    ActiveWorkbook.vbProject.VBComponents.Remove ActiveWorkbook.vbProject.VBComponents(moduleName)
+    
 End Sub
 
 Private Sub ListModules()
-    Dim VBProj As VBIDE.VBProject
+    Dim vbProj As VBIDE.vbProject
     Dim VBComp As VBIDE.VBComponent
     
-    Set VBProj = ActiveWorkbook.VBProject
     
-    For Each VBComp In VBProj.VBComponents
+    Set vbProj = ActiveWorkbook.vbProject
+    
+    For Each VBComp In vbProj.VBComponents
         Debug.Print VBComp.name, ComponentTypeToString(VBComp.Type)
     Next VBComp
+    
 End Sub
 
 Private Function ComponentTypeToString(ComponentType As VBIDE.vbext_ComponentType) As String
@@ -331,4 +381,5 @@ Private Function ComponentTypeToString(ComponentType As VBIDE.vbext_ComponentTyp
         Case Else
             ComponentTypeToString = "Unknown Type: " & CStr(ComponentType)
     End Select
+    
 End Function

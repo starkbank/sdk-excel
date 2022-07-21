@@ -1,9 +1,11 @@
+
 Public Function min(a As Variant, b As Variant) As Variant
     If a >= b Then
         min = b
     Else
         min = a
     End If
+    
 End Function
 
 Public Function max(a As Variant, b As Variant) As Variant
@@ -12,10 +14,13 @@ Public Function max(a As Variant, b As Variant) As Variant
     Else
         max = a
     End If
+    
 End Function
 
 Public Function CollectionToString(c As Collection, Optional Delimiter As String) As String
     Dim elString As String: elString = ""
+    
+    
     If c.Count <> 0 Then
         For Each el In c
             elString = elString + el + Delimiter
@@ -24,6 +29,7 @@ Public Function CollectionToString(c As Collection, Optional Delimiter As String
     End If
     
     CollectionToString = elString
+    
 End Function
 
 Public Function ISODATEZ(iso As String) As String
@@ -34,8 +40,8 @@ Public Function ISODATEZ(iso As String) As String
     Dim minPart As Integer: minPart = CInt(Mid(iso, 15, 2))
     Dim secPart As Integer: secPart = CInt(Mid(iso, 18, 2))
     Dim tz As String: tz = Mid(iso, 28)
-    
     Dim dt As Date: dt = DateSerial(yearPart, monPart, dayPart) + TimeSerial(hourPart, minPart, secPart)
+    
     
     ' Add the timezone
     If tz <> "" And Left(tz, 1) <> "Z" Then
@@ -51,25 +57,30 @@ Public Function ISODATEZ(iso As String) As String
     Dim dtString As String: dtString = TimeZoneConverter.UtcToBrt(dt)
     
     ISODATEZ = dtString
+    
 End Function
 
 Public Sub applyStandardLayout(ByVal col As String)
     ' Set ActiveSheet.Range("A1:" + col + "8").Interior.Color = RGB(255, 255, 255)
     ' Set ActiveSheet.Range("A9:" + col + "9").Interior.Color = RGB(0, 112, 224)
     ' Set ActiveSheet.Range("A9:" + col + "9").Font.Color = RGB(255, 255, 255)
+    
 End Sub
 
 Public Function applyLockedLayout(col1 As String, col2 As String)
     ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Interior.Color = RGB(224, 112, 0)
     ' ActiveSheet.Range(col1 + "9:" + col2 + "9").Font.Color = RGB(255, 255, 255)
+    
 End Function
 
 Public Function formatDateInUserForm(dateString As String)
     Dim chars() As Byte
-    chars = StrConv(dateString, vbFromUnicode)
-
     Dim buffer As String
     Dim i As Integer
+    
+    
+    chars = StrConv(dateString, vbFromUnicode)
+
     For i = LBound(chars) To UBound(chars)
         If Len(buffer) = 2 Then buffer = buffer & "/"   'auto-insert the dash
         If Len(buffer) = 5 Then buffer = buffer & "/"   'auto-insert the dash
@@ -87,10 +98,13 @@ Public Sub PrintKeys(dict As Dictionary)
     For Each key In dict.keys()
         Debug.Print "key", key
     Next
+    
 End Sub
 
 Public Function formatCurrencyInUserForm(buffer As String)
     Dim clearBuffer As String
+    
+    
     If buffer = "" Then
         buffer = "0"
     End If
@@ -106,21 +120,26 @@ Public Function formatCurrencyInUserForm(buffer As String)
     End If
     buffer = Format(IntegerFrom(clearBuffer) / 100, "R$ #,##0.00")
     formatCurrencyInUserForm = buffer
+    
 End Function
 
 Public Function clearNonNumeric(text)
     Dim Reg As RegExp
+    
+    
     Set Reg = New RegExp
     Reg.Global = True
     Reg.Pattern = "\D"
     clearNonNumeric = Reg.Replace(text, "")
     Set Reg = Nothing
+    
 End Function
 
 Function correctErrorSeparate(ByVal errorMessage As String, offset As Integer) As Dictionary
     Dim dict As New Dictionary
     Dim lineNumber As Integer
     Dim message As String
+    
     
     message = errorMessage
     
@@ -143,6 +162,7 @@ Function correctErrorLine(ByVal errorMessage As String, offset As Integer) As St
     Dim lineNumber As Integer
     Dim message As String
     
+    
     message = errorMessage
     
     With CreateObject("VBScript.RegExp")
@@ -164,10 +184,13 @@ Public Function getAmountLong(amount As Variant)
     amount = Replace(amount, "R$", "")
     amount = CLng(amount)
     getAmountLong = amount
+    
 End Function
 
 Public Function IntegerFrom(Value As String) As Long
     Dim temp As String
+    
+    
     temp = Value
     On Error GoTo eh:
     With CreateObject("VBScript.RegExp")
@@ -179,11 +202,15 @@ Public Function IntegerFrom(Value As String) As Long
     Exit Function
 eh:
     IntegerFrom = 0
+    
 End Function
 
 Public Function DateToSendingFormat(dateInput As String) As String
     Dim dateToSend As String: dateToSend = Mid(dateInput, 7, 4) + "-" + Mid(dateInput, 4, 2) + "-" + Mid(dateInput, 1, 2)
+    
+    
     DateToSendingFormat = dateToSend
+    
 End Function
 
 Public Function DatefromIsoString(iso As String) As Date
@@ -195,12 +222,15 @@ Public Function DatefromIsoString(iso As String) As Date
     Dim secPart As Integer: secPart = CInt(Mid(iso, 18, 2))
     Dim tz As String: tz = Mid(iso, 28)
     
-    Dim dt As Date: dt = DateSerial(yearPart, monPart, dayPart) + TimeSerial(hourPart, minPart, secPart)
+    
+    dt = DateSerial(yearPart, monPart, dayPart) + TimeSerial(hourPart, minPart, secPart)
     DatefromIsoString = dt
 End Function
 
 Public Function SingleFrom(Value As String) As Single
     Dim temp As String
+    
+    
     temp = Value
     With CreateObject("VBScript.RegExp")
         .Pattern = "%"
@@ -208,19 +238,20 @@ Public Function SingleFrom(Value As String) As Single
         temp = .Replace(temp, "")
     End With
     SingleFrom = CSng(temp)
+    
 End Function
 
 Public Function MoneyStringFrom(Value As Double) As String
     MoneyStringFrom = Format(Value / 100, "Currency")
+    
 End Function
 
 Public Function SHA256function(sMessage As String)
-
     Dim clsX As CSHA256
+    
+    
     Set clsX = New CSHA256
-
     SHA256function = clsX.SHA256(sMessage)
-
     Set clsX = Nothing
 
 End Function
@@ -228,6 +259,7 @@ End Function
 Public Function encodeBase64(ByRef arrData() As Byte) As String
     Dim objXML As MSXML2.DOMDocument60
     Dim objNode As MSXML2.IXMLDOMElement
+    
     
     Set objXML = New MSXML2.DOMDocument60
     
@@ -238,11 +270,13 @@ Public Function encodeBase64(ByRef arrData() As Byte) As String
  
     Set objNode = Nothing
     Set objXML = Nothing
+    
 End Function
 
 Public Function decodeBase64(ByVal strData As String) As Byte()
     Dim objXML As MSXML2.DOMDocument60
     Dim objNode As MSXML2.IXMLDOMElement
+    
     
     Set objXML = New MSXML2.DOMDocument60
     Set objNode = objXML.createElement("b64")
@@ -252,6 +286,7 @@ Public Function decodeBase64(ByVal strData As String) As Byte()
     
     Set objNode = Nothing
     Set objXML = Nothing
+    
 End Function
 
 Public Function getSubByteArray(strHexa As String, indexI As Integer, indexF As Integer) As String
@@ -265,10 +300,12 @@ Public Function getSubByteArray(strHexa As String, indexI As Integer, indexF As 
     Else
         getSubByteArray = Mid(strHexa, 3 * indexI + 1, 3 * (indexF - indexI) + 2)
     End If
+    
 End Function
 
 Public Function bitwiseLeftShift(ByVal Value As String, ByVal Shift As Integer) As String
     bitwiseLeftShift = Value
+    
     If Shift > 0 Then
         Dim exp As String: exp = "1"
         For i = 1 To Shift
@@ -276,10 +313,12 @@ Public Function bitwiseLeftShift(ByVal Value As String, ByVal Shift As Integer) 
         Next i
         bitwiseLeftShift = BigIntMath.multiply(exp, Value)
     End If
+    
 End Function
 
 Public Function bitwiseRightShift(ByVal Value As String, ByVal Shift As Integer) As String
     bitwiseRightShift = Value
+    
     If Shift > 0 Then
         Dim exp As String: exp = "1"
         For i = 1 To Shift
@@ -287,6 +326,7 @@ Public Function bitwiseRightShift(ByVal Value As String, ByVal Shift As Integer)
         Next i
         bitwiseRightShift = BigIntMath.Divide(Value, exp)
     End If
+    
 End Function
 
 Public Function randrange(ByVal lowerbound As String, ByVal upperbound As String) As String
@@ -295,6 +335,7 @@ Public Function randrange(ByVal lowerbound As String, ByVal upperbound As String
     part2 = BigIntMath.multiply(part1, CStr(Int(Rnd * 10000000)))
     part3 = BigIntMath.Divide(part2, "10000000")
     randrange = BigIntMath.Add(part3, lowerbound)
+    
 End Function
 
 Public Function correctTransferTags(tags As Collection)
@@ -302,6 +343,7 @@ Public Function correctTransferTags(tags As Collection)
     Dim allMatches As Object
     Dim index As Integer
     Dim tag As Variant
+    
     
     index = 0
     
@@ -325,21 +367,22 @@ Public Function correctTransferTags(tags As Collection)
     End With
     
     Set correctTransferTags = tags
+    
 End Function
 
 Public Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean
-Dim element As Variant
-On Error GoTo IsInArrayError:
-    For Each element In arr
-        If element = valToBeFound Then
-            IsInArray = True
-            Exit Function
-        End If
-    Next element
-Exit Function
+    Dim element As Variant
+    On Error GoTo IsInArrayError:
+        For Each element In arr
+            If element = valToBeFound Then
+                IsInArray = True
+                Exit Function
+            End If
+        Next element
+    Exit Function
 IsInArrayError:
-On Error GoTo 0
-IsInArray = False
+    On Error GoTo 0
+    IsInArray = False
 End Function
 
 Public Function isSignedin()
@@ -350,16 +393,19 @@ Public Function isSignedin()
         Exit Function
     End If
     
-    balance = V2SessionGateway.getBalance()
+    balance = SessionGateway.getBalance()
     
     If balance = "-" Then
         isSignedin = False
     End If
+    
 End Function
 
 Function GetFolder() As String
     Dim fldr As FileDialog
     Dim sItem As String
+    
+    
     Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
     With fldr
         .Title = "Selecione uma pasta"
@@ -371,15 +417,19 @@ Function GetFolder() As String
 NextCode:
     GetFolder = sItem
     Set fldr = Nothing
+    
 End Function
 
-Public Function ReplaceFilenameChars(ByVal filename As String)
+Public Function ReplaceFilenameChars(ByVal fileName As String)
     Const SpecialCharacters As String = "\,/,:,*,?,"",<,>,|"
     Dim char As Variant
-    ReplaceFilenameChars = filename
+    
+    
+    ReplaceFilenameChars = fileName
     For Each char In Split(SpecialCharacters, ",")
         ReplaceFilenameChars = Replace(ReplaceFilenameChars, char, "_")
     Next
+    
 End Function
 
 Public Function ShellRun(sCmd As String) As String
@@ -409,24 +459,29 @@ End Function
 
 Public Function getTempDir() As String
     getTempDir = Environ("temp")
+    
 End Function
 
 Public Function getOpensslDir() As String
     getOpensslDir = getGitDir() + "\..\usr\bin\openssl.exe"
+    
 End Function
 
 Public Function getGitDir()
     Dim TextStrng As String
-    Dim Result() As String
+    Dim result() As String
     Dim DisplayText As String
+    
+    
     TextStrng = Environ("path")
-    Result = Split(TextStrng, ";")
+    result = Split(TextStrng, ";")
     getGitDir = ""
-    For i = LBound(Result()) To UBound(Result())
-        If InStr(LCase(Result(i)), "\git\cmd") > 0 Then
-            getGitDir = Result(i)
+    For i = LBound(result()) To UBound(result())
+        If InStr(LCase(result(i)), "\git\cmd") > 0 Then
+            getGitDir = result(i)
         End If
     Next i
+    
 End Function
 
 Public Function countSpaces(code As String)
@@ -436,8 +491,10 @@ Public Function countSpaces(code As String)
             countSpaces = countSpaces + 1
         End If
     Next i
+    
 End Function
 
 Public Function areCredentialsStored()
     areCredentialsStored = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
+    
 End Function

@@ -1,24 +1,30 @@
 
 Public Sub downloadAllTransferPdfs()
     downloadAllPdfs ("transfer")
+    
 End Sub
 
 Public Sub downloadAllChargePdfs()
     downloadAllPdfs ("boleto")
+    
 End Sub
 
 Public Sub downloadAllChargePaymentPdfs()
     downloadAllPdfs ("boleto-payment")
+    
 End Sub
 
 Public Sub downloadAllInvoicePdfs()
     downloadAllPdfs ("invoice")
+    
 End Sub
 
 Public Sub downloadSelectedTransferPdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
+    
+    
     service = "transfer"
     
     initRow = Utils.max(Selection.row, 10)
@@ -30,12 +36,15 @@ Public Sub downloadSelectedTransferPdfs()
     End If
     
     Call downloadPdfRange(service, initRow, lastRow)
+    
 End Sub
 
 Public Sub downloadSelectedChargePdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
+    
+    
     service = "boleto"
     
     initRow = Utils.max(Selection.row, 10)
@@ -47,12 +56,15 @@ Public Sub downloadSelectedChargePdfs()
     End If
     
     Call downloadPdfRange(service, initRow, lastRow)
+    
 End Sub
 
 Public Sub downloadSelectedChargePaymentPdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
+    
+    
     service = "boleto-payment"
     
     initRow = Utils.max(Selection.row, 10)
@@ -64,12 +76,15 @@ Public Sub downloadSelectedChargePaymentPdfs()
     End If
     
     Call downloadPdfRange(service, initRow, lastRow)
+    
 End Sub
 
 Public Sub downloadSelectedInvoicePdfs()
     Dim initRow As Long
     Dim lastRow As Long
     Dim service As String
+    
+    
     service = "invoice"
     
     initRow = Utils.max(Selection.row, 10)
@@ -81,6 +96,7 @@ Public Sub downloadSelectedInvoicePdfs()
     End If
     
     Call downloadPdfRange(service, initRow, lastRow)
+    
 End Sub
 
 
@@ -89,10 +105,11 @@ Public Function downloadSinglePdf(service, id As String, folder As String, fallb
     Dim path As String
     Dim filepath As String
     Dim version As String
+    
 
     path = "/v2-faks/" + service + "/" + id + "/pdf"
     filepath = folder + "/"
-    downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
+    downloadSinglePdf = Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
 
 End Function
 
@@ -106,6 +123,8 @@ Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
     Dim success As Boolean
     Dim anyFailed As Boolean
     Dim tooMany As Boolean
+    
+    
     anyFailed = False
     anySuccess = False
     tooMany = True
@@ -119,14 +138,19 @@ Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
     If numberEntities = 0 Then
         MsgBox "Nenhum arquivo para baixar. Clique em Consultar", vbExclamation
         Exit Sub
+        
     ElseIf numberEntities >= 10 Then
         Dim longTimeMessage As String
         Dim downloadTime As Double
+        
+        
         downloadTime = 3.2 * numberEntities / 60
         longTimeMessage = "Há " + CStr(numberEntities) + " arquivos para baixar. Esta operação deve levar cerca de " + CStr(Round(downloadTime)) + " minuto(s). Continuar?"
+        
         If MsgBox(longTimeMessage, vbExclamation + vbYesNo) = vbYes Then
             tooMany = False
         End If
+        
     Else
         tooMany = False
     End If
@@ -141,15 +165,19 @@ Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
             Else
                 anySuccess = True
             End If
+            
         Next
         
         If anyFailed Then
             MsgBox "Alguns arquivos tiveram falha no download!" + vbNewLine + "Atenção: Não é possível baixar comprovantes de operações com falha ou canceladas!", vbExclamation
         End If
+        
         If anySuccess Then
             MsgBox "Arquivos salvos em:" + vbNewLine + folder
         End If
+        
     End If
+    
 End Sub
 
 Public Sub downloadAllPdfs(service As String)
@@ -158,18 +186,22 @@ Public Sub downloadAllPdfs(service As String)
     Dim idColumn As String
     Dim abcd As Range
     
+    
     idColumn = ColumnId(service)
     initRow = 10
     lastRow = ActiveSheet.Range(idColumn + "9").CurrentRegion.Rows.Count + 8
 
     Call downloadPdfRange(service, initRow, lastRow)
+    
 End Sub
 
 Public Function getFallbackName(row As Long, id As String, service As String)
     getFallbackName = id + ".pdf"
+    
     If service = "transfer" Then
         getFallbackName = Format(ActiveSheet.Cells(row, 1), "yyyy-mm-dd") + " - " + Replace(ActiveSheet.Cells(row, 3).text, "R$", "R$ ") + " - " + CStr(ActiveSheet.Cells(row, 5).Value) + ".pdf"
     End If
+    
 End Function
 
 Public Function ColumnId(service As String)
@@ -198,6 +230,7 @@ Public Sub createNewDirectory(directoryName As String)
     If Not DirExists(directoryName) Then
         MkDir (directoryName)
     End If
+    
 End Sub
  
 Function DirExists(DirName As String) As Boolean
@@ -205,4 +238,5 @@ Function DirExists(DirName As String) As Boolean
     DirExists = GetAttr(DirName) And vbDirectory
 ErrorHandler:
     Exit Function
+    
 End Function

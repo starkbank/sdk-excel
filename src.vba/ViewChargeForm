@@ -90,7 +90,7 @@ Private Sub SearchButton_Click()
     Call FreezeHeader
     
     'Optional parameters
-    Dim Status As String: Status = V2BoletoGateway.getStatus(statusString)
+    Dim Status As String: Status = BoletoGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
@@ -105,9 +105,9 @@ Private Sub SearchButton_Click()
 
     Do
         logRow = row
-        Set respJson = V2BoletoGateway.getBoletos(cursor, optionalParam)
+        Set respJson = BoletoGateway.getBoletos(cursor, optionalParam)
 
-        If respJson.Exists("errors") Then
+        If respJson.exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -131,7 +131,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 2).Value = charge("name")
             ActiveSheet.Cells(row, 3).Value = charge("taxId")
-            ActiveSheet.Cells(row, 4).Value = V2BoletoGateway.getStatusInPt(chargeStatus)
+            ActiveSheet.Cells(row, 4).Value = BoletoGateway.getStatusInPt(chargeStatus)
             ActiveSheet.Cells(row, 5).Value = amount
             
             ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
@@ -142,7 +142,7 @@ Private Sub SearchButton_Click()
             
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=V2Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             If DetailedCheckBox.Value = True Then
                 ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
@@ -175,8 +175,8 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "boletoIds", keys
-            Set respJson = V2BoletoGateway.getBoletoLogs("", logsParam)
-            If respJson.Exists("errors") Then
+            Set respJson = BoletoGateway.getBoletoLogs("", logsParam)
+            If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"
                 Exit Sub
             End If
@@ -188,8 +188,8 @@ Private Sub SearchButton_Click()
             Next
             
             logsParam("types") = "registered"
-            Set respJson = V2BoletoGateway.getBoletoLogs("", logsParam)
-            If respJson.Exists("errors") Then
+            Set respJson = BoletoGateway.getBoletoLogs("", logsParam)
+            If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos criados!"
                 Exit Sub
             End If
@@ -226,7 +226,7 @@ Public Sub setPaidBoletoInfo(ByVal charge As Object, row As Long)
     Dim createdLog As Dictionary
     Dim id As String: id = charge("id")
     
-    Set logs = V2BoletoGateway.getEventLog(id, "registered,paid", New Dictionary)("logs")
+    Set logs = BoletoGateway.getEventLog(id, "registered,paid", New Dictionary)("logs")
     Set createdLog = logs(2)
     Set paidLog = logs(1)
     

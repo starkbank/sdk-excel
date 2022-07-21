@@ -121,7 +121,7 @@ Private Sub SearchButton_Click()
     If Events <> "credited," Then
         optionalParam.Add "types", Events
         Do
-            Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
+            Set respJson = BoletoGateway.getBoletoLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
@@ -144,7 +144,7 @@ Private Sub SearchButton_Click()
                 Set tags = charge("tags")
                 
                 ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-                ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
+                ActiveSheet.Cells(row, 2).Value = BoletoGateway.getEventInPt(logEvent)
                 ActiveSheet.Cells(row, 3).Value = charge("name")
                 ActiveSheet.Cells(row, 4).Value = charge("taxId")
                 ActiveSheet.Cells(row, 5).Value = amount
@@ -158,7 +158,7 @@ Private Sub SearchButton_Click()
     
                 ActiveSheet.Cells(row, 16).Value = "PDF"
                 Set rng = ActiveSheet.Range("P" + CStr(row))
-                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=V2Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
                 row = row + 1
             Next
         Loop While cursor <> ""
@@ -169,8 +169,8 @@ Private Sub SearchButton_Click()
     optionalParam.Add "types", Events
     Do
         logRow = row
-        Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
-        If respJson.Exists("errors") Then
+        Set respJson = BoletoGateway.getBoletoLogs(cursor, optionalParam)
+        If respJson.exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -196,7 +196,7 @@ Private Sub SearchButton_Click()
             Set tags = charge("tags")
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-            ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
+            ActiveSheet.Cells(row, 2).Value = BoletoGateway.getEventInPt(logEvent)
             ActiveSheet.Cells(row, 3).Value = charge("name")
             ActiveSheet.Cells(row, 4).Value = charge("taxId")
             
@@ -211,7 +211,7 @@ Private Sub SearchButton_Click()
 
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=V2Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=Rest.baseUrl() + "/v2-faks/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
             ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
             ActiveSheet.Cells(row, 18).Value = charge("streetLine2")
@@ -220,7 +220,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 21).Value = charge("stateCode")
             ActiveSheet.Cells(row, 22).Value = charge("zipCode")
 
-            If chargeStatus = "paid" And Not logsPaidByCharge.Exists(id) Then
+            If chargeStatus = "paid" And Not logsPaidByCharge.exists(id) Then
                 logsPaidByCharge.Add id, chargeLog
                 logsRegisteredByCharge.Add id, New Dictionary
             End If
@@ -251,8 +251,8 @@ Private Sub SearchButton_Click()
         
         Do
             logsParam("types") = "registered,"
-            Set respJson = V2BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
-            If respJson.Exists("errors") Then
+            Set respJson = BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
+            If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
             End If

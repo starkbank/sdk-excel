@@ -1,8 +1,45 @@
 
-Public Function getTransfers(cursor As String, optionalParam As Dictionary)
+Public Function getStatus(Status As String)
+    Select Case Status
+        Case "Todos": getStatus = "all"
+        Case "Sucesso":  getStatus = "success"
+        Case "Processando":  getStatus = "processing"
+        Case "Falha":  getStatus = "failed"
+    End Select
+    
+End Function
 
+Public Function getStatusInPt(Status As String)
+    Select Case Status
+        Case "success":  getStatusInPt = "sucesso"
+        Case "processing":  getStatusInPt = "processando"
+        Case "failed":  getStatusInPt = "falha"
+        Case "unknown":  getStatusInPt = "desconhecido"
+        Case "canceled": getStatusInPt = "cancelado"
+    End Select
+    
+End Function
+
+Public Function Transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
+    Dim dict As New Dictionary
+    
+    
+    dict.Add "amount", amount
+    dict.Add "taxId", taxId
+    dict.Add "name", name
+    dict.Add "bankCode", bankCode
+    dict.Add "branchCode", branchCode
+    dict.Add "accountNumber", accountNumber
+    dict.Add "tags", tags
+    
+    Set Transfer = dict
+    
+End Function
+
+Public Function getTransfers(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
+    
     
     query = ""
     If cursor <> "" Then
@@ -19,19 +56,20 @@ Public Function getTransfers(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = StarkBankApi.getRequest("/v1/transfer", query, New Dictionary)
+    Set resp = Rest.getRequest("/v2-faks/transfer", query, New Dictionary)
     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
+    
     Set getTransfers = resp.json()
     
 End Function
 
 Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
-
     Dim query As String
     Dim resp As response
+    
     
     query = ""
     If cursor <> "" Then
@@ -48,74 +86,23 @@ Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = StarkBankApi.getRequest("/v1/transfer/log", query, New Dictionary)
+    Set resp = Rest.getRequest("/v2-faks/transfer/log", query, New Dictionary)
     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
+    
     Set getTransferLogs = resp.json()
     
 End Function
 
-Public Function getOrders(cursor As String, optionalParam As Dictionary)
-    Dim query As String
-    Dim resp As response
-    
-    query = ""
-    If cursor <> "" Then
-        query = "?cursor=" + cursor
-    End If
-    
-    If optionalParam.Count > 0 Then
-        For Each key In optionalParam
-            If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
-            Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
-            End If
-        Next
-    End If
-    
-    Set resp = StarkBankApi.getRequest("/v1/team/order", query, New Dictionary)
-    
-    If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), , "Erro"
-    End If
-    Set getOrders = resp.json()
-
-End Function
-
-Public Function createTransfers(payload As String, signature As String)
-    Dim resp As response
-    Dim headers As New Dictionary
-    
-    '--------------- Include signature in headers -----------------
-    headers.Add "Digital-Signature", signature
-    
-    '--------------- Send request ---------------------------------
-    Set resp = StarkBankApi.postRequest("/v1/transfer", payload, headers)
-    
-    If resp.Status = 200 Then
-        MsgBox "Transferências executadas com sucesso!", , "Sucesso"
-    
-    ElseIf resp.error().Exists("errors") Then
-        Dim errors As Collection: Set errors = resp.error()("errors")
-        Dim error As Dictionary
-        Dim errorList As String
-        Dim errorDescription As String
-        
-        For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
-            errorList = errorList & errorDescription & vbNewLine
-        Next
-        
-        Dim messageBox As String
-        messageBox = resp.error()("message") & vbNewLine & vbNewLine & errorList
-        MsgBox messageBox, , "Erro"
-    Else
-        MsgBox resp.error()("message"), vbExclamation, "Erro"
-    End If
-    
-    Set createTransfers = resp.json()
+Public Function getAccountTypePT(accountType As Variant) As String
+    Select Case LCase(accountType)
+        Case "checking":  getAccountTypePT = "corrente"
+        Case "savings":  getAccountTypePT = "poupança"
+        Case "payment":  getAccountTypePT = "pagamento"
+        Case "salary":  getAccountTypPTe = "salário"
+        Case Else:  getAccountTypePT = accountType
+    End Select
     
 End Function

@@ -1,70 +1,79 @@
 
 Public Function toUnix(dt) As Long
     toUnix = DateDiff("s", "1/1/1970 00:00:00", dt) + 10800
+    
 End Function
 
 Public Function baseUrl()
-    Select Case V2SessionGateway.getEnvironment()
+    Select Case SessionGateway.getEnvironment()
         Case development: baseUrl = "https://development.api.starkbank.com"
         Case sandbox:     baseUrl = "https://sandbox.api.starkbank.com"
         Case production:  baseUrl = "https://api.starkbank.com"
     End Select
+    
 End Function
 
 Public Function defaultHeaders(payload As String)
-    Dim Result As Dictionary
-    Set Result = New Dictionary
+    Dim result As Dictionary: Set result = New Dictionary
     Dim accessTime As Long
     Dim message As String
     Dim currentVersion As String
-    Dim ecdsa As ElipticCurve.Gateway
+    Dim ecdsa As StarkBankEcdsa.Gateway
+    Dim signature As String:
     
 
     accessTime = toUnix(Now)
-    message = V2SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Set ecdsa = New ElipticCurve.Gateway
-    sessionPrivateKey = V2SessionGateway.getSessionPrivateKeyContent()
+    Set ecdsa = New StarkBankEcdsa.Gateway
+    sessionPrivateKey = SessionGateway.getSessionPrivateKeyContent()
     
-    Dim signature As String: signature = ecdsa.sign(message, sessionPrivateKey)
+    signature = ecdsa.sign(message, sessionPrivateKey)
     
-    Result.Add "Content-Type", "Application/json"
-    Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", V2SessionGateway.getAccessId()
-    Result.Add "Access-Signature", signature
-    Result.Add "Platform-Id", "excel"
-    Result.Add "Platform-Version", Updater.getCurrentVersion()
+    result.Add "Content-Type", "Application/json"
+    result.Add "Accept-Language", "pt-BR"
+    result.Add "Access-Time", accessTime
+    result.Add "Access-Id", SessionGateway.getAccessId()
+    result.Add "Access-Signature", signature
+    result.Add "Platform-Id", "excel"
+    result.Add "Platform-Version", Updater.getCurrentVersion()
 
-    Set defaultHeaders = Result
+    Set defaultHeaders = result
+    
 End Function
 
 Public Function pdfHeaders(payload As String)
-    Dim Result As Dictionary
-    Set Result = New Dictionary
+    Dim result As Dictionary: Set result = New Dictionary
     Dim accessTime As Long
     Dim message As String
+    Dim currentVersion As String
+    Dim ecdsa As StarkBankEcdsa.Gateway
+    Dim signature As String
+    
     
     accessTime = toUnix(Now)
-    message = V2SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Dim pk As privateKey: Set pk = New privateKey
-    pk.fromPem (getSessionPrivateKeyContent)
+    Set ecdsa = New StarkBankEcdsa.Gateway
+    sessionPrivateKey = SessionGateway.getSessionPrivateKeyContent()
     
-    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
-    Dim signature64 As String: signature64 = signature.toBase64()
+    signature = ecdsa.sign(message, sessionPrivateKey)
     
-    Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", V2SessionGateway.getAccessId()
-    Result.Add "Access-Signature", signature64
+    result.Add "Accept-Language", "pt-BR"
+    result.Add "Access-Time", accessTime
+    result.Add "Access-Id", SessionGateway.getAccessId()
+    result.Add "Access-Signature", signature
+    result.Add "Platform-Id", "excel"
+    result.Add "Platform-Version", Updater.getCurrentVersion()
     
-    Set pdfHeaders = Result
+    Set pdfHeaders = result
+    
 End Function
 
 Public Function getRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
+    
     
     Set defHeaders = defaultHeaders("")
     
@@ -73,11 +82,13 @@ Public Function getRequest(path As String, query As String, headers As Dictionar
     Next
     
     Set getRequest = request.fetch(url, "GET", headers, "")
+    
 End Function
 
 Public Function postRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
+    
     
     Set defHeaders = defaultHeaders(payload)
     
@@ -86,11 +97,13 @@ Public Function postRequest(path As String, payload As String, headers As Dictio
     Next
     
     Set postRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
 
 Public Function patchRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
+    
     
     Set defHeaders = defaultHeaders(payload)
     
@@ -99,11 +112,13 @@ Public Function patchRequest(path As String, payload As String, headers As Dicti
     Next
     
     Set patchRequest = request.fetch(url, "PATCH", headers, payload)
+    
 End Function
 
 Public Function deleteRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
+    
     
     Set defHeaders = defaultHeaders("")
     
@@ -112,11 +127,13 @@ Public Function deleteRequest(path As String, query As String, headers As Dictio
     Next
     
     Set deleteRequest = request.fetch(url, "DELETE", headers, "")
+    
 End Function
 
 Public Function downloadRequest(path As String, filepath As String, headers As Dictionary, fallbackName As String) As Boolean
     Dim url As String: url = baseUrl() + path
     Dim defHeaders As New Dictionary
+    
     
     Set defHeaders = pdfHeaders("")
     
@@ -125,23 +142,28 @@ Public Function downloadRequest(path As String, filepath As String, headers As D
     Next
     
     downloadRequest = request.download(url, filepath, headers, fallbackName)
+    
 End Function
 
 Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)
     Dim url As String: url = baseUrl() + path + query
     
+    
     For Each key In defaultHeaders().keys()
         headers.Add key, defaultHeaders()(key)
     Next
-    headers("Content-Type") = "multipart/form-data; boundary=" + boundary
     
+    headers("Content-Type") = "multipart/form-data; boundary=" + boundary
     Set uploadRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
 
 Public Function externalPostRequest(url As String, payload As String)
     Dim headers As Dictionary: Set headers = New Dictionary
-    headers.Add "Content-Type", "Application/json"
     
+    
+    headers.Add "Content-Type", "Application/json"
     Set externalPostRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
 

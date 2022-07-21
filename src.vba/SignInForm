@@ -32,9 +32,9 @@ Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Produção"
     Me.EnvironmentBox.AddItem "Sandbox"
     
-    Me.EmailBox.Value = V2SessionGateway.getEmail()
-    Me.WorkspaceBox.Value = V2SessionGateway.getWorkspaceName()
-    Me.EnvironmentBox.Value = V2SessionGateway.getEnvironmentString()
+    Me.EmailBox.Value = SessionGateway.getEmail()
+    Me.WorkspaceBox.Value = SessionGateway.getWorkspaceName()
+    Me.EnvironmentBox.Value = SessionGateway.getEnvironmentString()
     
 End Sub
 
@@ -48,13 +48,14 @@ Private Sub SendButton_Click()
     Dim workspaceId As String
     
     
-    Call V2SessionGateway.saveSession(workspace, email, envString, "", "", "")
+    
+    Call SessionGateway.saveSession(workspace, email, envString, "", "", "")
     Debug.Print "Session cleared"
     
-    Set respJson = V2SessionGateway.createSession(email, password, workspace)
+    Set respJson = SessionGateway.createSession(email, password, workspace)
     Debug.Print "New session created"
     
-    If respJson.Exists("errors") Then
+    If respJson.exists("errors") Then
         If respJson("errors")(1)("code") = "invalidCredentials" Then
             MsgBox "Senha inválida."
             Unload Me
@@ -70,16 +71,16 @@ Private Sub SendButton_Click()
     organizationId = respJson("session")("organizationId")
     
     Sheets("Credentials").Cells(13, 2) = "session/" + sessionId + "/workspace/" + workspace
-    Set respJson = V2SessionGateway.getWorkspace(workspace)
+    Set respJson = SessionGateway.getWorkspace(workspace)
     workspaceId = respJson("workspaces")(1)("id")
     
-    Set respJson = V2SessionGateway.getPerson(email)
+    Set respJson = SessionGateway.getPerson(email)
     memberName = respJson("person")("name")
     
-    Call V2SessionGateway.saveSession(workspace, email, envString, CStr(sessionId), memberName, workspaceId)
+    Call SessionGateway.saveSession(workspace, email, envString, CStr(sessionId), memberName, workspaceId)
     Debug.Print "New session data saved"
     
-    Call V2SessionGateway.displayMemberInfo
+    Call SessionGateway.displayMemberInfo
     
     Unload Me
 End Sub

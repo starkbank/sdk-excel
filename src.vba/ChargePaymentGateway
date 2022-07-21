@@ -1,8 +1,32 @@
 
+Public Function getStatus(Status As String)
+    Select Case Status
+        Case "Todos": getStatus = "all"
+        Case "Criados":  getStatus = "created"
+        Case "Cancelados":  getStatus = "canceled"
+        Case "Processando":  getStatus = "processing"
+        Case "Pagos":  getStatus = "success"
+        Case "Falha":  getStatus = "failed"
+    End Select
+    
+End Function
+
+Public Function getStatusInPt(Status As String)
+    Select Case Status
+        Case "created":  getStatusInPt = "criado"
+        Case "canceled":  getStatusInPt = "cancelado"
+        Case "processing":  getStatusInPt = "processando"
+        Case "success":  getStatusInPt = "pago"
+        Case "failed":  getStatusInPt = "falha"
+        Case "unknown":  getStatusInPt = "desconhecido"
+    End Select
+    
+End Function
 
 Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As response
+    
     
     query = ""
     If cursor <> "" Then
@@ -16,95 +40,16 @@ Public Function getChargePayments(cursor As String, optionalParam As Dictionary)
             Else
                 query = query + "&" + key + "=" + CStr(optionalParam(key))
             End If
+            
         Next
     End If
-    
-    Set resp = StarkBankApi.getRequest("/v1/charge-payment", query, New Dictionary)
-    
+
+    Set resp = Rest.getRequest("/v2-faks/boleto-payment", query, New Dictionary)
+     
     If resp.Status >= 300 Then
-        MsgBox resp.error()("message"), vbExclamation, "Erro"
+        MsgBox resp.errors()("errors")(1)("message"), vbExclamation, "Erro"
     End If
+    
     Set getChargePayments = resp.json()
 
-End Function
-
-
-Public Function getChargePaymentsFromSheet() As Collection
-    Dim payments As New Collection
-    
-    For Each obj In SheetParser.dict
-        Dim lineOrBarCode As String
-        Dim taxId As String
-        Dim scheduled As String
-        Dim description As String
-        Dim tags() As String
-        Dim payment As Dictionary
-        
-        If obj("Linha Digitável ou Código de Barras") = "" Then
-            MsgBox "Por favor, não deixe linhas em branco entre as ordens de pagamento de boleto", , "Erro"
-            Unload SendChargePaymentForm
-            End
-        End If
-        lineOrBarCode = Trim(obj("Linha Digitável ou Código de Barras"))
-        taxId = Trim(obj("CPF/CNPJ do Beneficiário"))
-        scheduled = Utils.DateToSendingFormat(Format(obj("Data de Agendamento"), "dd/mm/yyyy"))
-        description = obj("Descrição")
-        tags = Split(obj("Tags"), ",")
-        
-        Set payment = ChargePaymentGateway.payment(lineOrBarCode, taxId, scheduled, description, tags)
-        payments.Add payment
-        
-    Next
-    Set getChargePaymentsFromSheet = payments
-End Function
-
-Public Function payment(lineOrBarCode As String, taxId As String, scheduled As String, description As String, tags() As String) As Dictionary
-    Dim dict As New Dictionary
-    
-    If Len(lineOrBarCode) = 44 Then
-        dict.Add "barCode", lineOrBarCode
-    Else
-        dict.Add "line", lineOrBarCode
-    End If
-    dict.Add "taxId", taxId
-    dict.Add "scheduled", scheduled
-    dict.Add "description", description
-    dict.Add "tags", tags
-    
-    Set payment = dict
-    
-End Function
-
-Public Function createPayments(payload As String, signature As String)
-    Dim resp As response
-    Dim headers As New Dictionary
-    
-    '--------------- Include signature in headers -----------------
-    headers.Add "Digital-Signature", signature
-    
-    '--------------- Send request ---------------------------------
-    Set resp = StarkBankApi.postRequest("/v1/charge-payment", payload, headers)
-    
-    If resp.Status = 200 Then
-        createPayments = resp.json()("message")
-        MsgBox resp.json()("message"), , "Sucesso"
-    
-    ElseIf resp.error().Exists("errors") Then
-        Dim errors As Collection: Set errors = resp.error()("errors")
-        Dim error As Dictionary
-        Dim errorList As String
-        Dim errorDescription As String
-        
-        For Each error In errors
-            errorDescription = Utils.correctErrorLine(error("message"), TableFormat.HeaderRow() + 1)
-            errorList = errorList & errorDescription & Chr(10)
-        Next
-        
-        Dim messageBox As String
-        messageBox = resp.error()("message") & Chr(10) & Chr(10) & errorList
-        MsgBox messageBox, , "Erro"
-    Else
-        MsgBox resp.error()("message"), , "Erro"
-    End If
-    
 End Function

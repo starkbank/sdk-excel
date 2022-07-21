@@ -100,7 +100,7 @@ Private Sub SearchButton_Click()
     End If
     
     '--------------- If status and dates have been defined ------------------
-    Dim Status As String: Status = V2TransferGateway.getStatus(statusString)
+    Dim Status As String: Status = TransferGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
@@ -115,8 +115,8 @@ Private Sub SearchButton_Click()
     
     Do
         logRow = row
-        Set respJson = V2getTransfers(cursor, optionalParam)
-        If respJson.Exists("errors") Then
+        Set respJson = getTransfers(cursor, optionalParam)
+        If respJson.exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -137,7 +137,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 3).Value = Transfer("amount") / 100
             
             Dim transferStatus As String: transferStatus = Transfer("status")
-            ActiveSheet.Cells(row, 4).Value = V2TransferGateway.getStatusInPt(transferStatus)
+            ActiveSheet.Cells(row, 4).Value = TransferGateway.getStatusInPt(transferStatus)
             ActiveSheet.Cells(row, 5).Value = Transfer("name")
             ActiveSheet.Cells(row, 6).Value = Transfer("taxId")
             ActiveSheet.Cells(row, 7).Value = Transfer("bankCode")
@@ -168,8 +168,8 @@ Private Sub SearchButton_Click()
                 sep = ","
             Next
             logsParam.Add "transferIds", keys
-            Set respJson = V2TransferGateway.getTransferLogs("", logsParam)
-            If respJson.Exists("errors") Then
+            Set respJson = TransferGateway.getTransferLogs("", logsParam)
+            If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de transferências com falha!"
                 Exit Sub
             End If

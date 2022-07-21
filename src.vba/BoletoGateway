@@ -1,3 +1,4 @@
+
 Public Function createBoletos(boletos As Collection)
     Dim resp As response
     Dim payload As String
@@ -7,12 +8,13 @@ Public Function createBoletos(boletos As Collection)
     dict.Add "boletos", boletos
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set createBoletos = V2Rest.postRequest("/v2-faks/boleto", payload, New Dictionary)
+    Set createBoletos = Rest.postRequest("/v2-faks/boleto", payload, New Dictionary)
     
 End Function
 
 Public Function getOrders(initRow As Long, midRow As Long) As Collection
     Dim boletos As New Collection
+    
     
     For Each obj In SheetParser.longDict(initRow, midRow)
         Dim name As String
@@ -38,6 +40,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
             MsgBox "Por favor, não deixe linhas em branco entre as ordens de cobrança", , "Erro"
             End
         End If
+        
         name = obj("Nome")
         taxId = obj("CPF/CNPJ")
         streetLine1 = obj("Logradouro")
@@ -82,10 +85,11 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
             description3.Add "amount", getAmountLong((obj("Valor 3")))
         End If
         
-        Set boleto = V2BoletoGateway.boleto(name, taxId, streetLine1, streetLine2, district, city, stateCode, zipCode, amount, due, fine, interest, overdueLimit, description1, description2, description3)
-  
+        Set boleto = BoletoGateway.boleto(name, taxId, streetLine1, streetLine2, district, city, stateCode, zipCode, amount, due, fine, interest, overdueLimit, description1, description2, description3)
+
         boletos.Add boleto
     Next
+    
     Set getOrders = boletos
     
 End Function
@@ -98,9 +102,11 @@ Public Function boleto(name As String, taxId As String, streetLine1 As String, s
     If description1.Count > 0 Then
         descriptions.Add description1
     End If
+    
     If description2.Count > 0 Then
         descriptions.Add description2
     End If
+    
     If description3.Count > 0 Then
         descriptions.Add description3
     End If
@@ -121,10 +127,12 @@ Public Function boleto(name As String, taxId As String, streetLine1 As String, s
     dict.Add "descriptions", descriptions
     
     Set boleto = dict
+    
 End Function
 
 Public Sub clearBoletoEmission()
     Sheets("Emissão de Boletos").Range("A10:Z" & Rows.Count).ClearContents
+    
 End Sub
 
 Public Function getBoletoLogs(cursor As String, optionalParam As Dictionary)
@@ -144,10 +152,11 @@ Public Function getBoletoLogs(cursor As String, optionalParam As Dictionary)
             Else
                 query = query + "&" + key + "=" + CStr(optionalParam(key))
             End If
+            
         Next
     End If
 
-    Set resp = V2Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
+    Set resp = Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
     End If
@@ -168,12 +177,13 @@ Public Function getEventInPt(Status As String)
         Case "failed":  getEventInPt = "falha"
         Case "unknown":  getEventInPt = "desconhecido"
         Case Else:  getEventInPt = Status
-        
     End Select
+    
 End Function
 
 Public Sub clearBoletoHistory()
     Sheets("Histórico de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
+    
 End Sub
 
 Public Function getBoletos(cursor As String, optionalParam As Dictionary)
@@ -196,7 +206,7 @@ Public Function getBoletos(cursor As String, optionalParam As Dictionary)
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2-faks/boleto", query, New Dictionary)
+    Set resp = Rest.getRequest("/v2-faks/boleto", query, New Dictionary)
     
     If resp.Status >= 300 Then
         MsgBox resp.errors()("errors")(1)("message"), , "Erro"
@@ -248,6 +258,7 @@ Public Function getOccurrenceId(statusCode As String)
         Case Else
             getOccurrenceId = "99"
     End Select
+    
 End Function
 
 Public Function getStatusFromId(id As String)
@@ -259,6 +270,7 @@ Public Function getStatusFromId(id As String)
         Case "09":  getStatusFromId = "canceled"
         Case Else:  getStatusFromId = "unknown"
     End Select
+    
 End Function
 
 Public Function getEventLog(boletoId As String, logType As String, optionalParam As Dictionary)
@@ -281,7 +293,7 @@ Public Function getEventLog(boletoId As String, logType As String, optionalParam
         Next
     End If
     
-    Set resp = V2Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
+    Set resp = Rest.getRequest("/v2-faks/boleto/log", query, New Dictionary)
     If resp.Status >= 300 Then
         MsgBox resp.errors()(1)("message"), , "Erro"
     End If
@@ -292,4 +304,33 @@ End Function
 
 Public Sub clearBoletoSearch()
     Sheets("Consulta de Boletos Emitidos").Range("A10:Z" & Rows.Count).ClearContents
+    
 End Sub
+
+Public Function getCustomers(cursor As String, optionalParam As Dictionary)
+    Dim query As String
+    Dim resp As response
+    
+    query = ""
+    If cursor <> "" Then
+        query = "?cursor=" + cursor
+    End If
+    
+    If optionalParam.Count > 0 Then
+        For Each key In optionalParam
+            If query = "" Then
+                query = "?" + key + "=" + CStr(optionalParam(key))
+            Else
+                query = query + "&" + key + "=" + CStr(optionalParam(key))
+            End If
+        Next
+    End If
+    
+    Set resp = Rest.getRequest("/v2-faks/boleto/customer", query, New Dictionary)
+    
+    If resp.Status >= 300 Then
+        MsgBox resp.errors()("errors")(1)("message"), , "Erro"
+    End If
+    Set getCustomers = resp.json()
+
+End Function

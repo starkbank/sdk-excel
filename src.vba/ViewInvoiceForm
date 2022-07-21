@@ -85,7 +85,7 @@ Private Sub SearchButton_Click()
     Call FreezeHeader
     
     'Optional parameters
-    Dim Status As String: Status = v2InvoiceGateway.getStatus(statusString)
+    Dim Status As String: Status = InvoiceGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
@@ -101,7 +101,7 @@ Private Sub SearchButton_Click()
     Do
         logRow = row
         Set respJson = getInvoices(cursor, optionalParam)
-        If respJson.Exists("errors") Then
+        If respJson.exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -132,7 +132,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 2).Value = invoice("name")
             ActiveSheet.Cells(row, 3).Value = invoice("taxId")
-            ActiveSheet.Cells(row, 4).Value = v2InvoiceGateway.getStatusInPt(invoiceStatus)
+            ActiveSheet.Cells(row, 4).Value = InvoiceGateway.getStatusInPt(invoiceStatus)
             ActiveSheet.Cells(row, 5).Value = amount
             ActiveSheet.Cells(row, 6).Value = nominalAmount
             ActiveSheet.Cells(row, 7).Value = discountAmount
