@@ -18,17 +18,16 @@ Public Function defaultHeaders(payload As String)
     Dim accessTime As Long
     Dim message As String
     Dim currentVersion As String
-    Dim ecdsa As StarkBankEcdsa.Gateway
-    Dim signature As String:
+    Dim signature As String
+    Dim sessionPrivateKeySecret As String
     
 
     accessTime = toUnix(Now)
     message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Set ecdsa = New StarkBankEcdsa.Gateway
-    sessionPrivateKey = SessionGateway.getSessionPrivateKeyContent()
+    sessionPrivateKeySecret = SessionGateway.getSessionPrivateKeyContent()
     
-    signature = ecdsa.sign(message, sessionPrivateKey)
+    signature = StarkBankEcdsa.sign(message, sessionPrivateKeySecret)
     
     result.Add "Content-Type", "Application/json"
     result.Add "Accept-Language", "pt-BR"
@@ -47,17 +46,15 @@ Public Function pdfHeaders(payload As String)
     Dim accessTime As Long
     Dim message As String
     Dim currentVersion As String
-    Dim ecdsa As StarkBankEcdsa.Gateway
     Dim signature As String
     
     
     accessTime = toUnix(Now)
     message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Set ecdsa = New StarkBankEcdsa.Gateway
-    sessionPrivateKey = SessionGateway.getSessionPrivateKeyContent()
+    sessionPrivateKeySecret = SessionGateway.getSessionPrivateKeyContent()
     
-    signature = ecdsa.sign(message, sessionPrivateKey)
+    signature = StarkBankEcdsa.sign(message, sessionPrivateKeySecret)
     
     result.Add "Accept-Language", "pt-BR"
     result.Add "Access-Time", accessTime

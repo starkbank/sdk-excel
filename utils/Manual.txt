@@ -1,0 +1,18 @@
+Starkbank Utils Executable (C#) Manual
+
+Location: (current_directory)\utils\Starkbank-Utils.exe  **HIDDEN**
+
+
+---------------- FUNCTIONS ---------------- 
+
+None -> ping -> (Pong! if internet else Empty String)
+
+None -> generatePrivateKeySecret -> Random privateKeySecret
+
+privateKeySecret -> getPublicKeyFromSecret -> PublicKey PEM
+
+secretString -> getSecretFromString -> privateKeySecret
+
+messageToSign, privateKeySecret -> sign -> Base64 Signature
+
+-------------------------------------------

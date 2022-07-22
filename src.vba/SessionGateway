@@ -137,13 +137,13 @@ Public Function getAccessId() As String
 End Function
 
 Public Sub RenewSessionKeys()
-    Dim ecdsa As StarkBankEcdsa.Gateway
+    Dim sessionPrivateKeySecret As String
+    Dim sessionPublicKey As String
     
     
-    Set ecdsa = New StarkBankEcdsa.Gateway
-    sessionPrivateKey = ecdsa.getPrivateKey()
-    sessionPublicKey = ecdsa.getPublicKey()
-    Sheets("Credentials").Cells(11, 2) = sessionPrivateKey
+    sessionPrivateKeySecret = StarkBankEcdsa.generatePrivateKeySecret
+    sessionPublicKey = StarkBankEcdsa.getPublicKeyFromSecret(sessionPrivateKeySecret)
+    Sheets("Credentials").Cells(11, 2) = sessionPrivateKeySecret
     Sheets("Credentials").Cells(12, 2) = sessionPublicKey
     
 End Sub
@@ -169,8 +169,7 @@ Public Function createSession(email As String, password As String, workspace As 
     Dim sessionPublicKey As String
     Dim secret As String
     Dim uuid As String: uuid = "30cfd70f-a42b-49de-856d-b5cb93926a93"
-    Dim ecdsa As StarkBankEcdsa.Gateway
-    Dim memberPrivateKey As String
+    Dim memberPrivateKeySecret As String
     Dim memberPublicKey As String
     Dim resp As response
     Dim dict As Dictionary
@@ -181,12 +180,11 @@ Public Function createSession(email As String, password As String, workspace As 
     RenewSessionKeys
     sessionPublicKey = SessionGateway.getSessionPublicKeyContent()
 
-    Set ecdsa = New StarkBankEcdsa.Gateway
     secret = uuid + email + password
-    memberPrivateKey = ecdsa.getPrivateKeyFromSecret(secret)
-    memberPublicKey = ecdsa.getPublicKey()
+    memberPrivateKeySecret = StarkBankEcdsa.getSecretFromString(secret)
+    memberPublicKey = StarkBankEcdsa.getPublicKeyFromSecret(memberPrivateKeySecret)
 
-    Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+    Set resp = postSession(memberPrivateKeySecret, sessionPublicKey, email)
     
     If Not resp.Status = 200 Then
         Dim errors As Collection: Set errors = resp.errors()("errors")
@@ -195,7 +193,7 @@ Public Function createSession(email As String, password As String, workspace As 
             accessToken = dict("success")("accessToken")
             
             Set resp = postPublicKeyTransition(memberPublicKey, accessToken)
-            Set resp = postSession(memberPrivateKey, sessionPublicKey, email)
+            Set resp = postSession(memberPrivateKeySecret, sessionPublicKey, email)
         End If
     End If
     
@@ -203,7 +201,7 @@ Public Function createSession(email As String, password As String, workspace As 
     
 End Function
 
-Public Function postSession(memberPrivateKey As String, sessionPublicKey As String, email As String)
+Public Function postSession(memberPrivateKeySecret As String, sessionPublicKey As String, email As String)
     Dim payload As String
     Dim dict As New Dictionary
     Dim resp As response
@@ -217,7 +215,7 @@ Public Function postSession(memberPrivateKey As String, sessionPublicKey As Stri
 
     payload = JsonConverter.ConvertToJson(dict)
     
-    Set headers = sessionHeaders(payload, memberPrivateKey, email)
+    Set headers = sessionHeaders(payload, memberPrivateKeySecret, email)
     Set postSession = request.fetch(url, "POST", headers, payload)
     
 End Function
@@ -269,21 +267,20 @@ Public Function getAccesToken(email As String, password As String, workspace As 
     
 End Function
 
-Public Function sessionHeaders(payload As String, memberPrivateKey As String, email As String)
+Public Function sessionHeaders(payload As String, memberPrivateKeySecret As String, email As String)
     Dim result As Dictionary
     Set result = New Dictionary
     Dim accessTime As Long
     Dim signature As String
-    Dim ecdsa As StarkBankEcdsa.Gateway
     Dim currentVersion As String
+    Dim message As String
     Dim accessId As String: accessId = "person/" + email
     
     
     accessTime = toUnix(Now)
     message = accessId + ":" + CStr(accessTime) + ":" + payload
     
-    Set ecdsa = New StarkBankEcdsa.Gateway
-    signature = ecdsa.sign(message, memberPrivateKey)
+    signature = StarkBankEcdsa.sign(message, memberPrivateKeySecret)
 
     result.Add "Content-Type", "Application/json"
     result.Add "Accept-Language", "pt-BR"

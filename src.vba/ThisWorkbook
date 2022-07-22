@@ -1,5 +1,4 @@
 Public Sub Workbook_Open()
-    DllInstaller.installEcdsa
     UpdateRoutine
     OpensslRoutine
 End Sub

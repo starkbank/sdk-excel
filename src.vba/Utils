@@ -442,7 +442,7 @@ Public Function ShellRun(sCmd As String) As String
     'run command
     Dim oExec As Object
     Dim oOutput As Object
-    Set oExec = oShell.Exec(sCmd)
+    Set oExec = oShell.exec(sCmd)
     Set oOutput = oExec.StdOut
 
     'handle the results as they are written to and read from the StdOut object
