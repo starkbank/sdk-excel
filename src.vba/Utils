@@ -462,11 +462,6 @@ Public Function getTempDir() As String
     
 End Function
 
-Public Function getOpensslDir() As String
-    getOpensslDir = getGitDir() + "\..\usr\bin\openssl.exe"
-    
-End Function
-
 Public Function getGitDir()
     Dim TextStrng As String
     Dim result() As String

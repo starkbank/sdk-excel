@@ -1,6 +1,6 @@
 
 Public Sub signIn()
-    If OpensslRoutine Then
+    If EcdsaRoutine Then
         SignInForm.Show
     End If
 

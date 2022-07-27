@@ -6,7 +6,7 @@ Public Function generatePrivateKeySecret()
     Dim workbookPath As String: workbookPath = ActiveWorkbook.path
 
 
-    file = workbookPath + "\utils\StarkBank-Utils.exe"
+    file = workbookPath + "\SBEmbedded-Test\StarkBank-Utils.exe" ' TODO fix the file name after done
     result = ShellRun("""" + file + """ generatePrivateKeySecret """ + """")
     
     generatePrivateKeySecret = result
@@ -19,7 +19,7 @@ Public Function getPublicKeyFromSecret(secret As String)
     Dim workbookPath As String: workbookPath = ActiveWorkbook.path
 
 
-    file = workbookPath + "\utils\StarkBank-Utils.exe"
+    file = workbookPath + "\SBEmbedded-Test\StarkBank-Utils.exe" ' TODO fix the file name after done
     result = ShellRun("""" + file + """ getPublicKeyFromSecret """ + secret + """")
     
     getPublicKeyFromSecret = result
@@ -32,7 +32,7 @@ Public Function getSecretFromString(secretString As String)
     Dim workbookPath As String: workbookPath = ActiveWorkbook.path
 
 
-    file = workbookPath + "\utils\StarkBank-Utils.exe"
+    file = workbookPath + "\SBEmbedded-Test\StarkBank-Utils.exe" ' TODO fix the file name after done
     result = ShellRun("""" + file + """ getSecretFromString """ + secretString + """")
     x = """" + file + """ getSecretFromString """ + secretString + """"
     
@@ -47,18 +47,8 @@ Public Function sign(message As String, secret As String)
     Dim workbookPath As String: workbookPath = ActiveWorkbook.path
 
     treatedMessage = Replace(message, """", "\""")
-    file = workbookPath + "\utils\StarkBank-Utils.exe"
+    file = workbookPath + "\SBEmbedded-Test\StarkBank-Utils.exe" ' TODO fix the file name after done
     result = ShellRun("""" + file + """ sign  """ + treatedMessage + """" + " " + """" + secret + """")
-    
-    
-    'Dim str As String: str = """" + file + """ sign  """ + message + """" + " " + """" + secret + """"
-    'Dim halfLength As Integer
-    'halfLength = Len(str) \ 2
-    'Dim firstHalf As String
-    'firstHalf = Left(str, halfLength)
-    'Dim secondHalf As String
-    'secondHalf = Right(str, halfLength)
-    
     sign = result
     
 End Function
