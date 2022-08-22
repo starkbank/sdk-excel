@@ -181,6 +181,9 @@ Private Sub SearchButton_Click()
         End If
 
         Set logs = respJson("logs")
+        If logs.Count = 0 Then
+            Exit Do
+        End If
 
         For Each chargeLog In logs
             Set charge = chargeLog("boleto")
