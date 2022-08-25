@@ -245,13 +245,6 @@ Private Sub SearchButton_Click()
         Next
         logsParam.Add "boletoIds", keys
         
-        If after <> "--" Then
-            logsParam.Add "after", after
-        End If
-        If before <> "--" Then
-            logsParam.Add "before", before
-        End If
-        
         Do
             logsParam("types") = "registered,"
             Set respJson = V2BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
