@@ -48,7 +48,7 @@ End Function
 
 Public Function getInvoices(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -57,11 +57,11 @@ Public Function getInvoices(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
         Next
     End If
@@ -92,7 +92,7 @@ End Function
 
 Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -101,11 +101,11 @@ Public Function getInvoiceLogs(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
         Next
     End If
@@ -122,7 +122,7 @@ End Function
 
 Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -131,11 +131,11 @@ Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
         Next
     End If
@@ -333,7 +333,7 @@ Public Function customerOrder(name As String, taxId As String, email As String, 
 End Function
 
 Public Function createInvoices(invoices As Collection)
-    Dim resp As response
+    Dim resp As Response
     Dim payload As String
     Dim dict As New Dictionary
     
@@ -348,7 +348,7 @@ End Function
 
 
 Public Function updateInvoices(invoices As Collection)
-    Dim resp As response
+    Dim resp As Response
     Dim payload As String
     Dim dict As New Dictionary
     
@@ -363,7 +363,7 @@ End Function
 
 Public Function getEventLog(invoiceId As String, logEvent As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     Dim elem As Variant
     
     
@@ -373,11 +373,11 @@ Public Function getEventLog(invoiceId As String, logEvent As String, optionalPar
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
             
         Next

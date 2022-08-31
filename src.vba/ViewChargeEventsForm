@@ -128,7 +128,10 @@ Private Sub SearchButton_Click()
             End If
     
             Set logs = respJson("logs")
-    
+            If logs.Count = 0 Then
+                Exit Do
+            End If
+            
             For Each chargeLog In logs
                 
                 Set charge = chargeLog("boleto")
@@ -229,25 +232,18 @@ Private Sub SearchButton_Click()
         Next
 
         Dim logsParam As Dictionary
-        Dim keys As String
+        Dim Keys As String
         Dim sep As String
         Dim registeredCursor As String: registeredCursor = ""
-        keys = ""
+        Keys = ""
         sep = ""
         Set logsParam = New Dictionary
         
-        For Each chargeId In logsPaidByCharge.keys()
-            keys = keys + sep + chargeId
+        For Each chargeId In logsPaidByCharge.Keys()
+            Keys = Keys + sep + chargeId
             sep = ","
         Next
-        logsParam.Add "boletoIds", keys
-        
-        If after <> "--" Then
-            logsParam.Add "after", after
-        End If
-        If before <> "--" Then
-            logsParam.Add "before", before
-        End If
+        logsParam.Add "boletoIds", Keys
         
         Do
             logsParam("types") = "registered,"

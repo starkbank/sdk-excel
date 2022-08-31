@@ -34,7 +34,7 @@ End Sub
 
 Private Sub ConfirmButton_Click()
     'On Error Resume Next
-    Dim response As Dictionary
+    Dim Response As Dictionary
     Dim teamInfo As String: teamInfo = TeamBox.Value
     Dim teamId As String
 

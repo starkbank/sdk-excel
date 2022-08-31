@@ -1,6 +1,6 @@
 
 Public Function fetch(url As String, method As String, headers As Dictionary, payload As String)
-    Dim resp As response
+    Dim resp As Response
     
     
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
@@ -9,11 +9,11 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
         DebugPrint "url", url
         DebugPrint "request", payload
     End If
-    For Each key In headers.keys()
-        objHTTP.setRequestHeader key, headers(key)
+    For Each Key In headers.Keys()
+        objHTTP.setRequestHeader Key, headers(Key)
     Next
     
-    Set resp = New response
+    Set resp = New Response
     On Error GoTo eh:
     objHTTP.send payload
     
@@ -45,8 +45,8 @@ Public Function download(url As String, path As String, headers As Dictionary, f
     
     objHTTP.Open "GET", url, False
     
-    For Each key In headers.keys()
-        objHTTP.setRequestHeader key, headers(key)
+    For Each Key In headers.Keys()
+        objHTTP.setRequestHeader Key, headers(Key)
     Next
     
     On Error GoTo eh:

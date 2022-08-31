@@ -38,7 +38,7 @@ End Function
 
 Public Function getTransfers(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -47,11 +47,11 @@ Public Function getTransfers(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
         Next
     End If
@@ -68,7 +68,7 @@ End Function
 
 Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -77,11 +77,11 @@ Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
         Next
     End If

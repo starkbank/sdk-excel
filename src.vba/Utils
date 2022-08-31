@@ -95,8 +95,8 @@ Public Function formatDateInUserForm(dateString As String)
 End Function
 
 Public Sub PrintKeys(dict As Dictionary)
-    For Each key In dict.keys()
-        Debug.Print "key", key
+    For Each Key In dict.Keys()
+        Debug.Print "key", Key
     Next
     
 End Sub
@@ -341,11 +341,11 @@ End Function
 Public Function correctTransferTags(tags As Collection)
     Dim pathBool As Boolean
     Dim allMatches As Object
-    Dim index As Integer
+    Dim Index As Integer
     Dim tag As Variant
     
     
-    index = 0
+    Index = 0
     
     With CreateObject("VBScript.RegExp")
         .Pattern = "team/\d+/list/\d+"
@@ -353,15 +353,15 @@ Public Function correctTransferTags(tags As Collection)
         .IgnoreCase = True
         
         For Each tag In tags
-            index = index + 1
+            Index = Index + 1
             pathBool = False
             Set allMatches = .Execute(tag)
             If allMatches.Count <> 0 Then
                 pathBool = True
             End If
             If pathBool = True Then
-                tags.Remove index
-                index = index - 1
+                tags.Remove Index
+                Index = Index - 1
             End If
         Next
     End With
@@ -422,12 +422,12 @@ End Function
 
 Public Function ReplaceFilenameChars(ByVal fileName As String)
     Const SpecialCharacters As String = "\,/,:,*,?,"",<,>,|"
-    Dim char As Variant
+    Dim Char As Variant
     
     
     ReplaceFilenameChars = fileName
-    For Each char In Split(SpecialCharacters, ",")
-        ReplaceFilenameChars = Replace(ReplaceFilenameChars, char, "_")
+    For Each Char In Split(SpecialCharacters, ",")
+        ReplaceFilenameChars = Replace(ReplaceFilenameChars, Char, "_")
     Next
     
 End Function
@@ -493,3 +493,14 @@ Public Function areCredentialsStored()
     areCredentialsStored = Not IsEmpty(Sheets("Credentials").Cells(11, 2))
     
 End Function
+
+Function encodeUri(strText)
+    Static objHtmlfile As Object
+    If objHtmlfile Is Nothing Then
+        Set objHtmlfile = CreateObject("htmlfile")
+        objHtmlfile.parentWindow.execScript "function encode(s) {return encodeURI(s)}", "jscript"
+    End If
+    encodeUri = objHtmlfile.parentWindow.encode(strText)
+End Function
+
+

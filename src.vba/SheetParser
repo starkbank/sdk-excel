@@ -11,16 +11,16 @@ End Function
 
 Public Function dict()
     Dim result As New Collection
-    Dim keys As Collection
+    Dim Keys As Collection
     
     
-    Set keys = headers()
+    Set Keys = headers()
     
     For row = 10 To ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+            obj(Keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
         result.Add obj
     Next
@@ -30,16 +30,16 @@ End Function
 
 Public Function longDict(initRow, lastRow)
     Dim result As New Collection
-    Dim keys As Collection
+    Dim Keys As Collection
     
     
-    Set keys = headers()
+    Set Keys = headers()
     
     For row = initRow To lastRow
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+            obj(Keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
         result.Add obj
     Next

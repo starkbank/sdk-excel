@@ -157,17 +157,17 @@ Private Sub SearchButton_Click()
         If DetailedCheckBox.Value = True Then
             
             Dim logsParam As Dictionary
-            Dim keys As String
+            Dim Keys As String
             Dim sep As String
             Set logsParam = New Dictionary
             logsParam.Add "types", "failed"
-            keys = ""
+            Keys = ""
             sep = ""
-            For Each transferId In logsFailedByTransfer.keys()
-                keys = keys + sep + transferId
+            For Each transferId In logsFailedByTransfer.Keys()
+                Keys = Keys + sep + transferId
                 sep = ","
             Next
-            logsParam.Add "transferIds", keys
+            logsParam.Add "transferIds", Keys
             Set respJson = TransferGateway.getTransferLogs("", logsParam)
             If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de transferências com falha!"

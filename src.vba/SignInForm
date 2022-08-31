@@ -48,7 +48,6 @@ Private Sub SendButton_Click()
     Dim workspaceId As String
     
     
-    
     Call SessionGateway.saveSession(workspace, email, envString, "", "", "")
     Debug.Print "Session cleared"
     

@@ -164,17 +164,20 @@ Private Sub SearchButton_Click()
         
         If DetailedCheckBox.Value = True Then
             Dim logsParam As Dictionary
-            Dim keys As String
+            Dim Keys As String
             Dim sep As String
+            
             Set logsParam = New Dictionary
             logsParam.Add "types", "paid"
-            keys = ""
+            Keys = ""
             sep = ""
-            For Each chargeId In logsPaidByCharge.keys()
-                keys = keys + sep + chargeId
+            
+            For Each chargeId In logsPaidByCharge.Keys()
+                Keys = Keys + sep + chargeId
                 sep = ","
             Next
-            logsParam.Add "boletoIds", keys
+            
+            logsParam.Add "boletoIds", Keys
             Set respJson = BoletoGateway.getBoletoLogs("", logsParam)
             If respJson.exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"

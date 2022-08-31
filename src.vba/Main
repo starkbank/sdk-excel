@@ -202,7 +202,7 @@ End Sub
 
 Public Sub createBoletos()
     Dim boletos As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
@@ -287,7 +287,7 @@ End Sub
 
 Public Sub createInvoices()
     Dim invoices As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
@@ -361,7 +361,7 @@ End Sub
 
 Public Sub updateInvoices()
     Dim invoices As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
@@ -437,7 +437,7 @@ End Sub
 
 Public Sub SearchInvoicesByIds()
     Dim invoiceIds As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim row As Long
     Dim midRow As Long

@@ -1,7 +1,7 @@
 
 Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
     Dim query As String
-    Dim resp As response
+    Dim resp As Response
     
     
     query = ""
@@ -10,11 +10,11 @@ Public Function getCostCenters(cursor As String, optionalParam As Dictionary)
     End If
     
     If optionalParam.Count > 0 Then
-        For Each key In optionalParam
+        For Each Key In optionalParam
             If query = "" Then
-                query = "?" + key + "=" + CStr(optionalParam(key))
+                query = "?" + Key + "=" + CStr(optionalParam(Key))
             Else
-                query = query + "&" + key + "=" + CStr(optionalParam(key))
+                query = query + "&" + Key + "=" + CStr(optionalParam(Key))
             End If
             
         Next

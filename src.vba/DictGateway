@@ -1,7 +1,7 @@
 
 Public Sub ListKeys()
     Dim dictKeys As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim row As Long
     Dim lastRow As Long

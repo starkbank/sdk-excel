@@ -7,8 +7,8 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Function fromPem(str As String)
-    Dim index As Integer: index = InStr(str, "-----BEGIN EC PRIVATE KEY-----")
-    Dim privkeyPem As String: privkeyPem = Mid(str, index, Len(str) - index + 1)
+    Dim Index As Integer: Index = InStr(str, "-----BEGIN EC PRIVATE KEY-----")
+    Dim privkeyPem As String: privkeyPem = Mid(str, Index, Len(str) - Index + 1)
     
     Dim strByte() As Byte: strByte = EllipticCurve_Der.fromPem(privkeyPem)
     
@@ -61,8 +61,8 @@ Public Function fromDer(strByte() As Byte)
     End If
     
     Dim lenPrivKey As Integer: lenPrivKey = (Len(privkeyStr) + 1) / 3
-    If lenPrivKey < c.length() Then
-        For i = 1 To c.length() - lenPrivKey
+    If lenPrivKey < c.Length() Then
+        For i = 1 To c.Length() - lenPrivKey
             privkeyStr = "00 " & privkeyStr
         Next
     End If
