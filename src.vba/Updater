@@ -34,11 +34,11 @@ Public Function EcdsaRoutine()
         Exit Function
     End If
     
-    destinationFileName = ActiveWorkbook.path + "\SBEmbedded-Test" ' TODO fix the file name after done
+    destinationFileName = ActiveWorkbook.path + "\SBEmbedded-Signed" ' TODO fix the file name after done
     
     pathUnzip = Replace(fileFullPath, ".zip", "")
     If Dir(pathUnzip, vbDirectory) = "" Then
-        pathUnzip = filepath + "SBEmbedded-Test" ' try original name
+        pathUnzip = filepath + "SBEmbedded-Signed" ' try original name
         If Dir(pathUnzip + "\", vbDirectory) = "" Then
              MsgBox "Módulo de segurança não encontrado, faça o download novamente."
              Exit Function
@@ -70,7 +70,7 @@ End Function
 
 Public Function isEcdsaAvailable()
     Dim path As String: path = ActiveWorkbook.path
-    ecdsaFileName = "\SBEmbedded-Test" ' TODO fix the file name after done
+    ecdsaFileName = "\SBEmbedded-Signed" ' TODO fix the file name after done
     
     executable = Dir(path + ecdsaFileName + "\Starkbank-Utils.exe") ' TODO fix the file name after done
     dll = Dir(path + ecdsaFileName + "\Starkbank-Utils.dll")
@@ -88,7 +88,7 @@ End Function
 
 Public Function moveFile(sourceFilePath, detinationPath)
     Dim FSO As Object
-    Dim ecdsaFileName As String: ecdsaFileName = "\SBEmbedded-Test" ' TODO fix the file name after done
+    Dim ecdsaFileName As String: ecdsaFileName = "\SBEmbedded-Signed" ' TODO fix the file name after done
     
     
     On Error GoTo eh:
