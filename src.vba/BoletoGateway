@@ -310,6 +310,8 @@ End Sub
 Public Function getCustomers(cursor As String, optionalParam As Dictionary)
     Dim query As String
     Dim resp As Response
+    Dim limit As Integer: limit = Range("I4").Value
+    
     
     query = ""
     If cursor <> "" Then

@@ -195,6 +195,8 @@ Public Function createSession(email As String, password As String, workspace As 
             Set resp = postPublicKeyTransition(memberPublicKey, accessToken)
             Set resp = postSession(memberPrivateKeySecret, sessionPublicKey, email)
         End If
+        
+        
     End If
     
     Set createSession = resp.json()
@@ -214,8 +216,8 @@ Public Function postSession(memberPrivateKeySecret As String, sessionPublicKey A
     dict.Add "publicKey", sessionPublicKey
 
     payload = JsonConverter.ConvertToJson(dict)
-    
     Set headers = sessionHeaders(payload, memberPrivateKeySecret, email)
+    
     Set postSession = request.fetch(url, "POST", headers, payload)
     
 End Function

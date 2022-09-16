@@ -83,7 +83,7 @@ Private Sub SearchButton_Click()
 
     Do
         Set respJson = ChargePaymentGateway.getChargePayments(cursor, optionalParam)
-        If respJson.exists("errors") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If

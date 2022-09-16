@@ -173,7 +173,7 @@ Private Sub SearchButton_Click()
     Do
         logRow = row
         Set respJson = BoletoGateway.getBoletoLogs(cursor, optionalParam)
-        If respJson.exists("errors") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -223,7 +223,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 21).Value = charge("stateCode")
             ActiveSheet.Cells(row, 22).Value = charge("zipCode")
 
-            If chargeStatus = "paid" And Not logsPaidByCharge.exists(id) Then
+            If chargeStatus = "paid" And Not logsPaidByCharge.Exists(id) Then
                 logsPaidByCharge.Add id, chargeLog
                 logsRegisteredByCharge.Add id, New Dictionary
             End If
@@ -248,7 +248,7 @@ Private Sub SearchButton_Click()
         Do
             logsParam("types") = "registered,"
             Set respJson = BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
-            If respJson.exists("errors") Then
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
             End If

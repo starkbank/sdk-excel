@@ -52,11 +52,11 @@ Private Sub SendButton_Click()
     Debug.Print "Session cleared"
     
     Set respJson = SessionGateway.createSession(email, password, workspace)
-    Debug.Print "New session created"
     
-    If respJson.exists("errors") Then
-        If respJson("errors")(1)("code") = "invalidCredentials" Then
-            MsgBox "Senha inválida."
+    If respJson.Exists("errors") Then
+        Dim errorCode As String: errorCode = respJson("errors")(1)("code")
+        If errorCode = "invalidCredentials" Or errorCode = "invalidPerson" Then
+            MsgBox "Credenciais invalidas! Confira o workspace, email e senha informados."
             Unload Me
             Exit Sub
         End If
@@ -65,6 +65,7 @@ Private Sub SendButton_Click()
         Exit Sub
     End If
     
+    Debug.Print "New session created"
     memberName = respJson("session")("userId")
     sessionId = respJson("session")("id")
     organizationId = respJson("session")("organizationId")

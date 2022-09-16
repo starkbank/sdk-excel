@@ -170,7 +170,7 @@ Public Function createOrders(teamId As String)
                 GoTo nextIteration
             End If
             
-            If dict.exists("requests") Then
+            If dict.Exists("requests") Then
                 dict.RemoveAll
             End If
             
@@ -189,7 +189,7 @@ Public Function createOrders(teamId As String)
                     ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 10).Value = externalIds.Item(j)
                 Next j
                 
-            ElseIf resp.errors().exists("errors") Then
+            ElseIf resp.errors().Exists("errors") Then
                 Dim errors As Collection: Set errors = resp.errors()("errors")
                 Dim error As Dictionary
                 Dim errorDescription As String
@@ -332,7 +332,7 @@ Public Function createChargePayments(teamId As String)
                     ActiveSheet.Cells(TableFormat.HeaderRow() + chargePaymentNumbers.Item(j), 10).Value = externalIds.Item(j)
                 Next j
 
-            ElseIf resp.errors().exists("errors") Then
+            ElseIf resp.errors().Exists("errors") Then
                 Dim errors As Collection: Set errors = resp.errors()("errors")
                 Dim error As Dictionary
                 Dim errorDescription As String

@@ -3,10 +3,10 @@
 Public Function generatePrivateKeySecret()
     Dim file As String
     Dim result As String
-    Dim workbookPath As String: workbookPath = ActiveWorkbook.path
+    Dim path As String: path = Environ("StarkBankExcelEcdsa")
 
 
-    file = workbookPath + "\SBEmbedded-Signed\StarkBank-Utils.exe" ' TODO fix the file name after done
+    file = path + "\Starkbank-excel-ecdsa.exe"
     result = ShellRun("""" + file + """ generatePrivateKeySecret """ + """")
     
     generatePrivateKeySecret = result
@@ -16,40 +16,34 @@ End Function
 Public Function getPublicKeyFromSecret(secret As String)
     Dim file As String
     Dim result As String
-    Dim workbookPath As String: workbookPath = ActiveWorkbook.path
+    Dim path As String: path = Environ("StarkBankExcelEcdsa")
 
 
-    file = workbookPath + "\SBEmbedded-Signed\StarkBank-Utils.exe" ' TODO fix the file name after done
-    result = ShellRun("""" + file + """ getPublicKeyFromSecret """ + secret + """")
-    
-    getPublicKeyFromSecret = result
-    
+    file = path + "\Starkbank-excel-ecdsa.exe"
+    getPublicKeyFromSecret = ShellRun("""" + file + """ getPublicKeyFromSecret """ + secret + """")
+
 End Function
 
 Public Function getSecretFromString(secretString As String)
     Dim file As String
     Dim result As String
-    Dim workbookPath As String: workbookPath = ActiveWorkbook.path
+    Dim path As String: path = Environ("StarkBankExcelEcdsa")
 
 
-    file = workbookPath + "\SBEmbedded-Signed\StarkBank-Utils.exe" ' TODO fix the file name after done
-    result = ShellRun("""" + file + """ getSecretFromString """ + secretString + """")
-    x = """" + file + """ getSecretFromString """ + secretString + """"
-    
-    getSecretFromString = result
-    
+    file = path + "\Starkbank-excel-ecdsa.exe"
+    getSecretFromString = ShellRun("""" + file + """ getSecretFromString """ + secretString + """")
+
 End Function
 
 Public Function sign(message As String, secret As String)
     Dim treatedMessage As String
     Dim file As String
     Dim result As String
-    Dim workbookPath As String: workbookPath = ActiveWorkbook.path
+    Dim path As String: path = Environ("StarkBankExcelEcdsa")
 
     treatedMessage = Replace(message, """", "\""")
-    file = workbookPath + "\SBEmbedded-Signed\StarkBank-Utils.exe" ' TODO fix the file name after done
-    result = ShellRun("""" + file + """ sign  """ + treatedMessage + """" + " " + """" + secret + """")
-    sign = result
+    file = path + "\Starkbank-excel-ecdsa.exe"
+    sign = ShellRun("""" + file + """ sign  """ + treatedMessage + """" + " " + """" + secret + """")
     
 End Function
 

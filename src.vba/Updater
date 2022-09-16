@@ -1,112 +1,41 @@
 
 Public Function EcdsaRoutine()
-    Dim fileName As String
-    Dim sheet As Worksheet
-    Dim total As Integer
-    Dim fd As Office.FileDialog
-    Dim programFiles As String: programFiles = Environ("ProgramFiles")
-    
-    
     EcdsaRoutine = False
     
     If isEcdsaAvailable() Then
         EcdsaRoutine = True
-        'Exit Function
+        Exit Function
     End If
     
     ViewEcdsaForm.Show
-    Set fd = Application.FileDialog(msoFileDialogFilePicker)
-
-    fd.AllowMultiSelect = False
-    fd.Title = "Por Favor selecione o arquivo baixado: ""StarkBank Embedded.zip""."
-    fd.Filters.Clear
-    
-    If fd.Show = False Then
-        MsgBox "Por Favor selecione o arquivo baixado: ""StarkBank Embedded.zip""."
-        Exit Function
-    End If
-    fileFullPath = fd.SelectedItems(1)
-    fileName = Dir(fileFullPath)
-    filepath = Replace(fileFullPath, fileName, "")
-    
-    If UnzipFile(fileFullPath, filepath) = False Then
-        MsgBox "Por Favor selecione o arquivo baixado: ""StarkBank Embedded.zip""."
-        Exit Function
-    End If
-    
-    destinationFileName = programFiles + "\SBEmbedded-Signed" ' TODO fix the file name after done
-    
-    pathUnzip = Replace(fileFullPath, ".zip", "")
-    If Dir(pathUnzip, vbDirectory) = "" Then
-        pathUnzip = filepath + "SBEmbedded-Signed" ' try original name
-        If Dir(pathUnzip, vbDirectory) = "" Then
-             MsgBox "Módulo de segurança não encontrado, faça o download novamente."
-             Exit Function
-        End If
-    End If
-    
-    Call moveFile(pathUnzip, destinationFileName)
-    
-    If isEcdsaAvailable() Then
-        MsgBox "Instalação bem sucedida!"
-    End If
-    
-    EcdsaRoutine = True
-    
-End Function
-
-Public Function testeee()
-    EcdsaRoutine
-End Function
-
-Function UnzipFile(zippedFileFullName As Variant, unzipToPath As Variant)
-    Dim ShellApp As Object
-    
-    
-    UnzipFile = False
-    If InStr(zippedFileFullName, ".zip") <> 0 Then
-        Set ShellApp = CreateObject("Shell.Application")
-        ShellApp.Namespace(unzipToPath).CopyHere ShellApp.Namespace(zippedFileFullName).Items
-        UnzipFile = True
-    End If
     
 End Function
 
 Public Function isEcdsaAvailable()
-    Dim path As String: path = ActiveWorkbook.path
-    ecdsaFileName = "\SBEmbedded-Signed" ' TODO fix the file name after done
+    Dim path As String: path = Environ("StarkBankExcelEcdsa")
+    Dim ecdsaFileName As String: ecdsaFileName = "\starkbank-excel-ecdsa"
     
-    executable = Dir(path + ecdsaFileName + "\Starkbank-Utils.exe") ' TODO fix the file name after done
-    dll = Dir(path + ecdsaFileName + "\Starkbank-Utils.dll")
-    depsJson = Dir(path + ecdsaFileName + "\Starkbank-Utils.deps.json")
-    configJson = Dir(path + ecdsaFileName + "\Starkbank-Utils.runtimeconfig.json")
+    If path = "" Then
+        isEcdsaAvailable = False
+        Exit Function
+    End If
     
+    executable = Dir(path + ecdsaFileName + ".exe")
+    dll = Dir(path + ecdsaFileName + ".dll")
+    depsJson = Dir(path + ecdsaFileName + ".deps.json")
+    configJson = Dir(path + ecdsaFileName + ".runtimeconfig.json")
+
     isEcdsaAvailable = True
     If executable = "" Or dll = "" Or depsJson = "" Or configJson = "" Then
         isEcdsaAvailable = False
     End If
-    
+
 End Function
 
-Public Function moveFile(sourceFilePath, detinationPath)
-' Stoped here
-    Dim FSO As Object
-    Dim ecdsaFileName As String: ecdsaFileName = "\SBEmbedded-Signed" ' TODO fix the file name after done
+Public Function UpdateVersionNumber(newVersion As String)
+    Sheets("Credentials").Cells(9, 2) = newVersion
+    Sheets("Principal").Cells(1, 7) = "SDK Stark Bank - " & newVersion
     
-    
-    On Error GoTo eh:
-    Set FSO = CreateObject("Scripting.Filesystemobject")
-    
-    ecdsaFilePath = ActiveWorkbook.path + ecdsaFileName
-    If Dir(ecdsaFilePath + "\", vbDirectory) <> "" Then
-        FSO.DeleteFolder ecdsaFilePath, True
-    End If
-    
-    FSO.MoveFolder Source:=sourceFilePath, Destination:=detinationPath
-    Exit Function
-eh:
-    MsgBox "Faça o download do módulo StarkBank-Utils novamente"
-    Exit Function
 End Function
 
 Public Sub UpdateRoutine()
@@ -146,12 +75,6 @@ Err:
     Exit Sub
     
 End Sub
-
-Public Function UpdateVersionNumber(newVersion As String)
-    Sheets("Credentials").Cells(9, 2) = newVersion
-    Sheets("Principal").Cells(1, 7) = "SDK Stark Bank - " & newVersion
-    
-End Function
 
 Public Function SemVerCompare(currentVersion As String, repoVersion As String)
     Dim allMatches1 As Object

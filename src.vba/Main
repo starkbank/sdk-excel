@@ -23,7 +23,7 @@ Public Sub signOut()
     Application.ScreenUpdating = False
     Set respJson = SessionGateway.deleteSession()
     
-    If respJson.exists("errors") Then
+    If respJson.Exists("errors") Then
         MsgBox respJson("errors")(1)("message")
         Exit Sub
     End If
@@ -260,7 +260,7 @@ Public Sub createBoletos()
             respMessage = resp.json()("message")
             MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
             
-        ElseIf resp.errors().exists("errors") Then
+        ElseIf resp.errors().Exists("errors") Then
             Dim errors As Collection: Set errors = resp.errors()("errors")
             Dim error As Dictionary
             Dim errorList As String
@@ -334,7 +334,7 @@ Public Sub createInvoices()
             respMessage = resp.json()("message")
             MsgBox "Linhas " + CStr(initRow) + " a " + CStr(midRow) + ": " + resp.json()("message"), , "Sucesso"
             
-        ElseIf resp.errors().exists("errors") Then
+        ElseIf resp.errors().Exists("errors") Then
             Dim errors As Collection: Set errors = resp.errors()("errors")
             Dim error As Dictionary
             Dim errorList As String
@@ -410,7 +410,7 @@ Public Sub updateInvoices()
                 line = line + 1
             Loop Until (line > midRow)
             
-        ElseIf resp.errors().exists("errors") Then
+        ElseIf resp.errors().Exists("errors") Then
             Dim errors As Collection: Set errors = resp.errors()("errors")
             Dim error As Dictionary
             Dim errorList As String
@@ -472,7 +472,7 @@ Public Sub SearchInvoicesByIds()
         
         row = initRow
         For Each queryId In invoiceIds
-            If invoiceMap.exists(queryId) Then
+            If invoiceMap.Exists(queryId) Then
                 Dim id As String: id = invoice("id")
                 Dim amount As Double: amount = invoice("amount") / 100
                 Dim nominalAmount As Double: nominalAmount = invoice("nominalAmount") / 100

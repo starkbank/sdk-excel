@@ -107,7 +107,7 @@ Private Sub SearchButton_Click()
         logRow = row
         Set respJson = BoletoGateway.getBoletos(cursor, optionalParam)
 
-        If respJson.exists("errors") Then
+        If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
         End If
@@ -179,7 +179,7 @@ Private Sub SearchButton_Click()
             
             logsParam.Add "boletoIds", Keys
             Set respJson = BoletoGateway.getBoletoLogs("", logsParam)
-            If respJson.exists("errors") Then
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos pagos!"
                 Exit Sub
             End If
@@ -192,7 +192,7 @@ Private Sub SearchButton_Click()
             
             logsParam("types") = "registered"
             Set respJson = BoletoGateway.getBoletoLogs("", logsParam)
-            If respJson.exists("errors") Then
+            If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos criados!"
                 Exit Sub
             End If

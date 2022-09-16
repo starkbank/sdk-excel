@@ -9,7 +9,7 @@ Private Sub UserForm_Initialize()
     Do
         Set respJson = CostCenterGateway.getCostCenters(cursor, New Dictionary)
         
-        If respJson.exists("errors") Then
+        If respJson.Exists("errors") Then
             Exit Sub
         End If
         

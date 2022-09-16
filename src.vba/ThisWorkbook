@@ -1,4 +1,4 @@
 Public Sub Workbook_Open()
-    UpdateRoutine
+    'UpdateRoutine
     EcdsaRoutine
 End Sub
