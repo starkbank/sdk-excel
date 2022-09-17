@@ -1,17 +1,19 @@
+
 Public Sub ListKeys()
-    
-    If Not isSignedin Then
-        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
-        Exit Sub
-    End If
-    
     Dim dictKeys As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim row As Long
     Dim lastRow As Long
     Dim dictKeyCount As Long
     Dim respMessage As String
+    Dim errorMessage As String
+    
+    
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
     
     Call Utils.applyStandardLayout("D")
     Call Utils.applyLockedLayout("E", "J")
@@ -44,17 +46,20 @@ Public Sub ListKeys()
         If MsgBox("Por restrição do Banco Central, só é possível consultar um máximo de 50 Chaves Pix sem finalizar o pagamento a cada 150 minutos. Apenas as primeiras 50 Chaves serão consultadas. Continuar?", vbYesNo) = vbNo Then
             Exit Sub
         End If
+        
     End If
     
     lastRow = IIf(dictKeyCount > 50, 50, dictKeyCount) + initRow - 1
     
-    Dim errorMessage As String: errorMessage = ""
+    errorMessage = ""
     For Each obj In SheetParser.longDict(initRow, lastRow)
         Dim keyId As String
         Dim dictKey As Variant
+        
+        
         keyId = obj("Chave Pix")
         If ActiveSheet.Cells(row, 11).Value <> keyId Then
-            Set resp = V2DictGateway.getDictKey(keyId)
+            Set resp = DictGateway.getDictKey(keyId)
             If resp.Status >= 300 Then
                 errorMessage = errorMessage & vbNewLine & "Linha " & row & ": " & resp.errors()("errors")(1)("message")
                 ActiveSheet.Cells(row, 5).Value = ""
@@ -72,27 +77,34 @@ Public Sub ListKeys()
                 ActiveSheet.Cells(row, 9).Value = dictKey("accountNumber")
                 ActiveSheet.Cells(row, 10).Value = dictKey("accountType")
             End If
+            
         End If
-        ActiveSheet.Cells(row, 11).Value = keyId
         
+        ActiveSheet.Cells(row, 11).Value = keyId
         row = row + 1
     Next
+    
     If errorMessage <> "" Then
         MsgBox errorMessage
     End If
     
     Call moveToTransfer
+    
 End Sub
 
 Public Sub moveToTransfer()
     Dim transfers As Collection: Set transfers = SheetParser.dict()
-    Dim Transfer As Variant
     Dim validTransfers As Collection: Set validTransfers = New Collection
+    Dim Transfer As Variant
+    
+    
     For Each Transfer In transfers
         If Transfer("Nome") <> "" And Transfer("Tipo de Conta") <> "" Then
             validTransfers.Add Transfer
         End If
+        
     Next
+    
     If validTransfers.Count = 0 Then
         MsgBox "Não há nenhuma Chave Pix válida para mover para a aba de Transferências com Aprovação", vbExclamation
         Exit Sub
@@ -120,12 +132,15 @@ Public Sub moveToTransfer()
     Next
     
     MsgBox "Transferências movidas para a aba de Transferências com Aprovação"
+    
 End Sub
 
 Public Function getDictKey(keyId As String)
-    Set getDictKey = V2Rest.getRequest("/v2/dict-key/" & keyId, "", New Dictionary)
+    Set getDictKey = Rest.getRequest("/v2-faks/dict-key/" & keyId, "", New Dictionary)
+    
 End Function
 
 Public Sub clearDictKeys()
     Sheets("Consulta de Chaves Pix").Range("A10:Z" & Rows.Count).ClearContents
+    
 End Sub

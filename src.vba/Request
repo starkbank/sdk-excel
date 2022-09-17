@@ -1,16 +1,19 @@
+
 Public Function fetch(url As String, method As String, headers As Dictionary, payload As String)
+    Dim resp As Response
+    
+    
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     objHTTP.Open method, url, False
     If DebugModeOn() Then
         DebugPrint "url", url
         DebugPrint "request", payload
     End If
-    For Each key In headers.keys()
-        objHTTP.setRequestHeader key, headers(key)
+    For Each Key In headers.Keys()
+        objHTTP.setRequestHeader Key, headers(Key)
     Next
     
-    Dim resp As response
-    Set resp = New response
+    Set resp = New Response
     On Error GoTo eh:
     objHTTP.send payload
     
@@ -19,15 +22,21 @@ Public Function fetch(url As String, method As String, headers As Dictionary, pa
     If DebugModeOn() Then
         DebugPrint "response", resp.content
     End If
+    
     Set fetch = resp
     Exit Function
 eh:
     resp.Status = 404
     resp.content = "{""errors"":[{""code"":""connectionError"",""message"":""Verifique sua conexão de internet!""}]}"
     Set fetch = resp
+    
 End Function
 
 Public Function download(url As String, path As String, headers As Dictionary, fallbackName As String) As Boolean
+    Dim filepath As String
+    Dim disposition As String
+    
+    
     Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
     
     If DebugModeOn() Then
@@ -35,27 +44,28 @@ Public Function download(url As String, path As String, headers As Dictionary, f
     End If
     
     objHTTP.Open "GET", url, False
-    Dim filepath As String
-    Dim disposition As String
     
-    For Each key In headers.keys()
-        objHTTP.setRequestHeader key, headers(key)
+    For Each Key In headers.Keys()
+        objHTTP.setRequestHeader Key, headers(Key)
     Next
     
     On Error GoTo eh:
     objHTTP.send
+    
     If objHTTP.Status = 200 Then
         Set oStream = CreateObject("ADODB.Stream")
         oStream.Open
         oStream.Type = 1
         oStream.Write objHTTP.responseBody
         disposition = objHTTP.getResponseHeader("Content-Disposition")
+        
         If disposition <> "" Then
-            filename = Split(disposition, "filename=")(1)
+            fileName = Split(disposition, "filename=")(1)
         Else
-            filename = fallbackName
+            fileName = fallbackName
         End If
-        filepath = path + ReplaceFilenameChars(filename)
+        
+        filepath = path + ReplaceFilenameChars(fileName)
         oStream.SaveToFile filepath, 2 ' 1 = no overwrite, 2 = overwrite
         oStream.Close
         download = True
@@ -67,6 +77,8 @@ eh:
         ElseIf DebugModeOn() Then
             DebugPrint "response", objHTTP.responseText
         End If
+        
         download = False
     End If
+    
 End Function

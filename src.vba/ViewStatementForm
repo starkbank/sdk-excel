@@ -98,7 +98,7 @@ Private Sub DownloadButton_Click()
     row = TableFormat.HeaderRow() + 1
     
     Do
-        Set respJson = V2BankGateway.getTransaction(cursor, optionalParam)
+        Set respJson = TransactionGateway.getTransaction(cursor, optionalParam)
         If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
@@ -169,13 +169,13 @@ Private Function getTransactionType(list() As String, ByRef tags As Collection)
     Select Case list(0)
         Case "self"
             transactionType = "Transferência interna"
-        Case "charge"
+        Case "boleto"
             transactionType = "Recebimento de boleto pago"
         Case "invoice"
             transactionType = "Recebimento de cobrança Pix"
         Case "deposit"
             transactionType = "Recebimento de depósito Pix"
-        Case "charge-payment"
+        Case "boleto-payment"
             transactionType = "Pag. de boleto"
         Case "brcode-payment"
             transactionType = "Pag. de QR Code"

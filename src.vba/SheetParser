@@ -1,43 +1,50 @@
+
 Public Function headers()
     Dim columns As New Collection
+    
+    
     For Each elem In ActiveSheet.UsedRange.columns
         columns.Add ActiveSheet.Cells(TableFormat.HeaderRow(), elem.column).Value
     Next
+    
     Set headers = columns
 End Function
 
 Public Function dict()
-    Dim Result As New Collection
-    Dim keys As Collection
+    Dim result As New Collection
+    Dim Keys As Collection
     
-    Set keys = headers()
+    
+    Set Keys = headers()
     
     For row = 10 To ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+            obj(Keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
-        Result.Add obj
+        result.Add obj
     Next
     
-    Set dict = Result
+    Set dict = result
 End Function
 
 Public Function longDict(initRow, lastRow)
-    Dim Result As New Collection
-    Dim keys As Collection
+    Dim result As New Collection
+    Dim Keys As Collection
     
-    Set keys = headers()
+    
+    Set Keys = headers()
     
     For row = initRow To lastRow
         Dim obj As Object
         Set obj = JsonConverter.ParseJson("{}")
         For Each elem In ActiveSheet.UsedRange.columns
-            obj(keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
+            obj(Keys(elem.column)) = ActiveSheet.Cells(row, elem.column).text
         Next
-        Result.Add obj
+        result.Add obj
     Next
     
-    Set longDict = Result
+    Set longDict = result
+    
 End Function

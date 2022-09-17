@@ -30,7 +30,6 @@ Declare PtrSafe Function GetTimeZoneInformation Lib "kernel32" (IpTimeZoneInform
 Public resetMe As Boolean
 Public myVal As Variant
 
-
 Public Function UtcToBrt(utcDate As Date) As String
     Dim tzi As TIME_ZONE_INFORMATION
     Dim brt As Date
@@ -47,4 +46,5 @@ Public Function UtcToBrt(utcDate As Date) As String
     tmp = Format(brt, "dd/mm/yyyy hh:mm:ss")
     
     UtcToBrt = tmp
+    
 End Function

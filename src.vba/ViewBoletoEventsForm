@@ -44,23 +44,23 @@ Private Sub SearchButton_Click()
     Dim fee As Double
     Dim issueDate As String
     Dim eventDate As String
-    Dim chargeStatus As String
+    Dim boletoStatus As String
     Dim logEvent As String
     Dim dueDate As String
     Dim tags As Collection
     
     Dim cursor As String
-    Dim charge As Object
-    Dim chargeLog As Object
-    Dim charges As Collection
-    Dim chargeLogs As Collection
+    Dim boleto As Object
+    Dim boletoLog As Object
+    Dim boletos As Collection
+    Dim boletoLogs As Collection
     Dim row As Long
     Dim logRow As Long
     Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
     Dim rng As Range
     
-    Dim logsPaidByCharge As Dictionary: Set logsPaidByCharge = New Dictionary
-    Dim logsRegisteredByCharge As Dictionary: Set logsRegisteredByCharge = New Dictionary
+    Dim logsPaidByBoleto As Dictionary: Set logsPaidByBoleto = New Dictionary
+    Dim logsRegisteredByBoleto As Dictionary: Set logsRegisteredByBoleto = New Dictionary
     
     Call InputLogGateway.saveDates(afterInput, beforeInput)
     
@@ -121,44 +121,47 @@ Private Sub SearchButton_Click()
     If Events <> "credited," Then
         optionalParam.Add "types", Events
         Do
-            Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
+            Set respJson = BoletoGateway.getBoletoLogs(cursor, optionalParam)
             cursor = ""
             If respJson("cursor") <> "" Then
                 cursor = respJson("cursor")
             End If
     
             Set logs = respJson("logs")
-    
-            For Each chargeLog In logs
+            If logs.Count = 0 Then
+                Exit Do
+            End If
+            
+            For Each boletoLog In logs
                 
-                Set charge = chargeLog("boleto")
+                Set boleto = boletoLog("boleto")
                 
-                logEvent = chargeLog("type")
-                id = charge("id")
-                amount = charge("amount") / 100
-                fee = charge("fee") / 100
-                eventDate = chargeLog("created")
-                issueDate = charge("created")
-                chargeStatus = charge("status")
-                dueDate = charge("due")
-                Set tags = charge("tags")
+                logEvent = boletoLog("type")
+                id = boleto("id")
+                amount = boleto("amount") / 100
+                fee = boleto("fee") / 100
+                eventDate = boletoLog("created")
+                issueDate = boleto("created")
+                boletoStatus = boleto("status")
+                dueDate = boleto("due")
+                Set tags = boleto("tags")
                 
                 ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-                ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
-                ActiveSheet.Cells(row, 3).Value = charge("name")
-                ActiveSheet.Cells(row, 4).Value = charge("taxId")
+                ActiveSheet.Cells(row, 2).Value = BoletoGateway.getEventInPt(logEvent)
+                ActiveSheet.Cells(row, 3).Value = boleto("name")
+                ActiveSheet.Cells(row, 4).Value = boleto("taxId")
                 ActiveSheet.Cells(row, 5).Value = amount
     
                 ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(issueDate)
                 ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
-                ActiveSheet.Cells(row, 12).Value = charge("line")
+                ActiveSheet.Cells(row, 12).Value = boleto("line")
                 ActiveSheet.Cells(row, 13).Value = id
                 ActiveSheet.Cells(row, 14).Value = fee
                 ActiveSheet.Cells(row, 15).Value = CollectionToString(tags, ",")
     
                 ActiveSheet.Cells(row, 16).Value = "PDF"
                 Set rng = ActiveSheet.Range("P" + CStr(row))
-                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+                rng.Parent.Hyperlinks.Add Anchor:=rng, address:=Rest.baseUrl() + "/v2-faks/boleto/" + boleto("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
                 row = row + 1
             Next
         Loop While cursor <> ""
@@ -169,7 +172,7 @@ Private Sub SearchButton_Click()
     optionalParam.Add "types", Events
     Do
         logRow = row
-        Set respJson = V2BoletoGateway.getBoletoLogs(cursor, optionalParam)
+        Set respJson = BoletoGateway.getBoletoLogs(cursor, optionalParam)
         If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
@@ -181,73 +184,70 @@ Private Sub SearchButton_Click()
         End If
 
         Set logs = respJson("logs")
-        If logs.Count = 0 Then
-            Exit Do
-        End If
 
-        For Each chargeLog In logs
-            Set charge = chargeLog("boleto")
+        For Each boletoLog In logs
+            Set boleto = boletoLog("boleto")
             
-            eventDate = chargeLog("created")
-            logEvent = chargeLog("type")
-            id = charge("id")
-            amount = charge("amount") / 100
-            fee = charge("fee") / 100
-            issueDate = charge("created")
-            chargeStatus = charge("status")
-            dueDate = charge("due")
-            Set tags = charge("tags")
+            eventDate = boletoLog("created")
+            logEvent = boletoLog("type")
+            id = boleto("id")
+            amount = boleto("amount") / 100
+            fee = boleto("fee") / 100
+            issueDate = boleto("created")
+            boletoStatus = boleto("status")
+            dueDate = boleto("due")
+            Set tags = boleto("tags")
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(eventDate)
-            ActiveSheet.Cells(row, 2).Value = V2BoletoGateway.getEventInPt(logEvent)
-            ActiveSheet.Cells(row, 3).Value = charge("name")
-            ActiveSheet.Cells(row, 4).Value = charge("taxId")
+            ActiveSheet.Cells(row, 2).Value = BoletoGateway.getEventInPt(logEvent)
+            ActiveSheet.Cells(row, 3).Value = boleto("name")
+            ActiveSheet.Cells(row, 4).Value = boleto("taxId")
             
             ActiveSheet.Cells(row, 5).Value = amount
 
             ActiveSheet.Cells(row, 10).Value = Utils.ISODATEZ(issueDate)
             ActiveSheet.Cells(row, 11).Value = Utils.ISODATEZ(dueDate)
-            ActiveSheet.Cells(row, 12).Value = charge("line")
+            ActiveSheet.Cells(row, 12).Value = boleto("line")
             ActiveSheet.Cells(row, 13).Value = id
             ActiveSheet.Cells(row, 14).Value = fee
             ActiveSheet.Cells(row, 15).Value = CollectionToString(tags, ",")
 
             ActiveSheet.Cells(row, 16).Value = "PDF"
             Set rng = ActiveSheet.Range("P" + CStr(row))
-            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=StarkBankApi.baseUrl() + "/v2/boleto/" + charge("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
+            rng.Parent.Hyperlinks.Add Anchor:=rng, address:=Rest.baseUrl() + "/v2-faks/boleto/" + boleto("id") + "/pdf", SubAddress:="", TextToDisplay:="PDF"
 
-            ActiveSheet.Cells(row, 17).Value = charge("streetLine1")
-            ActiveSheet.Cells(row, 18).Value = charge("streetLine2")
-            ActiveSheet.Cells(row, 19).Value = charge("district")
-            ActiveSheet.Cells(row, 20).Value = charge("city")
-            ActiveSheet.Cells(row, 21).Value = charge("stateCode")
-            ActiveSheet.Cells(row, 22).Value = charge("zipCode")
+            ActiveSheet.Cells(row, 17).Value = boleto("streetLine1")
+            ActiveSheet.Cells(row, 18).Value = boleto("streetLine2")
+            ActiveSheet.Cells(row, 19).Value = boleto("district")
+            ActiveSheet.Cells(row, 20).Value = boleto("city")
+            ActiveSheet.Cells(row, 21).Value = boleto("stateCode")
+            ActiveSheet.Cells(row, 22).Value = boleto("zipCode")
 
-            If chargeStatus = "paid" And Not logsPaidByCharge.Exists(id) Then
-                logsPaidByCharge.Add id, chargeLog
-                logsRegisteredByCharge.Add id, New Dictionary
+            If boletoStatus = "paid" And Not logsPaidByBoleto.Exists(id) Then
+                logsPaidByBoleto.Add id, boletoLog
+                logsRegisteredByBoleto.Add id, New Dictionary
             End If
 
             row = row + 1
         Next
 
         Dim logsParam As Dictionary
-        Dim keys As String
+        Dim Keys As String
         Dim sep As String
         Dim registeredCursor As String: registeredCursor = ""
-        keys = ""
+        Keys = ""
         sep = ""
         Set logsParam = New Dictionary
         
-        For Each chargeId In logsPaidByCharge.keys()
-            keys = keys + sep + chargeId
+        For Each boletoId In logsPaidByBoleto.Keys()
+            Keys = Keys + sep + boletoId
             sep = ","
         Next
-        logsParam.Add "boletoIds", keys
+        logsParam.Add "boletoIds", Keys
         
         Do
             logsParam("types") = "registered,"
-            Set respJson = V2BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
+            Set respJson = BoletoGateway.getBoletoLogs(registeredCursor, logsParam)
             If respJson.Exists("errors") Then
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
@@ -257,27 +257,27 @@ Private Sub SearchButton_Click()
             End If
             Set registeredLogs = respJson("logs")
             For Each registeredLog In registeredLogs
-                Set logsRegisteredByCharge(registeredLog("boleto")("id")) = registeredLog
+                Set logsRegisteredByBoleto(registeredLog("boleto")("id")) = registeredLog
             Next
         Loop While registeredCursor <> ""
         
-        For Each chargeLog In logs
-            Set charge = chargeLog("boleto")
-            If charge("status") = "paid" Then
-                Call setChargeEventInfo(charge, logsPaidByCharge(charge("id")), logsRegisteredByCharge(charge("id")), logRow)
+        For Each boletoLog In logs
+            Set boleto = boletoLog("boleto")
+            If boleto("status") = "paid" Then
+                Call setBoletoEventInfo(boleto, logsPaidByBoleto(boleto("id")), logsRegisteredByBoleto(boleto("id")), logRow)
             End If
             logRow = logRow + 1
         Next
 
-        Set logsPaidByCharge = New Dictionary
-        Set logsRegisteredByCharge = New Dictionary
+        Set logsPaidByBoleto = New Dictionary
+        Set logsRegisteredByBoleto = New Dictionary
         
     Loop While cursor <> ""
     
     Unload Me
 End Sub
 
-Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionary, ByVal registeredLog As Dictionary, row As Long)
+Public Sub setBoletoEventInfo(ByVal boleto As Object, ByVal paidLog As Dictionary, ByVal registeredLog As Dictionary, row As Long)
     Dim nominalAmount As Double
     Dim fine As Double
     Dim amount As Double
@@ -285,9 +285,9 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
     Dim discount As Double
     Dim deltaAmount As Double
     Dim logs As Collection
-    Dim id As String: id = charge("id")
+    Dim id As String: id = boleto("id")
     
-    amount = charge("amount") / 100
+    amount = boleto("amount") / 100
     
     nominalAmount = amount
     If Not VarType(registeredLog("boleto")) = 0 Then
@@ -303,7 +303,7 @@ Public Sub setChargeEventInfo(ByVal charge As Object, ByVal paidLog As Dictionar
         ActiveSheet.Cells(row, 7).Font.Color = RGB(180, 0, 0)
     End If
     If deltaAmount > 0 Then
-        fine = charge("fine") / 100 * nominalAmount
+        fine = boleto("fine") / 100 * nominalAmount
         interest = amount - fine - nominalAmount
         ActiveSheet.Cells(row, 8).Value = fine
         ActiveSheet.Cells(row, 9).Value = interest

@@ -1,6 +1,7 @@
 
 Public Function toUnix(dt) As Long
     toUnix = DateDiff("s", "1/1/1970 00:00:00", dt) + 10800
+    
 End Function
 
 Public Function baseUrl()
@@ -9,139 +10,156 @@ Public Function baseUrl()
         Case sandbox:     baseUrl = "https://sandbox.api.starkbank.com"
         Case production:  baseUrl = "https://api.starkbank.com"
     End Select
+    
 End Function
 
 Public Function defaultHeaders(payload As String)
-    Dim Result As Dictionary
-    Set Result = New Dictionary
+    Dim result As Dictionary: Set result = New Dictionary
     Dim accessTime As Long
     Dim message As String
     Dim currentVersion As String
+    Dim signature As String
+    Dim sessionPrivateKeySecret As String
     
-    
+
     accessTime = toUnix(Now)
-    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Dim pk As PrivateKey: Set pk = New PrivateKey
-    pk.fromPem (getSessionPrivateKeyContent)
+    sessionPrivateKeySecret = SessionGateway.getSessionPrivateKeyContent()
     
-    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
-    Dim signature64 As String: signature64 = signature.toBase64()
+    signature = StarkBankEcdsa.sign(message, sessionPrivateKeySecret)
     
-    currentVersion = Updater.getCurrentVersion()
+    result.Add "Content-Type", "Application/json"
+    result.Add "Accept-Language", "pt-BR"
+    result.Add "Access-Time", accessTime
+    result.Add "Access-Id", SessionGateway.getAccessId()
+    result.Add "Access-Signature", signature
+    result.Add "Platform-Id", "excel"
+    result.Add "Platform-Version", Updater.getCurrentVersion()
+
+    Set defaultHeaders = result
     
-    Result.Add "Content-Type", "Application/json"
-    Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", getAccessId()
-    Result.Add "Access-Signature", signature64
-    
-    Set defaultHeaders = Result
 End Function
 
 Public Function pdfHeaders(payload As String)
-    Dim Result As Dictionary
-    Set Result = New Dictionary
+    Dim result As Dictionary: Set result = New Dictionary
     Dim accessTime As Long
     Dim message As String
+    Dim currentVersion As String
+    Dim signature As String
+    
     
     accessTime = toUnix(Now)
-    message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
+    message = SessionGateway.getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
-    Dim pk As PrivateKey: Set pk = New PrivateKey
-    pk.fromPem (getSessionPrivateKeyContent)
+    sessionPrivateKeySecret = SessionGateway.getSessionPrivateKeyContent()
     
-    Dim signature As signature: Set signature = EllipticCurve_Ecdsa.sign(message, pk)
-    Dim signature64 As String: signature64 = signature.toBase64()
+    signature = StarkBankEcdsa.sign(message, sessionPrivateKeySecret)
     
-    Result.Add "Accept-Language", "pt-BR"
-    Result.Add "Access-Time", accessTime
-    Result.Add "Access-Id", getAccessId()
-    Result.Add "Access-Signature", signature64
+    result.Add "Accept-Language", "pt-BR"
+    result.Add "Access-Time", accessTime
+    result.Add "Access-Id", SessionGateway.getAccessId()
+    result.Add "Access-Signature", signature
+    result.Add "Platform-Id", "excel"
+    result.Add "Platform-Version", Updater.getCurrentVersion()
     
-    Set pdfHeaders = Result
+    Set pdfHeaders = result
+    
 End Function
 
 Public Function getRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
+    
     Set defHeaders = defaultHeaders("")
     
-    For Each key In defHeaders.keys()
-        headers.Add key, defHeaders(key)
+    For Each Key In defHeaders.Keys()
+        headers.Add Key, defHeaders(Key)
     Next
     
     Set getRequest = request.fetch(url, "GET", headers, "")
+    
 End Function
 
 Public Function postRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
+    
     Set defHeaders = defaultHeaders(payload)
     
-    For Each key In defHeaders.keys()
-        headers.Add key, defHeaders(key)
+    For Each Key In defHeaders.Keys()
+        headers.Add Key, defHeaders(Key)
     Next
     
     Set postRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
 
 Public Function patchRequest(path As String, payload As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
+    
     Set defHeaders = defaultHeaders(payload)
     
-    For Each key In defHeaders.keys()
-        headers.Add key, defHeaders(key)
+    For Each Key In defHeaders.Keys()
+        headers.Add Key, defHeaders(Key)
     Next
     
     Set patchRequest = request.fetch(url, "PATCH", headers, payload)
+    
 End Function
 
 Public Function deleteRequest(path As String, query As String, headers As Dictionary)
     Dim url As String: url = baseUrl() + path + query
     Dim defHeaders As New Dictionary
     
+    
     Set defHeaders = defaultHeaders("")
     
-    For Each key In defHeaders.keys()
-        headers.Add key, defHeaders(key)
+    For Each Key In defHeaders.Keys()
+        headers.Add Key, defHeaders(Key)
     Next
     
     Set deleteRequest = request.fetch(url, "DELETE", headers, "")
+    
 End Function
 
 Public Function downloadRequest(path As String, filepath As String, headers As Dictionary, fallbackName As String) As Boolean
     Dim url As String: url = baseUrl() + path
     Dim defHeaders As New Dictionary
     
+    
     Set defHeaders = pdfHeaders("")
     
-    For Each key In defHeaders.keys()
-        headers.Add key, defHeaders(key)
+    For Each Key In defHeaders.Keys()
+        headers.Add Key, defHeaders(Key)
     Next
     
     downloadRequest = request.download(url, filepath, headers, fallbackName)
+    
 End Function
 
 Public Function uploadRequest(path As String, payload As String, headers As Dictionary, boundary As String)
     Dim url As String: url = baseUrl() + path + query
     
-    For Each key In defaultHeaders().keys()
-        headers.Add key, defaultHeaders()(key)
-    Next
-    headers("Content-Type") = "multipart/form-data; boundary=" + boundary
     
+    For Each Key In defaultHeaders().Keys()
+        headers.Add Key, defaultHeaders()(Key)
+    Next
+    
+    headers("Content-Type") = "multipart/form-data; boundary=" + boundary
     Set uploadRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
 
 Public Function externalPostRequest(url As String, payload As String)
     Dim headers As Dictionary: Set headers = New Dictionary
-    headers.Add "Content-Type", "Application/json"
     
+    
+    headers.Add "Content-Type", "Application/json"
     Set externalPostRequest = request.fetch(url, "POST", headers, payload)
+    
 End Function
-

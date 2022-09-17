@@ -1,0 +1,3 @@
+Private Sub HelpEcdsaButton_Click()
+    ActiveWorkbook.FollowHyperlink address:="https://github.com/joaogpw-stark/SBEmbedded/archive/refs/tags/Signed.zip"
+End Sub

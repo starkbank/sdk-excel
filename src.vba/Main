@@ -1,14 +1,16 @@
 
 Public Sub signIn()
-    If OpensslRoutine Then
+    If EcdsaRoutine Then
         SignInForm.Show
     End If
+
 End Sub
 
 Public Sub signOut()
-    On Error Resume Next
-    Dim response As Dictionary
+    Dim respJson As Dictionary
     
+    
+    On Error Resume Next
     message1 = "Você quer mesmo encerrar a sessão? "
     message2 = "Dados que não foram salvos serão apagados."
     confirmationMessage = message1 + message2
@@ -19,10 +21,10 @@ Public Sub signOut()
     End If
     
     Application.ScreenUpdating = False
-    Set response = AuthGateway.deleteSession(SessionGateway.getAccessToken())
+    Set respJson = SessionGateway.deleteSession()
     
-    If response("error").Count <> 0 And response("error")("code") <> "invalidAccessToken" Then
-        MsgBox response("error")("message"), , "Erro"
+    If respJson.Exists("errors") Then
+        MsgBox respJson("errors")(1)("message")
         Exit Sub
     End If
     
@@ -41,20 +43,26 @@ Public Sub signOut()
     clearDates
     clearAll
     Application.ScreenUpdating = True
-    MsgBox response("success")("message"), , "Sucesso"
+    
+    MsgBox "Sucesso"
     
 End Sub
 
 Public Sub clearAll()
     For Each WS In ThisWorkbook.Worksheets
+    
         If WS.name <> "Principal" And WS.name <> "Aux" Then
             WS.Cells.UnMerge
             WS.Range("A10:Z" & Rows.Count).ClearContents
+            
             If WS.name = "InputLog" Then
                 WS.Range("B:B").ClearContents
             End If
+            
         End If
+        
     Next
+    
 End Sub
 
 Public Sub openHelp()
@@ -62,6 +70,7 @@ Public Sub openHelp()
         .MultiPage1.Value = 0
         .Show
     End With
+    
 End Sub
 
 Public Sub openHelpDigSign()
@@ -69,44 +78,131 @@ Public Sub openHelpDigSign()
         .MultiPage1.Value = 2
         .Show
     End With
+    
 End Sub
 
 Public Sub searchStatement()
     ViewStatementForm.Show
+    
 End Sub
 
 Public Sub sendOrders()
     On Error Resume Next
     SendOrderForm.Show
+    
 End Sub
 
-Public Sub searchCharges()
-    ViewChargeForm.Show
+Public Sub searchBoletos()
+    ViewBoletoForm.Show
+    
 End Sub
 
 Public Sub searchInvoices()
     ViewInvoiceForm.Show
+    
 End Sub
 
-Public Sub searchChargeEvents()
-    ViewChargeEventsForm.Show
+Public Sub searchBoletoEvents()
+    ViewBoletoEventsForm.Show
+    
 End Sub
 
 Public Sub searchTransfers()
     ViewTransferForm.Show
+    
 End Sub
 
 Public Sub keyGeneration()
     GenerateKeyForm.Show
+    
 End Sub
 
 Public Sub keyUpload()
     SendKeyForm.Show
+    
+End Sub
+
+Public Sub searchCustomers()
+    Dim cursor As String
+    Dim customers As Collection
+    Dim row As Integer
+    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
+    
+    
+    On Error Resume Next
+    If Not isSignedin() Then
+        MsgBox "Acesso negado, faça login novamente."
+        Exit Sub
+    End If
+    
+    'Table layout
+    Utils.applyStandardLayout ("L")
+    Range("A10:L" & Rows.Count).ClearContents
+    
+    'Headers definition
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
+    
+    With ActiveWindow
+        '.SplitColumn = 12
+        .SplitRow = 9
+    End With
+    ActiveWindow.FreezePanes = True
+    
+    row = 10
+
+    Do
+        Set respJson = BoletoGateway.getCustomers(cursor, optionalParam)
+        cursor = ""
+        
+        If respJson("cursor") <> "" Then
+            cursor = respJson("cursor")
+        End If
+
+        Set customers = respJson("customers")
+
+        For Each customer In customers
+            Dim address As Dictionary
+            Dim tags As Collection
+            
+            
+            ActiveSheet.Cells(row, 1).Value = customer("id")
+            ActiveSheet.Cells(row, 2).Value = customer("name")
+            ActiveSheet.Cells(row, 3).Value = customer("taxId")
+            ActiveSheet.Cells(row, 4).Value = customer("email")
+            ActiveSheet.Cells(row, 5).Value = customer("phone")
+            
+            Set address = customer("address")
+            
+            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
+            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
+            ActiveSheet.Cells(row, 8).Value = address("district")
+            ActiveSheet.Cells(row, 9).Value = address("city")
+            ActiveSheet.Cells(row, 10).Value = address("stateCode")
+            ActiveSheet.Cells(row, 11).Value = address("zipCode")
+
+            Set tags = customer("tags")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
+            row = row + 1
+        Next
+
+    Loop While cursor <> ""
+     
 End Sub
 
 Public Sub createBoletos()
     Dim boletos As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
@@ -116,6 +212,7 @@ Public Sub createBoletos()
     If Not isSignedin() Then
         MsgBox "Acesso negado, faça login novamente."
         Exit Sub
+        
     End If
 
     Call Utils.applyStandardLayout("L")
@@ -156,8 +253,8 @@ Public Sub createBoletos()
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 50 >= lastRow, lastRow, midRow + 50)
-        Set boletos = V2BoletoGateway.getOrders(initRow, midRow)
-        Set resp = V2BoletoGateway.createBoletos(boletos)
+        Set boletos = BoletoGateway.getOrders(initRow, midRow)
+        Set resp = BoletoGateway.createBoletos(boletos)
         
         If resp.Status = 200 Then
             respMessage = resp.json()("message")
@@ -168,13 +265,14 @@ Public Sub createBoletos()
             Dim error As Dictionary
             Dim errorList As String
             Dim errorDescription As String
+            Dim messageBox As String
+            
             
             For Each error In errors
                 errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
             
-            Dim messageBox As String
             messageBox = errorList
             MsgBox messageBox, , "Erro"
             End
@@ -190,7 +288,7 @@ End Sub
 
 Public Sub createInvoices()
     Dim invoices As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
@@ -230,8 +328,8 @@ Public Sub createInvoices()
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
-        Set invoices = v2InvoiceGateway.getOrders(initRow, midRow)
-        Set resp = v2InvoiceGateway.createInvoices(invoices)
+        Set invoices = InvoiceGateway.getOrders(initRow, midRow)
+        Set resp = InvoiceGateway.createInvoices(invoices)
         
         If resp.Status = 200 Then
             respMessage = resp.json()("message")
@@ -242,19 +340,19 @@ Public Sub createInvoices()
             Dim error As Dictionary
             Dim errorList As String
             Dim errorDescription As String
+            Dim messageBox As String
+            
             
             For Each error In errors
                 errorDescription = Utils.correctErrorLine(error("message"), CLng(initRow))
                 errorList = errorList & errorDescription & Chr(10)
             Next
             
-            Dim messageBox As String
             messageBox = errorList
             MsgBox messageBox, , "Erro"
             End
         Else
             MsgBox resp.errors()("errors")(1)("message"), , "Erro"
-            
         End If
         
         initRow = initRow + 100
@@ -263,19 +361,20 @@ Public Sub createInvoices()
 End Sub
 
 Public Sub updateInvoices()
-
-    If Not isSignedin Then
-        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
-        Exit Sub
-    End If
-    
     Dim invoices As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim midRow As Long
     Dim lastRow As Long
     Dim respMessage As String
     Dim reversingError As Boolean
+    
+    
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+    
     reversingError = False
     
     Call Utils.applyStandardLayout("B")
@@ -291,6 +390,7 @@ Public Sub updateInvoices()
         '.SplitColumn = 4
         .SplitRow = 9
     End With
+    
     ActiveWindow.FreezePanes = True
     ActiveSheet.Range("C10:D" & Range("A10").End(xlDown).row).ClearContents
     initRow = 10
@@ -298,11 +398,13 @@ Public Sub updateInvoices()
     midRow = initRow - 1
     Do
         midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
-        Set invoices = v2InvoiceGateway.getUpdateOrders(initRow, midRow)
-        Set resp = v2InvoiceGateway.updateInvoices(invoices)
+        Set invoices = InvoiceGateway.getUpdateOrders(initRow, midRow)
+        Set resp = InvoiceGateway.updateInvoices(invoices)
         
         If resp.Status = 200 Then
             Dim line As Long
+            
+            
             line = initRow
             Do
                 writeReversingResponse line, "Reversão solicitada com sucesso", ""
@@ -314,6 +416,8 @@ Public Sub updateInvoices()
             Dim error As Dictionary
             Dim errorList As String
             Dim errorDict As New Dictionary
+            
+            
             reversingError = True
             
             For Each error In errors
@@ -332,91 +436,9 @@ Public Sub updateInvoices()
      
 End Sub
 
-Public Sub searchCustomers()
-    On Error Resume Next
-    
-    Dim cursor As String
-    Dim customers As Collection
-    Dim row As Integer
-    Dim optionalParam As Dictionary: Set optionalParam = New Dictionary
-    
-    If Not isSignedin() Then
-        MsgBox "Acesso negado, faça login novamente."
-        Exit Sub
-    End If
-    
-    'Table layout
-    Utils.applyStandardLayout ("L")
-    Range("A10:L" & Rows.Count).ClearContents
-    
-    'Headers definition
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 1).Value = "Id do Cliente"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "Nome"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "CPF/CNPJ"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "E-mail"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Telefone"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Logradouro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Complemento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Bairro"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Cidade"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Estado"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "CEP"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 12).Value = "Tags"
-    
-    With ActiveWindow
-        '.SplitColumn = 12
-        .SplitRow = 9
-    End With
-    ActiveWindow.FreezePanes = True
-    
-    row = 10
-
-    Do
-        Set respJson = V2BoletoGateway.getCustomers(cursor, optionalParam)
-
-        cursor = ""
-        If respJson("cursor") <> "" Then
-            cursor = respJson("cursor")
-        End If
-
-        Set customers = respJson("customers")
-
-        For Each customer In customers
-
-            ActiveSheet.Cells(row, 1).Value = customer("id")
-            ActiveSheet.Cells(row, 2).Value = customer("name")
-            ActiveSheet.Cells(row, 3).Value = customer("taxId")
-            ActiveSheet.Cells(row, 4).Value = customer("email")
-            ActiveSheet.Cells(row, 5).Value = customer("phone")
-            
-            Dim address As Dictionary: Set address = customer("address")
-            
-            ActiveSheet.Cells(row, 6).Value = address("streetLine1")
-            ActiveSheet.Cells(row, 7).Value = address("streetLine2")
-            ActiveSheet.Cells(row, 8).Value = address("district")
-            ActiveSheet.Cells(row, 9).Value = address("city")
-            ActiveSheet.Cells(row, 10).Value = address("stateCode")
-            ActiveSheet.Cells(row, 11).Value = address("zipCode")
-
-            Dim tags As Collection: Set tags = customer("tags")
-            ActiveSheet.Cells(row, 12).Value = CollectionToString(tags, ",")
-
-            row = row + 1
-        Next
-
-    Loop While cursor <> ""
-     
-End Sub
-
 Public Sub SearchInvoicesByIds()
-
-    If Not isSignedin Then
-        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
-        Exit Sub
-    End If
-    
     Dim invoiceIds As Collection
-    Dim resp As response
+    Dim resp As Response
     Dim initRow As Long
     Dim row As Long
     Dim midRow As Long
@@ -426,23 +448,32 @@ Public Sub SearchInvoicesByIds()
     Dim invoice As Variant
     Dim invoiceId As String
     
+    
+    If Not isSignedin Then
+        MsgBox "Acesso negado. Faça login novamente.", , "Erro"
+        Exit Sub
+    End If
+
     initRow = 10
     lastRow = ActiveSheet.Cells(Rows.Count, "M").End(xlUp).row
     midRow = initRow - 1
     Do
-        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
-        Set invoiceIds = v2InvoiceGateway.getInvoiceIds(initRow, midRow)
-        query.Add "ids", CollectionToString(invoiceIds, ",")
-        Set invoices = v2InvoiceGateway.getInvoices("", query)("invoices")
         Dim invoiceMap As New Dictionary
+        
+        
+        midRow = IIf(midRow + 100 >= lastRow, lastRow, midRow + 100)
+        Set invoiceIds = InvoiceGateway.getInvoiceIds(initRow, midRow)
+        query.Add "ids", CollectionToString(invoiceIds, ",")
+        Set invoices = InvoiceGateway.getInvoices("", query)("invoices")
+        
         For Each invoice In invoices
             invoiceId = invoice("id")
             invoiceMap.Add invoiceId, invoice
         Next
+        
         row = initRow
         For Each queryId In invoiceIds
             If invoiceMap.Exists(queryId) Then
-                Set invoice = invoiceMap(queryId)
                 Dim id As String: id = invoice("id")
                 Dim amount As Double: amount = invoice("amount") / 100
                 Dim nominalAmount As Double: nominalAmount = invoice("nominalAmount") / 100
@@ -457,10 +488,13 @@ Public Sub SearchInvoicesByIds()
                 Dim tags As Collection: Set tags = invoice("tags")
                 Dim expirationDate As Date: expirationDate = DateAdd("s", expiration, Utils.DatefromIsoString(dueDate))
                 
+                
+                Set invoice = invoiceMap(queryId)
+                
                 ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(issueDate)
                 ActiveSheet.Cells(row, 2).Value = invoice("name")
                 ActiveSheet.Cells(row, 3).Value = invoice("taxId")
-                ActiveSheet.Cells(row, 4).Value = v2InvoiceGateway.getStatusInPt(invoiceStatus)
+                ActiveSheet.Cells(row, 4).Value = InvoiceGateway.getStatusInPt(invoiceStatus)
                 ActiveSheet.Cells(row, 5).Value = amount
                 ActiveSheet.Cells(row, 6).Value = nominalAmount
                 ActiveSheet.Cells(row, 7).Value = discountAmount
@@ -476,29 +510,34 @@ Public Sub SearchInvoicesByIds()
                 ActiveSheet.Cells(row, 16).Value = "PDF"
                 Set rng = ActiveSheet.Range("P" + CStr(row))
                 rng.Parent.Hyperlinks.Add Anchor:=rng, address:=invoice("pdf"), SubAddress:="", TextToDisplay:="PDF"
-                
             End If
+            
             row = row + 1
         Next
+        
         query.Remove "ids"
         initRow = initRow + 100
     Loop Until (midRow >= lastRow)
+    
 End Sub
 
 Public Sub executeTransfers()
     SendTransferForm.Show
+    
 End Sub
 
 Public Sub executeInternalTransfers()
     SendInternalTransferForm.Show
+    
 End Sub
 
-Public Sub payCharges()
-    SendChargePaymentForm.Show
+Public Sub payBoletos()
+    SendBoletoPaymentForm.Show
 End Sub
 
-Public Sub searchChargePayments()
-    ViewChargePaymentForm.Show
+Public Sub searchBoletoPayments()
+    ViewBoletoPaymentForm.Show
+    
 End Sub
 
 Public Sub searchPaymentRequests()
@@ -506,5 +545,7 @@ Public Sub searchPaymentRequests()
         MsgBox "Acesso negado. Faça login novamente.", , "Erro"
         Exit Sub
     End If
+    
     ViewRequestForm.Show
+    
 End Sub

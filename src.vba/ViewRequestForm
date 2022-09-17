@@ -7,7 +7,7 @@ Private Sub UserForm_Initialize()
     Me.BeforeTextBox.Value = InputLogGateway.getBeforeDate()
     
     Do
-        Set respJson = getCostCenters(cursor, New Dictionary)
+        Set respJson = CostCenterGateway.getCostCenters(cursor, New Dictionary)
         
         If respJson.Exists("errors") Then
             Exit Sub
@@ -134,7 +134,7 @@ Private Sub SearchButton_Click()
     row = TableFormat.HeaderRow() + 1
     
     Do
-        Set respJson = getPaymentRequests(cursor, optionalParam)
+        Set respJson = ApprovalGateway.getPaymentRequests(cursor, optionalParam)
         cursor = ""
         If respJson("cursor") <> "" Then
             cursor = respJson("cursor")
@@ -152,11 +152,11 @@ Private Sub SearchButton_Click()
             Dim payment As Dictionary: Set payment = paymentRequest("payment")
             
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(requestDate)
-            ActiveSheet.Cells(row, 2).Value = getRequestTypeInPt(paymentRequestType)
+            ActiveSheet.Cells(row, 2).Value = ApprovalGateway.getRequestTypeInPt(paymentRequestType)
             ActiveSheet.Cells(row, 3).Value = paymentRequest("description")
             ActiveSheet.Cells(row, 4).Value = paymentRequest("amount") / 100
             ActiveSheet.Cells(row, 5).Value = paymentRequestedBy
-            ActiveSheet.Cells(row, 6).Value = getRequestStatusInPt(paymentRequestStatus)
+            ActiveSheet.Cells(row, 6).Value = ApprovalGateway.getRequestStatusInPt(paymentRequestStatus)
             ActiveSheet.Cells(row, 7).Value = payment("id")
             ActiveSheet.Cells(row, 8).Value = CollectionToString(paymentRequest("tags"))
             

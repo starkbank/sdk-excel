@@ -10,7 +10,7 @@ Private Sub UserForm_Initialize()
     End If
 
     Do
-        Set respJson = getCostCenters(cursor, New Dictionary)
+        Set respJson = CostCenterGateway.getCostCenters(cursor, New Dictionary)
 
         cursor = ""
         If respJson("cursor") <> "" Then
@@ -61,7 +61,7 @@ Private Sub SendButton_Click()
         Next
     End With
 
-    respMessage = V2CostCenterGateway.createOrders(teamId)
+    respMessage = ApprovalGateway.createOrders(teamId)
 
     Unload Me
 

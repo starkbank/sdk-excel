@@ -1,5 +1,5 @@
-Private Sub GetChargesButton_Click()
-    Main.searchCharges
+Private Sub GetBoletosButton_Click()
+    Main.searchBoletos
 End Sub
 
 Private Sub SignInButton_Click()

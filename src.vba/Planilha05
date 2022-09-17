@@ -1,5 +1,5 @@
-Private Sub CreateChargesButton_Click()
-    Main.createCharges
+Private Sub CreateBoletosButton_Click()
+    Main.createBoletos
 End Sub
 
 Private Sub SignInButton_Click()

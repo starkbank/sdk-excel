@@ -68,7 +68,7 @@ Private Sub SearchButton_Click()
     Call FreezeHeader
     
     'Optional parameters
-    Dim Status As String: Status = ChargePaymentGateway.getStatus(statusString)
+    Dim Status As String: Status = BoletoPaymentGateway.getStatus(statusString)
     If Status <> "all" And Status <> "" Then
         optionalParam.Add "status", Status
     End If
@@ -82,7 +82,7 @@ Private Sub SearchButton_Click()
     row = TableFormat.HeaderRow() + 1
 
     Do
-        Set respJson = V2ChargePaymentGateway.getChargePayments(cursor, optionalParam)
+        Set respJson = BoletoPaymentGateway.getBoletoPayments(cursor, optionalParam)
         If respJson.Exists("errors") Then
             Unload Me
             Exit Sub
@@ -103,7 +103,7 @@ Private Sub SearchButton_Click()
             ActiveSheet.Cells(row, 2).Value = payment("amount") / 100
             
             Dim paymentStatus As String: paymentStatus = payment("status")
-            ActiveSheet.Cells(row, 3).Value = ChargePaymentGateway.getStatusInPt(paymentStatus)
+            ActiveSheet.Cells(row, 3).Value = BoletoPaymentGateway.getStatusInPt(paymentStatus)
 
             Dim scheduled As String: scheduled = payment("scheduled")
             ActiveSheet.Cells(row, 4).Value = Utils.ISODATEZ(scheduled)

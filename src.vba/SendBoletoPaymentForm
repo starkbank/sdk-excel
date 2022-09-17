@@ -14,7 +14,7 @@ Private Sub UserForm_Initialize()
 
     If signedin Then
         Do
-            Set respJson = getCostCenters(cursor, New Dictionary)
+            Set respJson = CostCenterGateway.getCostCenters(cursor, New Dictionary)
     
             cursor = ""
             If respJson("cursor") <> "" Then
@@ -34,7 +34,7 @@ End Sub
 
 Private Sub ConfirmButton_Click()
     'On Error Resume Next
-    Dim response As Dictionary
+    Dim Response As Dictionary
     Dim teamInfo As String: teamInfo = TeamBox.Value
     Dim teamId As String
 
@@ -64,7 +64,7 @@ Private Sub ConfirmButton_Click()
 
     '--------------- Create payment -----------------
     Dim respMessage As String
-    respMessage = V2CostCenterGateway.createChargePayments(teamId)
+    respMessage = ApprovalGateway.createBoletoPayments(teamId)
 
     Unload Me
     Exit Sub

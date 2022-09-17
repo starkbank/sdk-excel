@@ -33,7 +33,7 @@ Private Sub UserForm_Initialize()
     Me.EnvironmentBox.AddItem "Sandbox"
     
     Me.EmailBox.Value = SessionGateway.getEmail()
-    Me.WorkspaceBox.Value = SessionGateway.getWorkspace()
+    Me.WorkspaceBox.Value = SessionGateway.getWorkspaceName()
     Me.EnvironmentBox.Value = SessionGateway.getEnvironmentString()
     
 End Sub
@@ -45,32 +45,47 @@ Private Sub SendButton_Click()
     Dim envString As String: envString = EnvironmentBox.Value
     Dim accessToken As String
     Dim memberName As String
-    Dim response As Dictionary
     Dim workspaceId As String
-    Dim role As String
+    
     
     Call SessionGateway.saveSession(workspace, email, envString, "", "", "")
     Debug.Print "Session cleared"
     
-    Set response = AuthGateway.createNewSession(workspace, email, password)
-    Debug.Print "New session created"
+    Set respJson = SessionGateway.createSession(email, password, workspace)
     
-    If response("error").Count <> 0 Then
-        MsgBox response("error")("message"), vbExclamation, "Erro"
+    
+    If respJson.Exists("errors") Then
+        Dim errorCode As String: errorCode = respJson("errors")(1)("code")
+        If errorCode = "invalidCredentials" Or errorCode = "invalidPerson" Then
+            MsgBox "Credenciais invalidas! Confira o workspace, email e senha informados."
+            Unload Me
+            Exit Sub
+        End If
+        MsgBox respJson("errors")(1)("message")
+        Unload Me
         Exit Sub
     End If
     
-    accessToken = response("success")("accessToken")
-    memberName = response("success")("member")("name")
-    workspaceId = response("success")("member")("workspaceId")
+    Debug.Print "New session created"
+    memberName = respJson("session")("userId")
+    sessionId = respJson("session")("id")
+    organizationId = respJson("session")("organizationId")
     
-    Call SessionGateway.saveSession(workspace, email, envString, accessToken, memberName, workspaceId)
-    RenewSessionKeys
-    postSessionV1
+    Sheets("Credentials").Cells(13, 2) = "session/" + sessionId + "/workspace/" + workspace
+    Set respJson = SessionGateway.getWorkspace(workspace)
+    If respJson.Exists("errors") Then
+        Exit Sub
+    End If
+    
+    workspaceId = respJson("workspaces")(1)("id")
+    
+    Set respJson = SessionGateway.getPerson(email)
+    memberName = respJson("person")("name")
+    
+    Call SessionGateway.saveSession(workspace, email, envString, CStr(sessionId), memberName, workspaceId)
     Debug.Print "New session data saved"
     
     Call SessionGateway.displayMemberInfo
-    
     Unload Me
 End Sub
 
