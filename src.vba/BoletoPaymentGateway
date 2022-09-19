@@ -53,3 +53,146 @@ Public Function getBoletoPayments(cursor As String, optionalParam As Dictionary)
     Set getBoletoPayments = resp.json()
 
 End Function
+
+Public Function createBoletoPayments(teamId As String)
+    Dim boletoPayments As New Collection
+    Dim boletoPaymentNumbers As New Collection
+    Dim externalIds As New Collection
+    Dim iteration As Integer
+    Dim startRow As Integer
+    Dim currentRow As Integer
+    Dim resp As Response
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim request As Scripting.Dictionary
+    Dim requests As New Collection
+    Dim returnMessage As String
+    Dim warningMessage As String
+    Dim errorMessage As String
+    Dim anySent As Boolean
+    
+    
+    anySent = False
+    returnMessage = ""
+    warningMessage = ""
+    errorMessage = ""
+    
+    iteration = 0
+    startRow = TableFormat.HeaderRow() + 1
+    
+    For Each obj In SheetParser.dict
+        Dim code As String
+        Dim taxId As String
+        Dim scheduledDate As String
+        Dim tags() As String
+        Dim description As String
+        Dim boletoPayment As Dictionary
+        
+        
+        iteration = iteration + 1
+        currentRow = TableFormat.HeaderRow() + iteration
+        
+        If obj("Linha Digitável ou Código de Barras") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
+            Unload SendBoletoPaymentForm
+            End
+        End If
+        
+        code = obj("Linha Digitável ou Código de Barras")
+        taxId = Trim(obj("CPF/CNPJ do Beneficiário"))
+        scheduledDate = obj("Data de Agendamento")
+        tags = Split(obj("Tags"), ",")
+        description = obj("Descrição")
+        externalId = obj("externalId")
+        
+        calculatedExternalId = code + name + taxId + scheduledDate
+        
+        If calculatedExternalId = externalId Then
+            warningMessage = "Aviso: Pedidos já enviados s não foram reenviados!" + Chr(10) + Chr(10)
+        Else
+            Set request = New Scripting.Dictionary
+            Set boletoPayment = BoletoPaymentGateway.boletoPayment(code, taxId, tags, description)
+            boletoPayments.Add boletoPayment
+            boletoPaymentNumbers.Add iteration
+            externalIds.Add calculatedExternalId
+            request.Add "centerId", teamId
+            request.Add "type", "boleto-payment"
+            request.Add "payment", boletoPayment
+            request.Add "due", Utils.DateToSendingFormat(Format(scheduledDate, "dd/mm/yyyy"))
+            request.Add "tags", tags
+            requests.Add request
+        End If
+
+        If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row) Then
+            If boletoPaymentNumbers.Count = 0 Then
+                Set boletoPayments = Nothing
+                Set boletoPaymentNumbers = Nothing
+                Set externalIds = Nothing
+                GoTo nextIteration
+            End If
+
+            dict.Add "requests", requests
+            payload = JsonConverter.ConvertToJson(dict)
+
+            Set resp = Rest.postRequest("/v2-faks/payment-request", payload, New Dictionary)
+            anySent = True
+
+            If resp.Status = 200 Then
+                createBoletoPayments = resp.json()("message")
+                returnMessage = returnMessage + rowsMessage(startRow, currentRow) + resp.json()("message") + Chr(10)
+                Dim j As Integer
+                For j = 1 To externalIds.Count
+                    ActiveSheet.Cells(TableFormat.HeaderRow() + boletoPaymentNumbers.Item(j), 10).Value = externalIds.Item(j)
+                Next j
+
+            ElseIf resp.errors().Exists("errors") Then
+                Dim errors As Collection: Set errors = resp.errors()("errors")
+                Dim error As Dictionary
+                Dim errorDescription As String
+
+                For Each error In errors
+                    errorDescription = Utils.correctErrorLine(error("message"), startRow)
+                    errorMessage = errorMessage + errorDescription + Chr(10)
+                Next
+
+            Else
+                errorDescription = Utils.correctErrorLine(resp.errors()("message"), startRow)
+                errorMessage = errorMessage + errorDescription + Chr(10)
+            End If
+            
+nextIteration:
+            startRow = currentRow + 1
+            Set boletoPayments = Nothing
+            Set boletoPaymentNumbers = Nothing
+            Set externalIds = Nothing
+        End If
+
+    Next
+    If anySent Then
+        MsgBox warningMessage + Chr(10) + returnMessage + Chr(10) + errorMessage
+    Else
+        MsgBox "Todos os pedidos listados já foram enviados"
+    End If
+    
+End Function
+
+Public Function boletoPayment(code As String, taxId As String, tags() As String, description As String) As Dictionary
+    Dim dict As New Dictionary
+    
+    
+    numberOfSpaces = countSpaces(code)
+    numberOfCharacters = Len(code) - nSpaces
+    
+    If numberOfCharacters <> 44 Then
+        dict.Add "line", code
+    Else
+        dict.Add "barCode", code
+    End If
+    
+    dict.Add "taxId", taxId
+    dict.Add "tags", tags
+    dict.Add "description", description
+    
+    Set boletoPayment = dict
+    
+End Function

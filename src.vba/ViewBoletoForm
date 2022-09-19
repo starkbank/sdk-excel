@@ -46,6 +46,7 @@ Private Sub SearchButton_Click()
     
     Dim statusString As String: statusString = StatusBox.Value
     Dim cursor As String
+    Dim boleto As Dictionary
     Dim boletos As Collection
     Dim boletoLogs As Collection
     Dim row As Long

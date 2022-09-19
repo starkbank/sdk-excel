@@ -61,7 +61,7 @@ Private Sub SendButton_Click()
         Next
     End With
 
-    respMessage = ApprovalGateway.createOrders(teamId)
+    respMessage = TransferGateway.createTransfers(teamId)
 
     Unload Me
 

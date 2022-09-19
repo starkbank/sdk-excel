@@ -40,7 +40,7 @@ Private Sub SearchButton_Click()
     Dim transfers As Collection
     Dim transferLogs As Collection
     Dim logsFailedByTransfer As Dictionary: Set logsFailedByTransfer = New Dictionary
-    Dim Transfer As Object
+    Dim transfer As Object
     Dim transferLog As Object
     Dim row As Long
     Dim initialRow As Long
@@ -128,25 +128,25 @@ Private Sub SearchButton_Click()
 
         Set transfers = respJson("transfers")
 
-        For Each Transfer In transfers
-            transferId = Transfer("id")
-            Dim created As String: created = Transfer("created")
-            Dim accountType As String: accountType = Transfer("accountType")
+        For Each transfer In transfers
+            transferId = transfer("id")
+            Dim created As String: created = transfer("created")
+            Dim accountType As String: accountType = transfer("accountType")
             ActiveSheet.Cells(row, 1).Value = Utils.ISODATEZ(created)
             ActiveSheet.Cells(row, 2).Value = transferId
-            ActiveSheet.Cells(row, 3).Value = Transfer("amount") / 100
+            ActiveSheet.Cells(row, 3).Value = transfer("amount") / 100
             
-            Dim transferStatus As String: transferStatus = Transfer("status")
+            Dim transferStatus As String: transferStatus = transfer("status")
             ActiveSheet.Cells(row, 4).Value = TransferGateway.getStatusInPt(transferStatus)
-            ActiveSheet.Cells(row, 5).Value = Transfer("name")
-            ActiveSheet.Cells(row, 6).Value = Transfer("taxId")
-            ActiveSheet.Cells(row, 7).Value = Transfer("bankCode")
-            ActiveSheet.Cells(row, 8).Value = Transfer("branchCode")
-            ActiveSheet.Cells(row, 9).Value = Transfer("accountNumber")
-            ActiveSheet.Cells(row, 10).Value = getAccountTypePT(Transfer("accountType"))
-            ActiveSheet.Cells(row, 11).Value = Utils.CollectionToString(Transfer("transactionIds"), ",")
-            ActiveSheet.Cells(row, 12).Value = CollectionToString(Transfer("tags"))
-            ActiveSheet.Cells(row, 13).Value = Transfer("description")
+            ActiveSheet.Cells(row, 5).Value = transfer("name")
+            ActiveSheet.Cells(row, 6).Value = transfer("taxId")
+            ActiveSheet.Cells(row, 7).Value = transfer("bankCode")
+            ActiveSheet.Cells(row, 8).Value = transfer("branchCode")
+            ActiveSheet.Cells(row, 9).Value = transfer("accountNumber")
+            ActiveSheet.Cells(row, 10).Value = getAccountTypePT(transfer("accountType"))
+            ActiveSheet.Cells(row, 11).Value = Utils.CollectionToString(transfer("transactionIds"), ",")
+            ActiveSheet.Cells(row, 12).Value = CollectionToString(transfer("tags"))
+            ActiveSheet.Cells(row, 13).Value = transfer("description")
             
             If DetailedCheckBox.Value = True And transferStatus = "failed" Then
                 logsFailedByTransfer.Add transferId, New Dictionary
@@ -180,12 +180,12 @@ Private Sub SearchButton_Click()
                 Set logsFailedByTransfer(transferLog("transfer")("id")) = transferLog
             Next
             
-            For Each Transfer In transfers
-                If Transfer("status") = "failed" Then
+            For Each transfer In transfers
+                If transfer("status") = "failed" Then
                     Dim errors As String: errors = ""
                     Dim errorMessage As Variant: errorMessage = ""
                     sep = ""
-                    For Each errorMessage In logsFailedByTransfer(Transfer("id"))("errors")
+                    For Each errorMessage In logsFailedByTransfer(transfer("id"))("errors")
                         errors = errors + sep + errorMessage
                         sep = ","
                     Next

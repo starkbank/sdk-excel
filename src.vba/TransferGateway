@@ -20,7 +20,7 @@ Public Function getStatusInPt(Status As String)
     
 End Function
 
-Public Function Transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
+Public Function transfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, tags() As String) As Dictionary
     Dim dict As New Dictionary
     
     
@@ -32,7 +32,7 @@ Public Function Transfer(amount As Long, taxId As String, name As String, bankCo
     dict.Add "accountNumber", accountNumber
     dict.Add "tags", tags
     
-    Set Transfer = dict
+    Set transfer = dict
     
 End Function
 
@@ -96,6 +96,166 @@ Public Function getTransferLogs(cursor As String, optionalParam As Dictionary)
     
 End Function
 
+Public Function createTransfers(teamId As String)
+    Dim transfers As New Collection
+    Dim transferNumbers As New Collection
+    Dim externalIds As New Collection
+    Dim iteration As Integer
+    Dim startRow As Integer
+    Dim currentRow As Integer
+    Dim resp As Response
+    Dim payload As String
+    Dim dict As New Dictionary
+    Dim request As Scripting.Dictionary
+    Dim requests As New Collection
+    Dim returnMessage As String
+    Dim warningMessage As String
+    Dim errorMessage As String
+    Dim anySent As Boolean
+    
+    
+    anySent = False
+    returnMessage = ""
+    warningMessage = ""
+    errorMessage = ""
+    
+    iteration = 0
+    startRow = TableFormat.HeaderRow() + 1
+    
+    For Each obj In SheetParser.dict
+        Dim amount As Long
+        Dim taxId As String
+        Dim name As String
+        Dim bankCode As String
+        Dim branchCode As String
+        Dim accountNumber As String
+        Dim accountType As String
+        Dim tags() As String
+        Dim description As String
+        Dim transfer As Dictionary
+        
+        iteration = iteration + 1
+        currentRow = TableFormat.HeaderRow() + iteration
+        
+        If obj("Valor") = "" Then
+            MsgBox "Por favor, não deixe linhas em branco entre as ordens de transferência", , "Erro"
+            Unload SendTransferForm
+            End
+        End If
+        
+        amount = getAmountLong(obj("Valor"))
+        taxId = Trim(obj("CPF/CNPJ"))
+        name = Trim(obj("Nome"))
+        bankCode = Trim(obj("Código do Banco/ISPB"))
+        branchCode = Trim(obj("Agência"))
+        accountNumber = Trim(obj("Conta"))
+        accountType = getAccountType(obj("Tipo de Conta"))
+        tags = Split(obj("Tags"), ",")
+        description = obj("Descrição")
+        externalId = obj("externalId")
+        
+        calculatedExternalId = calculateExternalId(amount, name, taxId, bankCode, branchCode, accountNumber)
+        
+        If calculatedExternalId = externalId Then
+            warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados!" + Chr(10) + Chr(10)
+        Else
+            Set request = New Scripting.Dictionary
+            Set transfer = TransferGateway.createTransfer(amount, taxId, name, bankCode, branchCode, accountNumber, accountType, description)
+            transfers.Add transfer
+            transferNumbers.Add iteration
+            externalIds.Add calculatedExternalId
+            request.Add "centerId", teamId
+            request.Add "type", "transfer"
+            request.Add "payment", transfer
+            
+            lengthTags = UBound(tags) - LBound(tags) + 1
+            If lengthTags <> 0 Then
+                request.Add "tags", tags
+            End If
+            
+            requests.Add request
+            
+        End If
+        
+        If (iteration Mod 100) = 0 Or (currentRow >= ActiveSheet.Cells(Rows.Count, "A").End(xlUp).row) Then
+            If transferNumbers.Count = 0 Then
+                Set transfers = Nothing
+                Set transferNumbers = Nothing
+                Set externalIds = Nothing
+                GoTo nextIteration
+            End If
+            
+            If dict.Exists("requests") Then
+                dict.RemoveAll
+            End If
+            
+            dict.Add "requests", requests
+            Set requests = New Collection
+            payload = JsonConverter.ConvertToJson(dict)
+
+            Set resp = Rest.postRequest("/v2-faks/payment-request", payload, New Dictionary)
+            anySent = True
+            
+            If resp.Status = 200 Then
+                createTransfers = resp.json()("message")
+                returnMessage = returnMessage + rowsMessage(startRow, currentRow) + resp.json()("message") + Chr(10)
+                Dim j As Integer
+                For j = 1 To externalIds.Count
+                    ActiveSheet.Cells(TableFormat.HeaderRow() + transferNumbers.Item(j), 10).Value = externalIds.Item(j)
+                Next j
+                
+            ElseIf resp.errors().Exists("errors") Then
+                Dim errors As Collection: Set errors = resp.errors()("errors")
+                Dim error As Dictionary
+                Dim errorDescription As String
+                
+                For Each error In errors
+                    errorDescription = Utils.correctErrorLine(error("message"), startRow)
+                    errorMessage = errorMessage + errorDescription + Chr(10)
+                Next
+                
+            Else
+                errorDescription = Utils.correctErrorLine(resp.errors()("message"), startRow)
+                errorMessage = errorMessage + errorDescription + Chr(10)
+        
+            End If
+            
+nextIteration:
+            startRow = currentRow + 1
+            Set transfers = Nothing
+            Set transferNumbers = Nothing
+            Set externalIds = Nothing
+        End If
+        
+    Next
+    If anySent Then
+        MsgBox warningMessage + Chr(10) + returnMessage + Chr(10) + errorMessage
+    Else
+        MsgBox "Todos os pedidos listados já foram enviados"
+    End If
+    
+End Function
+
+Public Function createTransfer(amount As Long, taxId As String, name As String, bankCode As String, branchCode As String, accountNumber As String, accountType As String, description As String) As Dictionary
+    Dim dict As New Dictionary
+    
+    
+    dict.Add "amount", amount
+    dict.Add "taxId", taxId
+    dict.Add "name", name
+    dict.Add "bankCode", bankCode
+    dict.Add "branchCode", branchCode
+    dict.Add "accountNumber", accountNumber
+    dict.Add "accountType", accountType
+    
+    If description <> "" Then
+        dict.Add "description", description
+    End If
+    
+    Set createTransfer = dict
+    
+End Function
+
 Public Function getAccountTypePT(accountType As Variant) As String
     Select Case LCase(accountType)
         Case "checking":  getAccountTypePT = "corrente"
@@ -105,4 +265,15 @@ Public Function getAccountTypePT(accountType As Variant) As String
         Case Else:  getAccountTypePT = accountType
     End Select
     
+End Function
+
+Public Function getAccountType(accountType As Variant) As String
+    Select Case LCase(accountType)
+        Case "": getAccountType = "checking"
+        Case "corrente":  getAccountType = "checking"
+        Case "poupança":  getAccountType = "savings"
+        Case "pagamento":  getAccountType = "payment"
+        Case "salário":  getAccountType = "salary"
+        Case Else:  getAccountType = accountType
+    End Select
 End Function
