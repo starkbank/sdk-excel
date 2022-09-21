@@ -47,6 +47,7 @@ Public Function pdfHeaders(payload As String)
     Dim message As String
     Dim currentVersion As String
     Dim signature As String
+    Dim sessionPrivateKeySecret As String
     
     
     accessTime = toUnix(Now)

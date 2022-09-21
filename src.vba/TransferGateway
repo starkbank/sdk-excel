@@ -277,3 +277,8 @@ Public Function getAccountType(accountType As Variant) As String
         Case Else:  getAccountType = accountType
     End Select
 End Function
+
+Public Sub clearSendTransfers()
+    Sheets("Transferências Com Aprovação").Range("A10:Z" & Rows.Count).ClearContents
+    
+End Sub
