@@ -70,3 +70,44 @@ Section "-hidden app"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   call registerEnvirVar
 SectionEnd
+
+;--------------------------------
+; Remove empty parent directories
+
+Function un.RMDirUP
+  !define RMDirUP '!insertmacro RMDirUPCall'
+
+  !macro RMDirUPCall _PATH
+        push '${_PATH}'
+        Call un.RMDirUP
+  !macroend
+
+  ; $0 - current folder
+  ClearErrors
+
+  Exch $0
+  ;DetailPrint "ASDF - $0\.."
+  RMDir "$0\.."
+
+  IfErrors Skip
+  ${RMDirUP} "$0\.."
+  Skip:
+
+  Pop $0
+
+FunctionEnd
+
+;--------------------------------
+; Section - Uninstaller
+
+Section "Uninstall"
+  ;Delete Uninstall
+  Delete "$INSTDIR\Uninstall.exe"
+
+  ;Delete Folder
+  RMDir /r "$INSTDIR"
+  ${RMDirUP} "$INSTDIR"
+
+  DeleteRegKey /ifempty HKCU "Software\${NAME}"
+
+SectionEnd
