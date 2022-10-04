@@ -222,7 +222,7 @@ Public Sub createBoletos()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 2).Value = "CPF/CNPJ"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 3).Value = "Logradouro"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 4).Value = "Complemento"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Bairo"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Bairro"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Cidade"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Código do Estado"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "CEP"

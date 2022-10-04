@@ -12,7 +12,7 @@ Private Sub ForgotPasswordButton_Click()
         Exit Sub
     End If
     envDomain = IIf(LCase(envString) = "sandbox", "sandbox.", "")
-    ActiveWorkbook.FollowHyperlink address:="https://" + envDomain + "web.starkbank.com/forgotPassword/" + workspace
+    ActiveWorkbook.FollowHyperlink address:="https://" + workspace + "." + envDomain + "starkbank.com/forgot"
     
 End Sub
 
@@ -24,7 +24,7 @@ Private Sub ForgotWorkspaceButton_Click()
         Exit Sub
     End If
     envDomain = IIf(LCase(envString) = "sandbox", "sandbox.", "")
-    ActiveWorkbook.FollowHyperlink address:="https://" + envDomain + "web.starkbank.com/signup/company/search"
+    ActiveWorkbook.FollowHyperlink address:="https://web." + envDomain + "starkbank.com/find"
     
 End Sub
 

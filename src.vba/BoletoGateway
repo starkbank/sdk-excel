@@ -45,7 +45,7 @@ Public Function getOrders(initRow As Long, midRow As Long) As Collection
         taxId = obj("CPF/CNPJ")
         streetLine1 = obj("Logradouro")
         streetLine2 = obj("Complemento")
-        district = obj("Bairo")
+        district = obj("Bairro")
         city = obj("Cidade")
         stateCode = obj("Código do Estado")
         zipCode = obj("CEP")
