@@ -1,6 +1,6 @@
 
 Public Function toUnix(dt) As Long
-    toUnix = DateDiff("s", "1/1/1970 00:00:00", dt) + 10800
+    toUnix = DateDiff("s", "1/1/1970 00:00:00", dt)
 End Function
 
 Public Function baseUrl()
@@ -19,7 +19,7 @@ Public Function defaultHeaders(payload As String)
     Dim currentVersion As String
     
     
-    accessTime = toUnix(Now)
+    accessTime = toUnix(ConvertLocalToGMT(Now))
     message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
     Dim pk As PrivateKey: Set pk = New PrivateKey
