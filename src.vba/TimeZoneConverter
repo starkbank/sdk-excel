@@ -30,6 +30,42 @@ Declare PtrSafe Function GetTimeZoneInformation Lib "kernel32" (IpTimeZoneInform
 Public resetMe As Boolean
 Public myVal As Variant
 
+Public Function ConvertLocalToGMT(dtLocalDate As Date) As Date
+    Dim lSecsDiff As Long
+    
+    'Get the GMT time diff
+    lSecsDiff = GetLocalToGMTDifference()
+    'Return the time in GMT
+    ConvertLocalToGMT = DateAdd("s", -lSecsDiff, dtLocalDate)
+End Function
+
+Public Function GetLocalToGMTDifference() As Long
+    Const TIME_ZONE_ID_INVALID& = &HFFFFFFFF
+    Const TIME_ZONE_ID_STANDARD& = 1
+    Const TIME_ZONE_ID_UNKNOWN& = 0
+    Const TIME_ZONE_ID_DAYLIGHT& = 2
+    
+    Dim tTimeZoneInf As TIME_ZONE_INFORMATION
+    Dim lRet As Long
+    Dim lDiff As Long
+    
+    'Get time zone info
+    lRet = GetTimeZoneInformation(tTimeZoneInf)
+    
+    'Convert diff to secs
+    lDiff = -tTimeZoneInf.bias * 60
+    GetLocalToGMTDifference = lDiff
+    
+    'Check if we are in daylight saving time.
+    If lRet = TIME_ZONE_ID_DAYLIGHT& Then
+        'In daylight savings, apply the bias
+        If tTimeZoneInf.daylightdate.wmonth <> 0 Then
+            'if tTimeZoneInf.DaylightDate.wMonth = 0 then the daylight
+            'saving time change doesn't occur
+            GetLocalToGMTDifference = lDiff - tTimeZoneInf.daylightbias * 60
+        End If
+    End If
+End Function
 
 Public Function UtcToBrt(utcDate As Date) As String
     Dim tzi As TIME_ZONE_INFORMATION
