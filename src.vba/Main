@@ -508,3 +508,29 @@ Public Sub searchPaymentRequests()
     End If
     ViewRequestForm.Show
 End Sub
+
+Public Sub writeInputLog()
+    Dim initRow As Long
+    Dim lastRow As Long
+    Dim filename As String
+    Dim filepath As String
+    
+    initRow = 10
+    lastRow = CurrentDebugRow() - 1
+    
+    If lastRow < 10 Then
+        Exit Sub
+    End If
+    filename = "starkbank-sdk-excel-log-" + getCurrentVersion() + ".log"
+    filepath = ThisWorkbook.path + "\" + filename
+    If Dir(filepath) <> "" Then Kill filepath
+    
+    Open filepath For Output As #1
+    Print #1, "Datetime;Type;Data"
+    With Sheets("InputLog")
+        For i = initRow To lastRow
+            Print #1, CStr(.Cells(i, 1)) + ";" + CStr(.Cells(i, 2)) + ";" + CStr(.Cells(i, 3))
+        Next
+    End With
+    Close #1
+End Sub

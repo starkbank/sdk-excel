@@ -18,7 +18,6 @@ Public Function defaultHeaders(payload As String)
     Dim message As String
     Dim currentVersion As String
     
-    
     accessTime = toUnix(ConvertLocalToGMT(Now))
     message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
