@@ -77,3 +77,11 @@ Private Sub ConfirmButton_Click()
     Unload Me
 
 End Sub
+
+Private Sub ExternalIdBox_Change()
+
+End Sub
+
+Private Sub Label8_Click()
+
+End Sub

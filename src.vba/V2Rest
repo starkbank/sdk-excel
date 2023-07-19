@@ -45,7 +45,7 @@ Public Function pdfHeaders(payload As String)
     Dim accessTime As Long
     Dim message As String
     
-    accessTime = toUnix(ConvertLocalToGMT(Now))
+    accessTime = toUnix(Now)
     message = getAccessId() + ":" + CStr(accessTime) + ":" + payload
     
     Dim pk As PrivateKey: Set pk = New PrivateKey
