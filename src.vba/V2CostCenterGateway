@@ -36,6 +36,7 @@ Public Function createOrders(teamId As String)
         Dim tags() As String
         Dim description As String
         Dim order As Dictionary
+        Dim due As String
         
         iteration = iteration + 1
         currentRow = TableFormat.HeaderRow() + iteration
@@ -55,6 +56,10 @@ Public Function createOrders(teamId As String)
         tags = Split(obj("Tags"), ",")
         description = obj("Descrição")
         externalId = obj("externalId")
+
+        If obj("Data de Agendamento") <> "" Then
+            due = Format(CDate(obj("Data de Agendamento")), "yyyy-mm-dd")
+        End If
         
         calculatedExternalId = calculateExternalId(amount, name, taxId, bankCode, branchCode, accountNumber)
         
@@ -69,6 +74,10 @@ Public Function createOrders(teamId As String)
             request.Add "centerId", teamId
             request.Add "type", "transfer"
             request.Add "payment", order
+
+            If due <> "" Then
+                request.Add "due", due
+            End If
             
             lengthTags = UBound(tags) - LBound(tags) + 1
             If lengthTags <> 0 Then
@@ -103,7 +112,7 @@ Public Function createOrders(teamId As String)
                 returnMessage = returnMessage + rowsMessage(startRow, currentRow) + resp.json()("message") + Chr(10)
                 Dim j As Integer
                 For j = 1 To externalIds.Count
-                    ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 10).Value = externalIds.Item(j)
+                    ActiveSheet.Cells(TableFormat.HeaderRow() + orderNumbers.Item(j), 11).Value = externalIds.Item(j)
                 Next j
                 
             ElseIf resp.errors().Exists("errors") Then
