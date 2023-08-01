@@ -105,8 +105,8 @@ Public Sub moveToTransfer()
         Sheets("Transferências com Aprovação").Cells(row, 5).Value = Transfer("Agência")
         Sheets("Transferências com Aprovação").Cells(row, 6).Value = Transfer("Conta")
         Sheets("Transferências com Aprovação").Cells(row, 7).Value = Transfer("Tipo de Conta")
-        Sheets("Transferências com Aprovação").Cells(row, 8).Value = Transfer("Tags")
-        Sheets("Transferências com Aprovação").Cells(row, 9).Value = Transfer("Descrição")
+        Sheets("Transferências com Aprovação").Cells(row, 9).Value = Transfer("Tags")
+        Sheets("Transferências com Aprovação").Cells(row, 10).Value = Transfer("Descrição")
         row = row + 1
     Next
     

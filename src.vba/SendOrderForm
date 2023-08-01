@@ -41,9 +41,10 @@ Private Sub SendButton_Click()
     ActiveSheet.Cells(TableFormat.HeaderRow(), 5).Value = "Agência"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 6).Value = "Conta"
     ActiveSheet.Cells(TableFormat.HeaderRow(), 7).Value = "Tipo de Conta"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Tags"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Descrição"
-    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "externalId"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 8).Value = "Data de Agendamento"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 9).Value = "Tags"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 10).Value = "Descrição"
+    ActiveSheet.Cells(TableFormat.HeaderRow(), 11).Value = "externalId"
 
     If Sheets("Credentials").Cells(7, 2) <> Date Then
         ActiveSheet.Range("J10:J" & Rows.Count).ClearContents
