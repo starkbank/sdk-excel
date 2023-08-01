@@ -252,12 +252,12 @@ Private Sub SearchButton_Click()
                 MsgBox "Erro ao obter dados detalhados de boletos registrados!"
                 Exit Sub
             End If
-            
+
             registeredCursor = ""
             If respJson("cursor") <> "" Then
                 registeredCursor = respJson("cursor")
             End If
-            
+
             Set registeredLogs = respJson("logs")
             For Each registeredLog In registeredLogs
                 Set logsRegisteredByCharge(registeredLog("boleto")("id")) = registeredLog
