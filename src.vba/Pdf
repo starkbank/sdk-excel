@@ -91,7 +91,7 @@ Public Function downloadSinglePdf(service, id As String, folder As String, fallb
     Dim version As String
 
     path = "/v2/" + service + "/" + id + "/pdf"
-    filepath = folder + "/"
+    filepath = folder + "\"
     downloadSinglePdf = V2Rest.downloadRequest(path, filepath, New Dictionary, fallbackName)
 
 End Function
@@ -112,7 +112,7 @@ Public Sub downloadPdfRange(service As String, initRow As Long, lastRow As Long)
     
     idColumn = ColumnId(service)
     
-    folder = ActiveWorkbook.path + "/starkbank-pdf-" + service
+    folder = ActiveWorkbook.path + "\starkbank-pdf-" + service
     numberEntities = lastRow - initRow + 1
     
     createNewDirectory (folder)
