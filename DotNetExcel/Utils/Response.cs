@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
-using StarkBankMVP;
+using StarkBankExcel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     internal class Response
     {

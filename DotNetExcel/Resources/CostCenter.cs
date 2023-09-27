@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     internal class CostCenter
     {

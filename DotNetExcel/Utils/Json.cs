@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.IO;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     internal class Json
     {

@@ -9,11 +9,11 @@
 //------------------------------------------------------------------------------
 
 #pragma warning disable 414
-namespace StarkBankMVP {
+namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(6)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(11)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class GetInvoices : Microsoft.Office.Tools.Excel.WorksheetBase {
         
@@ -21,6 +21,14 @@ namespace StarkBankMVP {
         private global::System.Object missing = global::System.Type.Missing;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button1;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button3;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button4;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button6;
         
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -132,6 +140,10 @@ namespace StarkBankMVP {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeControls() {
             this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "1B7A977A61ADF41453E1BBBE1183429619DB11", "1B7A977A61ADF41453E1BBBE1183429619DB11", this, "button1");
+            this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "232EEE2C927B21244D728DA228DC1AAB22C9E2", "232EEE2C927B21244D728DA228DC1AAB22C9E2", this, "button3");
+            this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "39558BA7531D2E3412138D1638E54A9A444C63", "39558BA7531D2E3412138D1638E54A9A444C63", this, "button4");
+            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "4E23FE0EC4C93C4470948DA849AEEC73F9C744", "4E23FE0EC4C93C4470948DA849AEEC73F9C744", this, "button5");
+            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "51A95A66553942547D759A7153A00908FCA885", "51A95A66553942547D759A7153A00908FCA885", this, "button6");
         }
         
         /// 
@@ -148,9 +160,43 @@ namespace StarkBankMVP {
             this.button1.Text = "Emitir Invoice Pix";
             this.button1.UseVisualStyleBackColor = false;
             // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.SystemColors.Control;
+            this.button3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button3.Name = "button3";
+            this.button3.Text = "Retornar para principal";
+            this.button3.UseVisualStyleBackColor = false;
+            // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.SystemColors.Control;
+            this.button4.Name = "button4";
+            this.button4.Text = "Acessar Conta";
+            this.button4.UseVisualStyleBackColor = false;
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.SystemColors.Control;
+            this.button5.Name = "button5";
+            this.button5.Text = "Sair da Conta";
+            this.button5.UseVisualStyleBackColor = false;
+            // 
+            // button6
+            // 
+            this.button6.AutoSize = true;
+            this.button6.BackColor = System.Drawing.SystemColors.Control;
+            this.button6.Name = "button6";
+            this.button6.Text = "Limpar Invoices";
+            this.button6.UseVisualStyleBackColor = false;
+            // 
             // GetInvoices
             // 
             this.button1.BindingContext = this.BindingContext;
+            this.button3.BindingContext = this.BindingContext;
+            this.button4.BindingContext = this.BindingContext;
+            this.button5.BindingContext = this.BindingContext;
+            this.button6.BindingContext = this.BindingContext;
         }
         
         /// 

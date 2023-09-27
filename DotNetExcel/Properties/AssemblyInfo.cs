@@ -6,11 +6,11 @@ using System.Security;
 // As informações gerais sobre um assembly são controladas por
 // conjunto de atributos. Altere estes valores de atributo para modificar as informações
 // associada a um assembly.
-[assembly: AssemblyTitle("StarkBankMVP")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("StarkBankExcel")]
+[assembly: AssemblyDescription("Utilização em conjunto com a planilha fornecida pela StarkBank S.A.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("StarkBankMVP")]
+[assembly: AssemblyCompany("STARK BANK S.A. - INSTITUICAO DE PAGAMENTO")]
+[assembly: AssemblyProduct("StarkBankExcel")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

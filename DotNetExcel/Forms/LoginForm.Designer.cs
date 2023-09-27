@@ -1,4 +1,4 @@
-﻿namespace StarkBankMVP
+﻿namespace StarkBankExcel
 {
     partial class LoginForm
     {

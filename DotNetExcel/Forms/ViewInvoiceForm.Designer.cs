@@ -1,4 +1,4 @@
-﻿namespace StarkBankMVP.Forms
+﻿namespace StarkBankExcel.Forms
 {
     partial class ViewInvoiceForm
     {
@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewInvoiceForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.periodInput = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.beforeInput = new System.Windows.Forms.DateTimePicker();
             this.afterInput = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
@@ -37,8 +39,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.statusInput = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.periodInput = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +58,30 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Consulta por Status e Data";
+            // 
+            // periodInput
+            // 
+            this.periodInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.periodInput.FormattingEnabled = true;
+            this.periodInput.Items.AddRange(new object[] {
+            "Data Inicial",
+            "Data Final",
+            "Intervalo",
+            "Todos"});
+            this.periodInput.Location = new System.Drawing.Point(104, 107);
+            this.periodInput.Name = "periodInput";
+            this.periodInput.Size = new System.Drawing.Size(193, 21);
+            this.periodInput.TabIndex = 9;
+            this.periodInput.SelectedIndexChanged += new System.EventHandler(this.periodInput_SelectedIndexChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 110);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(48, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Período:";
             // 
             // beforeInput
             // 
@@ -87,7 +111,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 71);
+            this.label2.Location = new System.Drawing.Point(6, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 13);
             this.label2.TabIndex = 2;
@@ -120,30 +144,6 @@
             this.button1.Text = "Consultar";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 110);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Período:";
-            // 
-            // periodInput
-            // 
-            this.periodInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.periodInput.FormattingEnabled = true;
-            this.periodInput.Items.AddRange(new object[] {
-            "Data Inicial",
-            "Data Final",
-            "Intervalo",
-            "Todos"});
-            this.periodInput.Location = new System.Drawing.Point(104, 107);
-            this.periodInput.Name = "periodInput";
-            this.periodInput.Size = new System.Drawing.Size(193, 21);
-            this.periodInput.TabIndex = 9;
-            this.periodInput.SelectedIndexChanged += new System.EventHandler(this.periodInput_SelectedIndexChanged);
             // 
             // ViewInvoiceForm
             // 

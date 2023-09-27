@@ -4,8 +4,10 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Office.Tools.Excel;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     public partial class GetDictKeys
     {
@@ -27,6 +29,10 @@ namespace StarkBankMVP
         {
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             this.Startup += new System.EventHandler(this.Planilha3_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha3_Shutdown);
 
@@ -50,14 +56,15 @@ namespace StarkBankMVP
             worksheet.Range["J" + TableFormat.HeaderRow].Value = "Tipo de Conta";
             worksheet.Range["K" + TableFormat.HeaderRow].Value = "externalId";
 
-            var initRow = TableFormat.HeaderRow + 1;
-            var lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            List<Dictionary<string, object>> jsonData = new List<Dictionary<string, object>>();
+            int initRow = TableFormat.HeaderRow + 1;
+            int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
 
-            for (int row = initRow; row <= lastRow; row++)
+            Parallel.For(initRow, lastRow + 1, rowIndex =>
             {
 
-                string keyId = worksheet.Range["A" + row].Value;
+                string keyId = worksheet.Range["A" + rowIndex].Value;
+                
+                List<Dictionary<string, object>> jsonData = new List<Dictionary<string, object>>();
 
                 JObject resp;
 
@@ -67,20 +74,20 @@ namespace StarkBankMVP
                     jsonData.Add(
                         new Dictionary<string, object>
                         {
-                            {"id", row },
+                            {"id", rowIndex },
                             {"keyId", keyId },
                             {"Time", currentTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") }
-                        }    
+                        }
                     );
                     resp = DictKey.Get(keyId);
 
                     JObject dictKey = (JObject)resp["key"];
-                    worksheet.Range["E" + row].Value = dictKey["name"];
-                    worksheet.Range["F" + row].Value = dictKey["taxId"];
-                    worksheet.Range["G" + row].Value = dictKey["ispb"];
-                    worksheet.Range["H" + row].Value = dictKey["branchCode"];
-                    worksheet.Range["I" + row].Value = dictKey["accountNumber"];
-                    worksheet.Range["J" + row].Value = dictKey["accountType"];
+                    worksheet.Range["E" + rowIndex].Value = dictKey["name"];
+                    worksheet.Range["F" + rowIndex].Value = dictKey["taxId"];
+                    worksheet.Range["G" + rowIndex].Value = dictKey["ispb"];
+                    worksheet.Range["H" + rowIndex].Value = dictKey["branchCode"];
+                    worksheet.Range["I" + rowIndex].Value = dictKey["accountNumber"];
+                    worksheet.Range["J" + rowIndex].Value = dictKey["accountType"];
                 }
                 catch (Exception ex)
                 {
@@ -89,9 +96,7 @@ namespace StarkBankMVP
                 }
 
                 string jsonString = Json.Encode(jsonData);
-
-                File.WriteAllText(@"C:\Users\Stark - Admin\Documents\getDictKeyC#.json", jsonString);
-            }
+            });
 
             MoveToTransfer();
         }
@@ -181,6 +186,30 @@ namespace StarkBankMVP
         private void button2_Click(object sender, EventArgs e)
         {
             MoveToTransfer();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Globals.Main.Activate();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Utils.LogOut();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var worksheet = Globals.GetDictKeys;
+
+            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
+            range.ClearContents();
         }
     }
 }
