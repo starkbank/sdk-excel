@@ -28,13 +28,11 @@ namespace StarkBankExcel
         internal static readonly HttpMethod Patch = new HttpMethod("PATCH");
         internal static readonly HttpMethod Delete = new HttpMethod("DELETE");
 
-
         internal static Response Fetch(
             HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
             Dictionary<string, object> query = null
         )
         {
-
             ServicePointManager.SecurityProtocol= SecurityProtocolType.Tls12;
 
             string url = Utils.BaseUrl(environment) + "v1/" + path;

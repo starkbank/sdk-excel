@@ -139,13 +139,11 @@ namespace StarkBankExcel
 
                 foreach (JObject corporatePurchase in corporatePurchases)
                 {
-                    foreach (string i in corporatePurchase["corporateTransactionIds"]) 
+                    foreach (string purchaseIndex in corporatePurchase["corporateTransactionIds"]) 
                     {
                         try
                         {
-                            string purchaseIndx = i;
-
-                            JObject transaction = corporateTransactionIds[purchaseIndx];
+                            JObject transaction = corporateTransactionIds[purchaseIndex];
                             JObject purchase = corporatePurchase;
 
                             worksheet.Range["A" + row].Value = transaction["created"].ToString();
@@ -161,10 +159,7 @@ namespace StarkBankExcel
 
                             row++;
                         }
-                        catch (Exception erro)
-                        {
-
-                        }
+                        catch (Exception error) {}
                     }
 
                 }
