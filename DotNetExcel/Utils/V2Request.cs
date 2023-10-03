@@ -1,9 +1,10 @@
 ﻿using EllipticCurve;
-using StarkBankMVP;
+using StarkBankExcel;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Policy;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     internal class V2Request
     {
@@ -34,16 +35,9 @@ namespace StarkBankMVP
             Dictionary<string, object> query = null
         )
         {
-            string url = "";
-            if (environment == "production")
-            {
-                url = "https://api.starkbank.com/";
-            }
-            if (environment == "sandbox")
-            {
-                url = "https://sandbox.api.starkbank.com/";
-            }
-            url += "v2/" + path;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            string url = Utils.BaseUrl(environment) + "v2/" + path;
 
             if (query != null)
             {

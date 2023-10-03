@@ -1,17 +1,19 @@
-﻿using StarkBankMVP;
+﻿using StarkBankExcel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     internal class Request
     {
+
         private static HttpClient makeClient()
         {
             HttpClient client = new HttpClient();
@@ -26,21 +28,16 @@ namespace StarkBankMVP
         internal static readonly HttpMethod Patch = new HttpMethod("PATCH");
         internal static readonly HttpMethod Delete = new HttpMethod("DELETE");
 
+
         internal static Response Fetch(
             HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
             Dictionary<string, object> query = null
         )
         {
-            string url = "";
-            if (environment == "production")
-            {
-                url = "https://api.starkbank.com/";
-            }
-            if (environment == "sandbox")
-            {
-                url = "https://sandbox.api.starkbank.com/";
-            }
-            url += "v1/" + path;
+
+            ServicePointManager.SecurityProtocol= SecurityProtocolType.Tls12;
+
+            string url = Utils.BaseUrl(environment) + "v1/" + path;
 
             if (query != null)
             {

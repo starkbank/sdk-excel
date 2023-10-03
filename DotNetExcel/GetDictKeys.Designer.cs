@@ -9,11 +9,11 @@
 //------------------------------------------------------------------------------
 
 #pragma warning disable 414
-namespace StarkBankMVP {
+namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(3)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(7)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class GetDictKeys : Microsoft.Office.Tools.Excel.WorksheetBase {
         
@@ -23,6 +23,14 @@ namespace StarkBankMVP {
         internal Microsoft.Office.Tools.Excel.Controls.Button button1;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button2;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button3;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button4;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button6;
         
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -135,6 +143,10 @@ namespace StarkBankMVP {
         private void InitializeControls() {
             this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "190EB7A1C18BFD142EB1A75D1D8ECE9AC6A921", "190EB7A1C18BFD142EB1A75D1D8ECE9AC6A921", this, "button1");
             this.button2 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2F31A0EA52B80A243F02887A226A80BA2346A2", "2F31A0EA52B80A243F02887A226A80BA2346A2", this, "button2");
+            this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "3443F6D933A917348513994830A35447867593", "3443F6D933A917348513994830A35447867593", this, "button3");
+            this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "4EDC5AE2D4725F442D54BDB348E5FBB86B52C4", "4EDC5AE2D4725F442D54BDB348E5FBB86B52C4", this, "button4");
+            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "581AFF66D5395E54CBC5BEBA52A895EF8D96F5", "581AFF66D5395E54CBC5BEBA52A895EF8D96F5", this, "button5");
+            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "6DF62D0586063D64B576813E624CB2DFF23CB6", "6DF62D0586063D64B576813E624CB2DFF23CB6", this, "button6");
         }
         
         /// 
@@ -159,10 +171,45 @@ namespace StarkBankMVP {
             this.button2.Text = "Transferências com aprovação";
             this.button2.UseVisualStyleBackColor = false;
             // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.SystemColors.Control;
+            this.button3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button3.Name = "button3";
+            this.button3.Text = "Retornar para principal";
+            this.button3.UseVisualStyleBackColor = false;
+            // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.SystemColors.Control;
+            this.button4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button4.Name = "button4";
+            this.button4.Text = "Acessar Conta";
+            this.button4.UseVisualStyleBackColor = false;
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.SystemColors.Control;
+            this.button5.Name = "button5";
+            this.button5.Text = "Sair da Conta";
+            this.button5.UseVisualStyleBackColor = false;
+            // 
+            // button6
+            // 
+            this.button6.BackColor = System.Drawing.SystemColors.Control;
+            this.button6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button6.Name = "button6";
+            this.button6.Text = "Limpar Chaves Pix";
+            this.button6.UseVisualStyleBackColor = false;
+            // 
             // GetDictKeys
             // 
             this.button1.BindingContext = this.BindingContext;
             this.button2.BindingContext = this.BindingContext;
+            this.button3.BindingContext = this.BindingContext;
+            this.button4.BindingContext = this.BindingContext;
+            this.button5.BindingContext = this.BindingContext;
+            this.button6.BindingContext = this.BindingContext;
         }
         
         /// 

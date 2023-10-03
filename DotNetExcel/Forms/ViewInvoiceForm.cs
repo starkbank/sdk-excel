@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
-using StarkBankMVP.Resources;
+using StarkBankExcel.Resources;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace StarkBankMVP.Forms
+namespace StarkBankExcel.Forms
 {
     public partial class ViewInvoiceForm : Form
     {

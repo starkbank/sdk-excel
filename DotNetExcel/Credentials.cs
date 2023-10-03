@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 
-namespace StarkBankMVP
+namespace StarkBankExcel
 {
     public partial class Credentials
     {

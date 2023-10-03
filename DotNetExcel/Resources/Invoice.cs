@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace StarkBankMVP.Resources
+namespace StarkBankExcel.Resources
 {
     internal class Invoice
     {
