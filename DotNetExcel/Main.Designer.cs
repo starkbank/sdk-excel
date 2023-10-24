@@ -42,6 +42,10 @@ namespace StarkBankExcel {
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button9;
         
+        internal Microsoft.Office.Tools.Excel.Controls.Button button10;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button11;
+        
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -162,6 +166,8 @@ namespace StarkBankExcel {
             this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "1D58F8DCE161321493A19D8C10118F3363B411", "1D58F8DCE161321493A19D8C10118F3363B411", this, "button1");
             this.button8 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "10F831FB013D30140151820D1AB0BB140FD961", "10F831FB013D30140151820D1AB0BB140FD961", this, "button8");
             this.button9 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "28A34ED1D2633F2429D291182761C070389522", "28A34ED1D2633F2429D291182761C070389522", this, "button9");
+            this.button10 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "23FDAD7A329F60245422A56B22EA1482F84402", "23FDAD7A329F60245422A56B22EA1482F84402", this, "button10");
+            this.button11 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2EF132486228D8243F428A6C298561D10E6622", "2EF132486228D8243F428A6C298561D10E6622", this, "button11");
         }
         
         /// 
@@ -258,6 +264,22 @@ namespace StarkBankExcel {
             this.button9.Text = "Históricos de Boletos Emitidos";
             this.button9.UseVisualStyleBackColor = false;
             // 
+            // button10
+            // 
+            this.button10.BackColor = System.Drawing.SystemColors.Control;
+            this.button10.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button10.Name = "button10";
+            this.button10.Text = "Consulta de Compras Realizadas";
+            this.button10.UseVisualStyleBackColor = false;
+            // 
+            // button11
+            // 
+            this.button11.BackColor = System.Drawing.SystemColors.Control;
+            this.button11.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button11.Name = "button11";
+            this.button11.Text = "Extrato de Compras Realizadas";
+            this.button11.UseVisualStyleBackColor = false;
+            // 
             // Main
             // 
             this.login.BindingContext = this.BindingContext;
@@ -271,6 +293,8 @@ namespace StarkBankExcel {
             this.button1.BindingContext = this.BindingContext;
             this.button8.BindingContext = this.BindingContext;
             this.button9.BindingContext = this.BindingContext;
+            this.button10.BindingContext = this.BindingContext;
+            this.button11.BindingContext = this.BindingContext;
         }
         
         /// 

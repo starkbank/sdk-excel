@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
 using StarkBankExcel.Forms;
+using StarkBankExcel.Resources;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 
@@ -38,6 +39,8 @@ namespace StarkBankExcel
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             this.button8.Click += new System.EventHandler(this.button8_Click);
             this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             this.Startup += new System.EventHandler(this.Planilha1_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha1_Shutdown);
 
@@ -100,6 +103,16 @@ namespace StarkBankExcel
         {
             ViewHelpForm viewHelpForm = new ViewHelpForm();
             viewHelpForm.ShowDialog();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            Globals.Planilha12.Activate();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            Globals.Planilha11.Activate();
         }
     }
 }

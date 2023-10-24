@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(4)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(3)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class Planilha12 : Microsoft.Office.Tools.Excel.WorksheetBase {
         
@@ -27,6 +27,8 @@ namespace StarkBankExcel {
         internal Microsoft.Office.Tools.Excel.Controls.Button button4;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button5;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button6;
         
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -141,6 +143,7 @@ namespace StarkBankExcel {
             this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "5FE4E9EDE5117D54C395AB0B52D849B4179075", "5FE4E9EDE5117D54C395AB0B52D849B4179075", this, "button3");
             this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "690DE6C82662BD648A469A3C645736EF297746", "690DE6C82662BD648A469A3C645736EF297746", this, "button4");
             this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "71F4FF3617034374D487A4537B51302A0C89B7", "71F4FF3617034374D487A4537B51302A0C89B7", this, "button5");
+            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "80815DC5B82C3B8498489E26894C5C52875E28", "80815DC5B82C3B8498489E26894C5C52875E28", this, "button6");
         }
         
         /// 
@@ -180,10 +183,19 @@ namespace StarkBankExcel {
             this.button5.Name = "button5";
             this.button5.Text = "Sair da Conta";
             this.button5.UseVisualStyleBackColor = false;
+            // 
+            // button6
+            // 
+            this.button6.BackColor = System.Drawing.SystemColors.Control;
+            this.button6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button6.Name = "button6";
+            this.button6.Text = "Baixar Anexos Selecionados";
+            this.button6.UseVisualStyleBackColor = false;
             this.button1.BindingContext = this.BindingContext;
             this.button3.BindingContext = this.BindingContext;
             this.button4.BindingContext = this.BindingContext;
             this.button5.BindingContext = this.BindingContext;
+            this.button6.BindingContext = this.BindingContext;
         }
         
         /// 

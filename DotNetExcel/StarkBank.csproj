@@ -71,6 +71,10 @@
     This section specifies references for the project.
   -->
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -128,10 +132,6 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <Private>False</Private>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <Private>False</Private>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
@@ -222,6 +222,7 @@
       <DependentUpon>cardPurchase.Designer.xml</DependentUpon>
     </Compile>
     <Compile Include="Resources\Balance.cs" />
+    <Compile Include="Resources\corporateAttachment.cs" />
     <Compile Include="Resources\corporatePurchase.cs" />
     <Compile Include="Resources\Session.cs" />
     <Compile Include="Resources\CorporateTransaction.cs" />
@@ -460,7 +461,8 @@
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="StarkBank.xlsx" HostPackage="{3F2B7691-D1D1-402F-9370-2704A737CF60}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="XLS" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\root\Office16\excel.exe" DebugInfoCommandLine="/x &quot;[$OUTPUT]StarkBank.xlsx&quot;" />
         <Host Name="Excel Document" Path=".\StarkBank.xlsx" GeneratedCodeNamespace="StarkBankExcel" PublishedHash="D01C7293DD6297AAEF5E9F1CE379556CE945D9EB">
-          <HostItem Name="Planilha11" Code="cardStatement.cs" CanonicalName="Planilha11" DisplayName="Cartão Extrato" Blueprint="cardStatement.Designer.xml" GeneratedCode="cardStatement.Designer.cs" />
+          <HostItem Name="Planilha12" Code="cardPurchase.cs" CanonicalName="Planilha12" DisplayName="Compras Cartão" Blueprint="cardPurchase.Designer.xml" GeneratedCode="cardPurchase.Designer.cs" />
+          <HostItem Name="Planilha11" Code="cardStatement.cs" CanonicalName="Planilha11" DisplayName="Extrato Cartão" Blueprint="cardStatement.Designer.xml" GeneratedCode="cardStatement.Designer.cs" />
           <HostItem Name="Planilha2" Code="Credentials.cs" CanonicalName="Planilha2" PublishedHash="4FC7BB5D3D0592F215D94E2807E52C3663F7DCB8" CanActivate="false" DisplayName="Credentials" Blueprint="Credentials.Designer.xml" GeneratedCode="Credentials.Designer.cs" />
           <HostItem Name="Planilha8" Code="GetBoleto.cs" CanonicalName="Planilha8" PublishedHash="DFC9A7F6B17D761EA464BCCE8087EA8A519BEE8A" DisplayName="Consulta de Boletos Emitidos" Blueprint="GetBoleto.Designer.xml" GeneratedCode="GetBoleto.Designer.cs" />
           <HostItem Name="Planilha9" Code="GetBoletoEvents.cs" CanonicalName="Planilha9" PublishedHash="F27FA8DFCE93E19FE59A3DFB5532C829448EE11B" DisplayName="Histórico de Boletos Emitido" Blueprint="GetBoletoEvents.Designer.xml" GeneratedCode="GetBoletoEvents.Designer.cs" />
@@ -468,7 +470,6 @@
           <HostItem Name="Planilha6" Code="GetInvoices.cs" CanonicalName="Planilha6" PublishedHash="0F37384AA6A0EF1F3A9B75ED45529F6608259232" DisplayName="Consulta de Invoice Emitidas" Blueprint="GetInvoices.Designer.xml" GeneratedCode="GetInvoices.Designer.cs" />
           <HostItem Name="Planilha7" Code="GetStatement.cs" CanonicalName="Planilha7" PublishedHash="EF2CA72F560A958334C72B60C8B60807E97BCC4E" DisplayName="Extrato" Blueprint="GetStatement.Designer.xml" GeneratedCode="GetStatement.Designer.cs" />
           <HostItem Name="Planilha1" Code="Main.cs" CanonicalName="Planilha1" PublishedHash="64A287152B40161AC72C90380D6AAE192285B75F" DisplayName="Principal" Blueprint="Main.Designer.xml" GeneratedCode="Main.Designer.cs" />
-          <HostItem Name="Planilha12" Code="cardPurchase.cs" CanonicalName="Planilha12" DisplayName="Cartão Compras" Blueprint="cardPurchase.Designer.xml" GeneratedCode="cardPurchase.Designer.cs" />
           <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="CE6CCED5CD38EBE1A913360F10D181BBF83A07BA" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
           <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="1410D779337A01DB07BECBF2C50CD402C043D50D" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="0696E9ADD17201950E3FB0F452519D928CE01C11" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />

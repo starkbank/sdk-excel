@@ -13,20 +13,20 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(3)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(4)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class Planilha11 : Microsoft.Office.Tools.Excel.WorksheetBase {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
         
-        internal Microsoft.Office.Tools.Excel.Controls.Button button2;
-        
         internal Microsoft.Office.Tools.Excel.Controls.Button button3;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button1;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button4;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
         
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -137,10 +137,10 @@ namespace StarkBankExcel {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeControls() {
-            this.button2 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2630AFF6E240FB248662B7CB2817901B67BB82", "2630AFF6E240FB248662B7CB2817901B67BB82", this, "button2");
             this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "4DD8155564BBBB442F449A794155F293DF1F94", "4DD8155564BBBB442F449A794155F293DF1F94", this, "button3");
             this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "576D85FB2525B8547055A14351ED593B73E215", "576D85FB2525B8547055A14351ED593B73E215", this, "button1");
             this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "6D72D142762FA7648186B99160B384DA4EEAD6", "6D72D142762FA7648186B99160B384DA4EEAD6", this, "button4");
+            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "75E9B6F4C78CB974E3679B0970BD37E29B8E77", "75E9B6F4C78CB974E3679B0970BD37E29B8E77", this, "button5");
         }
         
         /// 
@@ -148,14 +148,6 @@ namespace StarkBankExcel {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeComponents() {
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.SystemColors.Control;
-            this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button2.Name = "button2";
-            this.button2.Text = "Cartão Extrato";
-            this.button2.UseVisualStyleBackColor = false;
             // 
             // button3
             // 
@@ -181,12 +173,20 @@ namespace StarkBankExcel {
             this.button4.Text = "Sair da Conta";
             this.button4.UseVisualStyleBackColor = false;
             // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.SystemColors.Control;
+            this.button5.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button5.Name = "button5";
+            this.button5.Text = "Extrato";
+            this.button5.UseVisualStyleBackColor = false;
+            // 
             // Planilha11
             // 
-            this.button2.BindingContext = this.BindingContext;
             this.button3.BindingContext = this.BindingContext;
             this.button1.BindingContext = this.BindingContext;
             this.button4.BindingContext = this.BindingContext;
+            this.button5.BindingContext = this.BindingContext;
         }
         
         /// 

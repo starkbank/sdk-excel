@@ -31,10 +31,10 @@ namespace StarkBankExcel
         /// </summary>
         private void InternalStartup()
         {
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
             this.button3.Click += new System.EventHandler(this.button3_Click_1);
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             this.Startup += new System.EventHandler(this.Planilha11_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha11_Shutdown);
 
@@ -42,12 +42,23 @@ namespace StarkBankExcel
 
         #endregion
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
-
+            Globals.Main.Activate();
         }
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Utils.LogOut();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
         {
             var worksheet = Globals.Planilha11;
 
@@ -56,13 +67,13 @@ namespace StarkBankExcel
             range.ClearContents();
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Data";
-            worksheet.Range["B" + TableFormat.HeaderRow].Value = "Cartão";
+            worksheet.Range["B" + TableFormat.HeaderRow].Value = "ID";
             worksheet.Range["C" + TableFormat.HeaderRow].Value = "Estabelecimento";
             worksheet.Range["D" + TableFormat.HeaderRow].Value = "Descrição";
-            worksheet.Range["E" + TableFormat.HeaderRow].Value = "Categoria";
-            worksheet.Range["F" + TableFormat.HeaderRow].Value = "Cardholder";
-            worksheet.Range["G" + TableFormat.HeaderRow].Value = "Valor";
-            worksheet.Range["H" + TableFormat.HeaderRow].Value = "Saldo";
+            worksheet.Range["E" + TableFormat.HeaderRow].Value = "Valor";
+            worksheet.Range["F" + TableFormat.HeaderRow].Value = "Saldo";
+            worksheet.Range["G" + TableFormat.HeaderRow].Value = "Source";
+            worksheet.Range["H" + TableFormat.HeaderRow].Value = "Tags";
 
             Dictionary<string, object> optionalParam = new Dictionary<string, object>();
 
@@ -132,34 +143,18 @@ namespace StarkBankExcel
                         JObject purchase = corporatePurchaseById[transactionIndx];
 
                         worksheet.Range["A" + row].Value = transaction["created"].ToString();
-                        worksheet.Range["B" + row].Value = purchase["cardId"].ToString();
-                        worksheet.Range["C" + row].Value = purchase["merchantDisplayName"].ToString();
-                        worksheet.Range["D" + row].Value = purchase["description"].ToString();
-                        worksheet.Range["E" + row].Value = purchase["merchantCategoryType"].ToString();
-                        worksheet.Range["F" + row].Value = purchase["holderId"].ToString();
-                        worksheet.Range["G" + row].Value = transaction["amount"].ToString();
-                        worksheet.Range["H" + row].Value = transaction["balance"].ToString();
+                        worksheet.Range["B" + row].Value = transaction["id"].ToString();
+                        worksheet.Range["C" + row].Value = purchase["merchantName"].ToString();
+                        worksheet.Range["D" + row].Value = transaction["description"].ToString();
+                        worksheet.Range["E" + row].Value = transaction["amount"].ToString();
+                        worksheet.Range["F" + row].Value = transaction["balance"].ToString();
+                        worksheet.Range["G" + row].Value = transaction["source"].ToString();
+                        worksheet.Range["H" + row].Value = Utils.ListToString(transaction["tags"].ToObject<List<string>>(), ",");
 
                         row++;
                     }
                 }
             } while (cursor != null);
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            Globals.Main.Activate();
-        }
-
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            LoginForm loginForm = new LoginForm();
-            loginForm.ShowDialog();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            Utils.LogOut();
         }
     }
 }
