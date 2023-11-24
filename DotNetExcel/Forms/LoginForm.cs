@@ -1,10 +1,10 @@
-﻿using EllipticCurve;
-using Microsoft.Office.Interop.Excel;
+﻿using System;
+using EllipticCurve;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StarkBankExcel.Resources;
-using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel
 {
@@ -35,23 +35,47 @@ namespace StarkBankExcel
             PrivateKey privateKey = new PrivateKey();
             PublicKey publicKey = privateKey.publicKey();
 
-            Dictionary<string, object> teste = new Dictionary<string, object>()
+            Dictionary<string, object> dictObj = new Dictionary<string, object>()
             {
                 { "platform", "web" },
                 { "expiration", 5184000 },
                 { "publicKey", publicKey.toPem() }
             };
 
-            JObject fetchedJson2;
+            Response fetchedJson;
+
+            PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
 
             try
             {
-                fetchedJson2 = Request.Fetch(
+               fetchedJson = V2Request.Fetch(
                     Request.Post,
                     environment,
-                    "auth/session",
-                    teste
-                ).ToJson();
+                    "/session",
+                    dictObj,
+                    null,
+                    keys.toPem()
+                );
+
+                if ( fetchedJson == null )
+                {
+
+                    Dictionary<string, object> payload = new Dictionary<string, object>() {
+                        { "publicKeyPem", keys.publicKey().toPem() },
+                        { "password", password } 
+                    };
+
+                    var result = V2Request.Fetch(
+                        Request.Post,
+                        environment,
+                        "/public-key/migrate",
+                        payload,
+                        null,
+                        keys.toPem()
+                        );
+
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -66,7 +90,7 @@ namespace StarkBankExcel
             Globals.Credentials.Range["B12"].Value = publicKey.toPem();
 
             Globals.Credentials.Range["A13"].Value = "Access ID";
-            Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson2["session"]["id"].ToString();
+            Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
 
 
             Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;

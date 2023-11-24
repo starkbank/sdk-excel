@@ -32,16 +32,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Location = new System.Drawing.Point(23, 27);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(307, 172);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Consulta";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(64, 205);

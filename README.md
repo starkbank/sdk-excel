@@ -11,6 +11,7 @@ O arquivo contém nove abas com diversas funcionalidades:
 6) Consulta a lista de clientes cadastrados como pagadores de boleto;
 7) Consulta boletos por status, incluindo geração de arquivo CNAB400;
 8) Emissão de boletos;
+9) Consulta dados sobre cartão corporativo
 
 ----------------------------------------------------------------------------------------------------------------------------------
 Excel client to integrate with Stark Bank API
@@ -25,3 +26,4 @@ The file consists in nine tabs with different features:
 6) Gets list of customers registered as charge payers;
 7) Gets charges by status, including generation of CNAB400 file;
 8) Issues new charges;
+9) Gets corporate card transaction data

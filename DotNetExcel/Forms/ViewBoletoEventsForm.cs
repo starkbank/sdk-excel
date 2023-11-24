@@ -1,17 +1,17 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Tools.Excel;
-using Newtonsoft.Json.Linq;
-using StarkBankExcel.Resources;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.Net.Sockets;
+using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using StarkBankExcel.Resources;
+using System.Collections.Generic;
+using Microsoft.Office.Tools.Excel;
+using Microsoft.Office.Interop.Excel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StarkBankExcel.Forms
@@ -84,9 +84,10 @@ namespace StarkBankExcel.Forms
 
             string cursor = "";
 
+            optionalParam.Add("types", events);
+
             if (events != "credited,")
             {
-                optionalParam.Add("types", events);
 
                 do
                 {
@@ -142,8 +143,6 @@ namespace StarkBankExcel.Forms
                 Close();
                 return;
             }
-
-            optionalParam.Add("types", events);
 
             do
             {

@@ -2,9 +2,9 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
-using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankMVP
 {
@@ -27,14 +27,12 @@ namespace StarkBankMVP
         private void InternalStartup()
         {
             this.login.Click += new System.EventHandler(this.button1_Click);
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             this.transferOrder.Click += new System.EventHandler(this.transferOrder_Click);
             this.getDictKey.Click += new System.EventHandler(this.getDictKey_Click);
             this.Invoice.Click += new System.EventHandler(this.Invoice_Click);
             this.button7.Click += new System.EventHandler(this.button7_Click);
             this.Startup += new System.EventHandler(this.Planilha1_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha1_Shutdown);
-
         }
 
         #endregion
@@ -43,11 +41,6 @@ namespace StarkBankMVP
         {
             LoginForm loginForm = new LoginForm();
             loginForm.ShowDialog();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void transferOrder_Click(object sender, EventArgs e)

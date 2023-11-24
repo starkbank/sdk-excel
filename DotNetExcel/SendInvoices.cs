@@ -1,10 +1,10 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Tools.Excel;
+﻿using System;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StarkBankExcel.Resources;
-using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Microsoft.Office.Tools.Excel;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel
 {
@@ -98,8 +98,8 @@ namespace StarkBankExcel
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description1 },
-                        {"value", value1 },
+                        { "key", description1 },
+                        { "value", value1 },
                     });
                 }
 
@@ -107,8 +107,8 @@ namespace StarkBankExcel
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description2 },
-                        {"value", value2 },
+                        { "key", description2 },
+                        { "value", value2 },
                     });
                 }
 
@@ -116,16 +116,16 @@ namespace StarkBankExcel
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description3 },
-                        {"value", value3 },
+                        { "key", description3 },
+                        { "value", value3 },
                     });
                 }
 
                 Dictionary<string, object> invoice = new Dictionary<string, object> {
-                    {"amount", amount },
-                    {"taxId", taxID },
-                    {"name", name},
-                    {"descriptions" , descriptions }
+                    { "amount", amount },
+                    { "taxId", taxID },
+                    { "name", name },
+                    { "descriptions" , descriptions }
                 };
 
                 if (due != null) invoice.Add("due", new StarkDateTime(due).ToString());
@@ -181,7 +181,7 @@ namespace StarkBankExcel
         {
             var worksheet = Globals.SendInvoices;
 
-            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":M1048576"];
+            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();
         }
     }

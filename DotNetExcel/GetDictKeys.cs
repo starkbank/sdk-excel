@@ -1,11 +1,11 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.Office.Tools.Excel;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel
 {
@@ -131,7 +131,7 @@ namespace StarkBankExcel
                 if(name != null && accountType != null)
                 {
                     validTransfers.Add(new Dictionary<string, object> {
-                            {"Nome", name},
+                            {"Nome", name },
                             {"CPF/CNPJ", taxID },
                             {"Valor", value },
                             {"ISPB", ispb },

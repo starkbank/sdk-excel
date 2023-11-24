@@ -1,9 +1,9 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using System;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StarkBankMVP.Resources;
-using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankMVP
 {
@@ -89,8 +89,8 @@ namespace StarkBankMVP
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description1 },
-                        {"value", value1 },
+                        { "key", description1 },
+                        { "value", value1 },
                     });
                 }
 
@@ -98,8 +98,8 @@ namespace StarkBankMVP
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description2 },
-                        {"value", value2 },
+                        { "key", description2 },
+                        { "value", value2 },
                     });
                 }
 
@@ -107,16 +107,16 @@ namespace StarkBankMVP
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description3 },
-                        {"value", value3 },
+                        { "key", description3 },
+                        { "value", value3 },
                     });
                 }
 
                 Dictionary<string, object> invoice = new Dictionary<string, object> {
-                    {"amount", amount },
-                    {"taxId", taxID },
-                    {"name", name},
-                    {"descriptions" , descriptions }
+                    { "amount", amount },
+                    { "taxId", taxID },
+                    { "name", name },
+                    { "descriptions" , descriptions }
                 };
 
                 if (due != null) invoice.Add("due", new StarkDateTime(due).ToString());

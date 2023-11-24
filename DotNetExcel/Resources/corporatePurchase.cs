@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel.Resources
@@ -30,8 +30,6 @@ namespace StarkBankExcel.Resources
                     }
                 }
             }
-
-            //MessageBox.Show(query);
 
             return V2Request.Fetch(
                 V2Request.Get,

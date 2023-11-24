@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace StarkBankExcel.Resources
 {
@@ -9,32 +9,31 @@ namespace StarkBankExcel.Resources
     {
         public static void Create(string workspace, string environment, string email, string password)
         {
-            Dictionary<string, object> payload = new Dictionary<string, object>()
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage
             {
-                { "workspace", workspace },
-                { "email", email },
-                { "password", password },
-                { "platform", "web" }
+                Method = new HttpMethod("GET"),
+                RequestUri = new Uri(Utils.BaseUrl(environment) + "v2/workspace?username=" + workspace)
             };
 
-            JObject fetchedJson;
+            HttpClient Client = new HttpClient();
+            Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
 
-            try
-            {
-                fetchedJson = Request.Fetch(
-                    Request.Post,
-                    environment,
-                    "auth/access-token",
-                    payload
-                ).ToJson();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            SaveSession(workspace, environment, email, fetchedJson["accessToken"].ToString(), 
-                        fetchedJson["member"]["name"].ToString(), fetchedJson["member"]["workspaceId"].ToString());
+            var result = Client.SendAsync(httpRequestMessage).Result;
+
+            Response response = new Response(
+                result.Content.ReadAsByteArrayAsync().Result,
+                (int)result.StatusCode
+                );
+
+            var workSpaceId = response.ToJson()["workspaces"][0]["id"];
+            var memberName = response.ToJson()["workspaces"][0]["username"];
+
+            SaveSession(workspace, environment, email, "", 
+                        memberName.ToString(), workSpaceId.ToString());
         }
 
         public static void Delete()
@@ -42,11 +41,11 @@ namespace StarkBankExcel.Resources
             JObject fetchedJson;
             try
             {
-                fetchedJson = Request.Fetch(
+                fetchedJson = V2Request.Fetch(
                     Request.Delete,
                     Globals.Credentials.Range["B3"].Value,
-                    "auth/access-token/" + Globals.Credentials.Range["B4"].Value
-                ).ToJson();
+                    "session/" + Globals.Credentials.Range["B13"].Value.Split("/")[1]
+               ).ToJson();
             } catch (Exception) { }
             
             SaveSession("", "", "", "", "", "");

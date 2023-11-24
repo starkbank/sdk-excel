@@ -1,16 +1,16 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Tools.Excel;
-using Newtonsoft.Json.Linq;
-using StarkBankExcel.Resources;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using System;
 using System.Linq;
+using System.Data;
 using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using StarkBankExcel.Resources;
+using System.Collections.Generic;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Tools.Excel;
 
 namespace StarkBankExcel.Forms
 {
@@ -23,20 +23,15 @@ namespace StarkBankExcel.Forms
 
         private void ViewChargeForm_Load(object sender, EventArgs e)
         {
-            statusInput.Items.Add("Todos");
-            statusInput.Items.Add("Pagos");
-            statusInput.Items.Add("Criados");
-            statusInput.Items.Add("Pendentes de Registro");
-            statusInput.Items.Add("Registrados");
-            statusInput.Items.Add("Vencidos");
-            statusInput.Items.Add("Cancelados");
 
-            statusInput.Text = "Todos";
+        }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
             periodInput.Text = "Intervalo";
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
             var worksheet = Globals.GetBoleto;
 
@@ -48,13 +43,13 @@ namespace StarkBankExcel.Forms
             string beforeString = beforeInput.Text;
             string before = new StarkDate(beforeString).ToString();
 
-            string statusString = statusInput.Text;
+            string statusString = comboBox1.Text;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
             Range range = worksheet.Range["A" + TableFormat.HeaderRow + ":V" + lastRow];
             range.ClearContents();
 
-            worksheet.Range["A" + TableFormat.HeaderRow].Value = " Data de Emissão";
+            worksheet.Range["A" + TableFormat.HeaderRow].Value = "Data de Emissão";
             worksheet.Range["B" + TableFormat.HeaderRow].Value = "Nome";
             worksheet.Range["C" + TableFormat.HeaderRow].Value = "CPF/CNPJ";
             worksheet.Range["D" + TableFormat.HeaderRow].Value = "Status";
@@ -132,7 +127,7 @@ namespace StarkBankExcel.Forms
                     rng.Value = "PDF";
                     Hyperlink link = rng.Hyperlinks.Add(rng, Utils.BaseUrl(Globals.Credentials.Range["B3"].Value) + "/v2/boleto/" + id + "/pdf");
 
-                    if(DetailedCheckBox.Checked)
+                    if(OptionButtonEventCredited.Checked)
                     {
                         worksheet.Range["Q" + row].Value = boleto["streetLine1"];
                         worksheet.Range["R" + row].Value = boleto["streetLine2"];
@@ -150,7 +145,7 @@ namespace StarkBankExcel.Forms
                     row++;
                 }
 
-                if (DetailedCheckBox.Checked)
+                if (OptionButtonEventCredited.Checked)
                 {
                     Dictionary<string, object> logsParam = new Dictionary<string, object>
                     {
@@ -207,7 +202,11 @@ namespace StarkBankExcel.Forms
 
                     foreach(JObject boleto in boletos)
                     {
-                        if ((string) boleto["status"] == "paid") SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string) boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
+                        if ((string) boleto["status"] == "paid")
+                            {
+                                SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string) boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
+                            };                            
+
                         logRow++;
                     }
 
@@ -299,54 +298,15 @@ namespace StarkBankExcel.Forms
             }
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
+        private void OptionButtonEventCredited_CheckedChanged(object sender, EventArgs e)
         {
-
-        }
-
-        private void DetailedCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void periodInput_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void beforeInput_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void afterInput_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void statusInput_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            if (OptionButtonEventCredited.Checked)
+            {
+                OptionButtonEventCredited.Checked = true;
+            } else
+            {
+                OptionButtonEventCredited.Checked = false;
+            }
         }
     }
 }

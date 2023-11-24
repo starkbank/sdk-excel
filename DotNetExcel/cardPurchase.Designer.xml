@@ -490,7 +490,7 @@
 <CodeObject_x002B_userData href="#ref-268"/>
 </a1:CodePropertyReferenceExpression>
 <a1:CodePrimitiveExpression id="ref-73" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/System.CodeDom/System%2C%20Version%3D4.0.0.0%2C%20Culture%3Dneutral%2C%20PublicKeyToken%3Db77a5c561934e089">
-<value id="ref-269" xsi:type="SOAP-ENC:string">Cartão Compras</value>
+<value id="ref-269" xsi:type="SOAP-ENC:string">Compras</value>
 <CodeObject_x002B_userData href="#ref-270"/>
 </a1:CodePrimitiveExpression>
 <a1:CodeDirectiveCollection id="ref-74" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/System.CodeDom/System%2C%20Version%3D4.0.0.0%2C%20Culture%3Dneutral%2C%20PublicKeyToken%3Db77a5c561934e089">

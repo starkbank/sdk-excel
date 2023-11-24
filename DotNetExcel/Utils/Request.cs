@@ -1,19 +1,21 @@
-﻿using StarkBankExcel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net;
-using System.Net.Http;
-using System.Security.Policy;
+using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using EllipticCurve;
+using StarkBankExcel;
+using System.Net.Http;
 using System.Windows.Forms;
+using System.Globalization;
+using System.Threading.Tasks;
+using System.Security.Policy;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace StarkBankExcel
 {
-    internal class Request
+    internal class V2Request
     {
-
         private static HttpClient makeClient()
         {
             HttpClient client = new HttpClient();
@@ -33,21 +35,34 @@ namespace StarkBankExcel
             Dictionary<string, object> query = null
         )
         {
-            ServicePointManager.SecurityProtocol= SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            string url = Utils.BaseUrl(environment) + "v1/" + path;
+            string url = Utils.BaseUrl(environment) + "v2/" + path;
 
             if (query != null)
             {
                 url += Url.Encode(query);
             }
 
+            string accessTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(new CultureInfo("en-US"));
+            string accessId = Globals.Credentials.Range["B13"].Value;
             string body = "";
 
-            if (body != null)
+            if (payload != null)
             {
                 body = Json.Encode(payload);
             }
+
+            string privateKeyPem = Globals.Credentials.Range["B11"].Value;
+
+            if(privateKeyPem == null)
+            {
+                throw new Exception("Credenciais Inválidas, necessário realizar Login novamente!");
+            }
+            PrivateKey privateKey = PrivateKey.fromPem(privateKeyPem);
+
+            string message = accessId + ":" + accessTime + ":" + body;
+            string signature = Ecdsa.sign(message, privateKey).toBase64();
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
             {
@@ -59,9 +74,9 @@ namespace StarkBankExcel
                 httpRequestMessage.Content = new StringContent(body);
             }
 
-            string accessToken = Globals.Credentials.Range["B4"].Value;
-
-            httpRequestMessage.Headers.TryAddWithoutValidation("Access-Token", accessToken);
+            httpRequestMessage.Headers.TryAddWithoutValidation("Access-Id", accessId);
+            httpRequestMessage.Headers.TryAddWithoutValidation("Access-Time", accessTime);
+            httpRequestMessage.Headers.TryAddWithoutValidation("Access-Signature", signature);
             httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
 

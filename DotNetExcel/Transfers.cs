@@ -1,11 +1,11 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
-using System;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
@@ -65,8 +65,7 @@ namespace StarkBankExcel
         {
             var worksheet = Globals.Transfers;
 
-            int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            Range range = worksheet.Range["A" + TableFormat.HeaderRow + ":I" + lastRow];
+            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();
         }
     }

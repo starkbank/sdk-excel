@@ -1,10 +1,10 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Office.Interop.Excel;
+using System.Text.RegularExpressions;
 
 namespace StarkBankExcel
 {
@@ -21,9 +21,11 @@ namespace StarkBankExcel
 
             label2.Visible = false;
 
+            Dictionary<string, object> query = new Dictionary<string, object>() { { "fields", "id, name, badgeCount" } };
+
             try
             {
-                 costCenter = CostCenter.Get();
+                 costCenter = CostCenter.Get(null, query);
             }
             catch (Exception ex)
             {
@@ -107,13 +109,13 @@ namespace StarkBankExcel
                     else
                     {
                         Dictionary<string, object> payment = new Dictionary<string, object> {
-                            {"amount", amount },
-                            {"taxId", taxID },
-                            {"name", name},
-                            {"bankCode", ispb },
-                            {"branchCode", branchCode },
-                            {"accountNumber", accountNumber },
-                            {"accountType", accountType }
+                            { "amount", amount },
+                            { "taxId", taxID },
+                            { "name", name },
+                            { "bankCode", ispb },
+                            { "branchCode", branchCode },
+                            { "accountNumber", accountNumber },
+                            { "accountType", accountType }
                         };
 
 
@@ -125,9 +127,9 @@ namespace StarkBankExcel
                         externalIds.Add(calculatedExternalID);
 
                         orders.Add(new Dictionary<string, object> {
-                            {"centerId", teamId },
-                            {"type", "transfer" },
-                            {"payment", payment }
+                            { "centerId", teamId },
+                            { "type", "transfer" },
+                            { "payment", payment }
                         });
                     }
                 }

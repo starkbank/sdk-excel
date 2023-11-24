@@ -1,14 +1,14 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
-using Newtonsoft.Json.Linq;
-using StarkBankExcel.Resources;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+using Newtonsoft.Json.Linq;
+using StarkBankExcel.Resources;
+using System.Collections.Generic;
+using Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
@@ -31,7 +31,10 @@ namespace StarkBankExcel
         private void InternalStartup()
         {
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button6.Click += new System.EventHandler(this.button6_Click_1);
             this.Startup += new System.EventHandler(this.Planilha10_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha10_Shutdown);
 
@@ -44,8 +47,6 @@ namespace StarkBankExcel
             var worksheet = Globals.SendBoleto;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            Range range = worksheet.Range["A" + TableFormat.HeaderRow + ":S" + lastRow];
-            range.ClearContents();
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Nome";
             worksheet.Range["B" + TableFormat.HeaderRow].Value = "CPF/CNPJ";
@@ -85,28 +86,34 @@ namespace StarkBankExcel
 
                 string name = worksheet.Range["A" + row].Value?.ToString();
                 string taxID = worksheet.Range["B" + row].Value?.ToString();
-                string amountString = worksheet.Range["C" + row].Value?.ToString();
+                string streetLine1 = worksheet.Range["C" + row].Value?.ToString();
+                string streetLine2 = worksheet.Range["D" + row].Value?.ToString();
+                string district = worksheet.Range["E" + row].Value?.ToString();
+                string city = worksheet.Range["F" + row].Value?.ToString();
+                string stateCode = worksheet.Range["G" + row].Value?.ToString();
+                string zipCode = worksheet.Range["H" + row].Value?.ToString();
+                string amountString = worksheet.Range["I" + row].Value?.ToString();
                 int amount = int.Parse(amountString);
-                string due = worksheet.Range["D" + row].Value?.ToString();
-                string fineString = worksheet.Range["E" + row].Value?.ToString();
-                string interestString = worksheet.Range["F" + row].Value?.ToString().Replace(",", ".");
-                string expirationString = worksheet.Range["G" + row].Value?.ToString().Replace(",", ".");
+                string due = worksheet.Range["J" + row].Value?.ToString();
+                string fineString = worksheet.Range["K" + row].Value?.ToString();
+                string interestString = worksheet.Range["L" + row].Value?.ToString().Replace(",", ".");
+                string expirationString = worksheet.Range["M" + row].Value?.ToString().Replace(",", ".");
 
                 List<Dictionary<string, string>> descriptions = new List<Dictionary<string, string>>();
-
-                string description1 = worksheet.Range["H" + row].Value?.ToString();
-                string value1 = worksheet.Range["I" + row].Value?.ToString();
-                string description2 = worksheet.Range["J" + row].Value?.ToString();
-                string value2 = worksheet.Range["K" + row].Value?.ToString();
-                string description3 = worksheet.Range["L" + row].Value?.ToString();
-                string value3 = worksheet.Range["M" + row].Value?.ToString();
+                
+                string description1 = worksheet.Range["N" + row].Value?.ToString();
+                string value1 = worksheet.Range["O" + row].Value?.ToString();
+                string description2 = worksheet.Range["P" + row].Value?.ToString();
+                string value2 = worksheet.Range["Q" + row].Value?.ToString();
+                string description3 = worksheet.Range["R" + row].Value?.ToString();
+                string value3 = worksheet.Range["S" + row].Value?.ToString();
 
                 if (description1 != null && value1 != null)
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description1 },
-                        {"value", value1 },
+                        { "key", description1 },
+                        { "value", value1 },
                     });
                 }
 
@@ -114,8 +121,8 @@ namespace StarkBankExcel
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description2 },
-                        {"value", value2 },
+                        { "key", description2 },
+                        { "value", value2 },
                     });
                 }
 
@@ -123,19 +130,25 @@ namespace StarkBankExcel
                 {
                     descriptions.Add(new Dictionary<string, string>
                     {
-                        {"key", description3 },
-                        {"value", value3 },
+                        { "key", description3 },
+                        { "value", value3 },
                     });
                 }
 
                 Dictionary<string, object> boleto = new Dictionary<string, object> {
-                    {"amount", amount },
-                    {"taxId", taxID },
-                    {"name", name},
-                    {"descriptions" , descriptions }
+                    { "name", name },
+                    { "taxId", taxID },
+                    { "streetLine1", streetLine1 },
+                    { "streetLine2", streetLine2 },
+                    { "district", district },
+                    { "city", city },
+                    { "stateCode", stateCode },
+                    { "zipCode", zipCode },
+                    { "amount", amount },
+                    { "descriptions" , descriptions }
                 };
 
-                if (due != null) boleto.Add("due", new StarkDateTime(due).ToString());
+                if (due != null) boleto.Add("due", new StarkDate(due).ToString());
                 if (expirationString != null) boleto.Add("expiration", int.Parse(expirationString));
                 if (fineString != null) boleto.Add("fine", float.Parse(fineString));
                 if (interestString != null) boleto.Add("interest", float.Parse(interestString));
@@ -168,12 +181,28 @@ namespace StarkBankExcel
             MessageBox.Show(warningMessage + returnMessage + errorMessage);
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Globals.Main.Activate();
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
         {
             var worksheet = Globals.SendBoleto;
 
-            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":S1048576"];
+            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Utils.LogOut();
         }
     }
 }

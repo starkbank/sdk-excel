@@ -2,11 +2,11 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
 using StarkBankExcel.Forms;
 using StarkBankExcel.Resources;
-using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
@@ -30,7 +30,6 @@ namespace StarkBankExcel
         {
             this.login.Click += new System.EventHandler(this.button1_Click);
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             this.transferOrder.Click += new System.EventHandler(this.transferOrder_Click);
             this.getDictKey.Click += new System.EventHandler(this.getDictKey_Click);
             this.Invoice.Click += new System.EventHandler(this.Invoice_Click);
@@ -43,7 +42,6 @@ namespace StarkBankExcel
             this.button11.Click += new System.EventHandler(this.button11_Click);
             this.Startup += new System.EventHandler(this.Planilha1_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha1_Shutdown);
-
         }
 
         #endregion
@@ -52,11 +50,6 @@ namespace StarkBankExcel
         {
             LoginForm loginForm = new LoginForm();
             loginForm.ShowDialog();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void transferOrder_Click(object sender, EventArgs e)

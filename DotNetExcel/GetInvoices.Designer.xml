@@ -496,7 +496,7 @@
 <CodeObject_x002B_userData href="#ref-271"/>
 </a1:CodePropertyReferenceExpression>
 <a1:CodePrimitiveExpression id="ref-74" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/System.CodeDom/System%2C%20Version%3D4.0.0.0%2C%20Culture%3Dneutral%2C%20PublicKeyToken%3Db77a5c561934e089">
-<value id="ref-272" xsi:type="SOAP-ENC:string">Emitir Invoice Pix</value>
+<value id="ref-272" xsi:type="SOAP-ENC:string">Consultar Invoice Pix</value>
 <CodeObject_x002B_userData href="#ref-273"/>
 </a1:CodePrimitiveExpression>
 <a1:CodeDirectiveCollection id="ref-75" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/System.CodeDom/System%2C%20Version%3D4.0.0.0%2C%20Culture%3Dneutral%2C%20PublicKeyToken%3Db77a5c561934e089">

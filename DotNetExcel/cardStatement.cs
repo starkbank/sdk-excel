@@ -1,15 +1,15 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
-using Newtonsoft.Json.Linq;
-using StarkBankExcel.Forms;
-using StarkBankExcel.Resources;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Drawing;
+using StarkBankExcel.Forms;
+using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+using StarkBankExcel.Resources;
+using System.Collections.Generic;
+using Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
@@ -31,23 +31,22 @@ namespace StarkBankExcel
         /// </summary>
         private void InternalStartup()
         {
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             this.button4.Click += new System.EventHandler(this.button4_Click);
             this.button5.Click += new System.EventHandler(this.button5_Click);
             this.Startup += new System.EventHandler(this.Planilha11_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha11_Shutdown);
-
         }
 
         #endregion
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             Globals.Main.Activate();
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
             LoginForm loginForm = new LoginForm();
             loginForm.ShowDialog();
@@ -103,18 +102,18 @@ namespace StarkBankExcel
 
                 JArray transactions = (JArray)respJson["transactions"];
 
-                string queryStr = "";
+                string query = "";
 
                 foreach (JObject transaction in transactions)
                 {
                     if (transaction["source"].ToString().Substring(0, 19) == "corporate-purchase/")
                     {
-                        queryStr = queryStr + transaction["source"].ToString().Substring(19) + ",";
+                        query = query + transaction["source"].ToString().Substring(19) + ",";
                     }
                 }
 
                 Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
-                keyValuePairs.Add("ids", queryStr);
+                keyValuePairs.Add("ids", query);
 
                 JObject respJson2;
 

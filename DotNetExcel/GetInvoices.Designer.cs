@@ -157,7 +157,7 @@ namespace StarkBankExcel {
             this.button1.BackColor = System.Drawing.SystemColors.Control;
             this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button1.Name = "button1";
-            this.button1.Text = "Emitir Invoice Pix";
+            this.button1.Text = "Consultar Invoice Pix";
             this.button1.UseVisualStyleBackColor = false;
             // 
             // button3
