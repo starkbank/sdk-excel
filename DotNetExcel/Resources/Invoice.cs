@@ -50,5 +50,16 @@ namespace StarkBankExcel.Resources
                 "invoice/" + query
             ).ToJson();
         }
+
+        public static JObject Update(string id, Dictionary<string, object> payload)
+        {
+
+            return Request.Fetch(
+                Request.Patch,
+                Globals.Credentials.Range["B3"].Value,
+                "invoice/" + id,
+                payload
+            ).ToJson();
+        }
     }
 }
