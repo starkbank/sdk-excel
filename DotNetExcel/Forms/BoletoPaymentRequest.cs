@@ -1,34 +1,64 @@
-﻿using System;
-using System.Data;
-using System.Text;
-using System.Linq;
-using EllipticCurve;
-using System.Drawing;
-using System.Diagnostics;
-using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using StarkBankExcel.Resources;
-using System.Collections.Generic;
+﻿using EllipticCurve;
 using Microsoft.Office.Interop.Excel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using Newtonsoft.Json.Linq;
+using StarkBankExcel.Resources;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StarkBankExcel.Forms
 {
-    public partial class BoletoPaymentForm : Form
+    public partial class BoletoPaymentRequest : Form
     {
-        public BoletoPaymentForm()
+        public BoletoPaymentRequest()
         {
             InitializeComponent();
         }
 
-        private void BoletoPayment_Load(object sender, EventArgs e)
+        private void BoletoPaymentRequest_Load(object sender, EventArgs e)
         {
+            JObject costCenter;
 
+            label2.Visible = false;
+
+            Dictionary<string, object> query = new Dictionary<string, object>() { { "fields", "id, name, badgeCount" } };
+
+            try
+            {
+                costCenter = CostCenter.Get(null, query);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), "Erro na Requisiçâo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+                return;
+            }
+
+            var teams = costCenter["centers"];
+
+            foreach (JObject t in teams)
+            {
+                comboBox1.Items.Add(t["name"].ToString() + " ( id = " + t["id"] + " )");
+            }
         }
-        private void Login_Click(object sender, EventArgs e)
+
+        private void button1_Click(object sender, EventArgs e)
         {
+            var worksheet = Globals.BoletoPayment;
+
+            label2.Visible = true;
+
+            string teamId = comboBox1.SelectedItem.ToString();
+            string pattern = @"(?<=id\s=\s)\d+";
+
+            teamId = Regex.Match(teamId, pattern).Value;
 
             string email = Email.Text.ToLower();
             string password = Password.Text.ToString();
@@ -36,8 +66,6 @@ namespace StarkBankExcel.Forms
             PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
 
             string privateKeyPem = keys.toPem();
-
-            var worksheet = Globals.BoletoPayment;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
 
@@ -70,6 +98,8 @@ namespace StarkBankExcel.Forms
                 string description = worksheet.Range["D" + row].Value?.ToString();
                 string tags = worksheet.Range["E" + row].Value?.ToString();
 
+                Dictionary<string, object> payment = new Dictionary<string, object>();
+
                 Dictionary<string, object> boleto = new Dictionary<string, object> {
                     { "taxId", taxId },
                     { "description", description },
@@ -95,7 +125,11 @@ namespace StarkBankExcel.Forms
                     boleto.Add("barCode", line);
                 }
 
-                boletos.Add(boleto);
+                payment.Add("centerId", teamId);
+                payment.Add("type", "boleto-payment");
+                payment.Add("payment", boleto);
+
+                boletos.Add(payment);
 
                 boletoPaymentNumbers.Add(iteration);
 
@@ -105,7 +139,7 @@ namespace StarkBankExcel.Forms
 
                     try
                     {
-                        JObject res = BoletoPaymentClass.Create(new Dictionary<string, object>() { { "payments", boletos } }, privateKeyPem);
+                        JObject res = PaymentRequest.Create(boletos, privateKeyPem);
 
                         string createoBoletoPayment = (string)res["message"];
                         returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createoBoletoPayment + "\n";
@@ -120,7 +154,28 @@ namespace StarkBankExcel.Forms
                 }
             }
             MessageBox.Show(warningMessage + returnMessage + errorMessage);
+
+
         }
 
+        private void Email_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Password_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
