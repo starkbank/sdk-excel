@@ -12,7 +12,7 @@ namespace StarkBankExcel.Resources
                 { "boletos", payloads }
             };
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Post,
                 Globals.Credentials.Range["B3"].Value,
                 "boleto",
@@ -44,7 +44,7 @@ namespace StarkBankExcel.Resources
                 }
             }
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Get,
                 Globals.Credentials.Range["B3"].Value,
                 "boleto/" + query
@@ -77,7 +77,7 @@ namespace StarkBankExcel.Resources
                     }
                 }
 
-                return V2Request.Fetch(
+                return Request.Fetch(
                     V2Request.Get,
                     Globals.Credentials.Range["B3"].Value,
                     "boleto/log/" + query

@@ -104,7 +104,7 @@ namespace StarkBankExcel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var worksheet = Globals.SendBoleto;
+            var worksheet = Globals.InvoiceRevesal;
 
             Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();

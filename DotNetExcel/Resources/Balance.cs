@@ -7,7 +7,7 @@ namespace StarkBankExcel.Resources
     {
         public static double Get()
         {
-            JObject respJson = V2Request.Fetch(
+            JObject respJson = Request.Fetch(
                 V2Request.Get,
                 Globals.Credentials.Range["B3"].Value,
                 "balance"

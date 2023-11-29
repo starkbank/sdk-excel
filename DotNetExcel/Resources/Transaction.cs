@@ -30,7 +30,7 @@ namespace StarkBankExcel.Resources
                 }
             }
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Get,
                 Globals.Credentials.Range["B3"].Value,
                 "transaction/" + query

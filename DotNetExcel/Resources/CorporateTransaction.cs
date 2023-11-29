@@ -15,7 +15,7 @@ namespace StarkBankExcel.Resources
                 query = "?cursor=" + cursor;
             }
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Get,
                 Globals.Credentials.Range["B3"].Value,
                 "corporate-transaction" + query

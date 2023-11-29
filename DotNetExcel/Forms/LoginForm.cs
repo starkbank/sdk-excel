@@ -48,7 +48,7 @@ namespace StarkBankExcel
 
             try
             {
-               fetchedJson = V2Request.Fetch(
+               fetchedJson = Request.Fetch(
                     Request.Post,
                     environment,
                     "/session",
@@ -65,7 +65,7 @@ namespace StarkBankExcel
                         { "password", password } 
                     };
 
-                    var result = V2Request.Fetch(
+                    var result = Request.Fetch(
                         Request.Post,
                         environment,
                         "/public-key/migrate",

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Data;
 using System.Linq;
+using System.Data;
 using System.Drawing;
 using System.Net.Mail;
-using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System.Diagnostics;
 using System.Configuration;
+using System.Windows.Forms;
+using StarkBankExcel.Forms;
+using Newtonsoft.Json.Linq;
 using StarkBankExcel.Resources;
 using System.Collections.Generic;
 using Microsoft.Office.Tools.Excel;
+using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -31,6 +35,7 @@ namespace StarkBankExcel
             this.button4.Click += new System.EventHandler(this.button4_Click);
             this.button5.Click += new System.EventHandler(this.button5_Click);
             this.button6.Click += new System.EventHandler(this.button6_Click);
+
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -46,76 +51,8 @@ namespace StarkBankExcel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var worksheet = Globals.Planilha12;
-
-            int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            Range range = worksheet.Range["A" + TableFormat.HeaderRow + ":V" + lastRow];
-            range.ClearContents();
-
-            worksheet.Range["A" + TableFormat.HeaderRow].Value = "Data";
-            worksheet.Range["B" + TableFormat.HeaderRow].Value = "ID Compra";
-            worksheet.Range["C" + TableFormat.HeaderRow].Value = "Categoria";
-            worksheet.Range["D" + TableFormat.HeaderRow].Value = "Estabelecimento";
-            worksheet.Range["E" + TableFormat.HeaderRow].Value = "Descrição Compra";
-            worksheet.Range["F" + TableFormat.HeaderRow].Value = "Status";
-            worksheet.Range["G" + TableFormat.HeaderRow].Value = "Valor";
-            worksheet.Range["H" + TableFormat.HeaderRow].Value = "Anexo";
-            worksheet.Range["I" + TableFormat.HeaderRow].Value = "ID Cartão";
-            worksheet.Range["J" + TableFormat.HeaderRow].Value = "ID Holder";
-
-            Dictionary<string, object> optionalParam = new Dictionary<string, object>();
-
-            int row = TableFormat.HeaderRow + 1;
-
-            string cursor = "";
-            Dictionary<string, object> returnedData = new Dictionary<string, object>();
-
-            do
-            {
-                JObject respJson;
-
-                try
-                {
-                    respJson = corporatePurchase.Get(cursor);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if ((string)respJson["cursor"] != "") cursor = (string)respJson["cursor"];
-
-                JArray purchases = (JArray)respJson["purchases"];
-
-                foreach (JObject purchase in purchases)
-                {
-                    worksheet.Range["A" + row].Value = purchase["created"];
-                    worksheet.Range["B" + row].Value = purchase["id"];
-                    worksheet.Range["C" + row].Value = purchase["merchantCategoryCode"];
-                    worksheet.Range["D" + row].Value = purchase["merchantName"];
-                    worksheet.Range["E" + row].Value = purchase["description"];
-                    worksheet.Range["F" + row].Value = purchase["status"];
-                    worksheet.Range["G" + row].Value = purchase["amount"];
-
-                    foreach (JToken attachment in purchase["attachments"])
-                    {
-                        worksheet.Range["H" + row].Value = attachment["id"] + "," + worksheet.Range["H" + row].Value;
-                    }
-
-                    if (worksheet.Range["H" + row].Value != null)
-                    {
-                        worksheet.Range["H" + row].Value = worksheet.Range["H" + row].Value.Substring(0, worksheet.Range["H" + row].Value.Length - 1);
-                    }
-
-                    worksheet.Range["I" + row].Value = purchase["cardId"];
-                    worksheet.Range["J" + row].Value = purchase["holderId"];
-                    worksheet.Range["K" + row].Value = purchase["cenderId"];
-
-                    row++;
-                }
-
-            } while (cursor != null);
+            CardPurchaseForm cardPurchase = new CardPurchaseForm();
+            cardPurchase.ShowDialog();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -124,9 +61,11 @@ namespace StarkBankExcel
             string selectedPath = "";
 
             Excel.Range selectedRange = worksheet.Application.Selection;
-            
+
             string cell_A = selectedRange.Address.Split('$')[1];
             string cell_J = selectedRange.Address.Split('$')[3];
+
+            MessageBox.Show(cell_J + "-" + cell_A);
 
             if (cell_A == "A" & cell_J == "J")
             {
@@ -204,6 +143,5 @@ namespace StarkBankExcel
 
             }
         }
-
     }
 }

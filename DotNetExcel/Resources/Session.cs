@@ -41,7 +41,7 @@ namespace StarkBankExcel.Resources
             JObject fetchedJson;
             try
             {
-                fetchedJson = V2Request.Fetch(
+                fetchedJson = Request.Fetch(
                     Request.Delete,
                     Globals.Credentials.Range["B3"].Value,
                     "session/" + Globals.Credentials.Range["B13"].Value.Split("/")[1]

@@ -2,8 +2,8 @@
 using System.Data;
 using System.Drawing;
 using StarkBankExcel.Forms;
-using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 using StarkBankExcel.Resources;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
@@ -13,13 +13,13 @@ using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
-    public partial class Planilha11
+    public partial class GetBoletoPayment
     {
-        private void Planilha11_Startup(object sender, System.EventArgs e)
+        private void Planilha14_Startup(object sender, System.EventArgs e)
         {
         }
 
-        private void Planilha11_Shutdown(object sender, System.EventArgs e)
+        private void Planilha14_Shutdown(object sender, System.EventArgs e)
         {
         }
 
@@ -31,12 +31,13 @@ namespace StarkBankExcel
         /// </summary>
         private void InternalStartup()
         {
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             this.button4.Click += new System.EventHandler(this.button4_Click);
             this.button5.Click += new System.EventHandler(this.button5_Click);
-            this.Startup += new System.EventHandler(this.Planilha11_Startup);
-            this.Shutdown += new System.EventHandler(this.Planilha11_Shutdown);
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.Startup += new System.EventHandler(this.Planilha14_Startup);
+            this.Shutdown += new System.EventHandler(this.Planilha14_Shutdown);
 
         }
 
@@ -44,24 +45,32 @@ namespace StarkBankExcel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Globals.Main.Activate();
+            ViewBoletoPayment viewBoletoPayment = new ViewBoletoPayment();
+            viewBoletoPayment.ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Utils.LogOut();
         }
 
         private void button3_Click(object sender, EventArgs e)
+        {
+            Globals.Main.Activate();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
         {
             LoginForm loginForm = new LoginForm();
             loginForm.ShowDialog();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
-            Utils.LogOut();
-        }
+            var worksheet = Globals.GetBoletoEvents;
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            cardStatmentForm cardStatment = new cardStatmentForm();
-            cardStatment.ShowDialog();
+            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
+            range.ClearContents();
         }
     }
 }

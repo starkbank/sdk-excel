@@ -29,7 +29,7 @@ namespace StarkBankExcel
                 }
             }
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Get,
                 Globals.Credentials.Range["B3"].Value,
                 "cost-center/" + query

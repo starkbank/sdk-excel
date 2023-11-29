@@ -12,7 +12,7 @@ namespace StarkBankExcel
                 { "requests", payloads }
             };
 
-            return V2Request.Fetch(
+            return Request.Fetch(
                 V2Request.Post,
                 Globals.Credentials.Range["B3"].Value,
                 "payment-request",
