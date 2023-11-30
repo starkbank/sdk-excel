@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Bem-vindo ao SDK Excel da Stark Bank. A proposta desta aplicação é fornecer 
+uma alternativa para uso da API da Stark Bank em uma plataforma com 
+interface amigável que não precise de conhecimentos de programação.
+
+
+v. 3.0.0
+- Refactor total utilizando C#
+</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Para realizar a autenticação na plataforma, você deve ter previamente 
+realizado uma abertura de conta no ambiente no qual você deseja realizar as 
+operações: Sandbox ou Produção.
+
+A conta em ambiente Sandbox serve para testes e não requer validação por 
+parte da Stark Bank para ser criada. A conta em ambiente Produção opera com 
+dinheiro real e requer validação de documentação com a Stark Bank antes 
+da abertura para operação. Vale lembrar que os ambientes são completamente 
+isolados e uma conta aberta em um dos ambientes não é capaz de operar 
+no outro.
+
+Para cadastrar uma conta em Sandbox ou iniciar o processo de abertura de 
+conta em Produção, clique em um dos dois botões abaixo.
+
+Após a abertura de conta e cadastro de senha, você poderá realizar as 
+operações no ambiente escolhido. Clique no botão Acessar conta em qualquer 
+aba e preencha os dados solicitados. Você deverá selecionar o ambiente 
+correspondente e utilizar o nome do seu Workspace, seu e-mail cadastrado e a 
+sua senha para realizar o login na plataforma.
+</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Copyright (c) 2021, Stark Bank SA
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the organization nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL STARK BANK SA BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+</root>
