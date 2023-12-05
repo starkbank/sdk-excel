@@ -74,9 +74,9 @@ namespace StarkBankExcel
                     jsonData.Add(
                         new Dictionary<string, object>
                         {
-                            {"id", rowIndex },
-                            {"keyId", keyId },
-                            {"Time", currentTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") }
+                            { "id", rowIndex },
+                            { "keyId", keyId },
+                            { "Time", currentTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") }
                         }
                     );
                     resp = DictKey.Get(keyId);
@@ -113,10 +113,10 @@ namespace StarkBankExcel
             for (int row = initRow; row <= lastRow; row++)
             {
                 string valueString = worksheet.Range["B" + row].Value?.ToString();
-                int? value = null;
+                float? value = null;
                 if(valueString != null)
                 {
-                    value = int.Parse(valueString);
+                    value = float.Parse(valueString);
                 }
                 string tags = worksheet.Range["C" + row].Value?.ToString();
                 string description = worksheet.Range["D" + row].Value?.ToString();
@@ -131,15 +131,15 @@ namespace StarkBankExcel
                 if(name != null && accountType != null)
                 {
                     validTransfers.Add(new Dictionary<string, object> {
-                            {"Nome", name },
-                            {"CPF/CNPJ", taxID },
-                            {"Valor", value },
-                            {"ISPB", ispb },
-                            {"Agência", branchCode },
-                            {"Conta", accountNumber },
-                            {"Tipo de Conta", accountType },
-                            {"Tags", tags },
-                            {"Descrição", description },
+                            { "Nome", name },
+                            { "CPF/CNPJ", taxID },
+                            { "Valor", value },
+                            { "ISPB", ispb },
+                            { "Agência", branchCode },
+                            { "Conta", accountNumber },
+                            { "Tipo de Conta", accountType },
+                            { "Tags", tags },
+                            { "Descrição", description },
                         }
                     );
                 }

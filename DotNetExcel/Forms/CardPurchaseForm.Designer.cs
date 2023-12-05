@@ -35,8 +35,6 @@
             this.OptionButtonCanceled = new System.Windows.Forms.RadioButton();
             this.OptionButtonConfirmed = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.periodInput = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.beforeInput = new System.Windows.Forms.DateTimePicker();
             this.afterInput = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
@@ -112,8 +110,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.periodInput);
-            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.beforeInput);
             this.groupBox1.Controls.Add(this.afterInput);
             this.groupBox1.Controls.Add(this.label3);
@@ -124,29 +120,6 @@
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Consulta por Status e Data";
-            // 
-            // periodInput
-            // 
-            this.periodInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.periodInput.FormattingEnabled = true;
-            this.periodInput.Items.AddRange(new object[] {
-            "Data Inicial",
-            "Data Final",
-            "Intervalo",
-            "Todos"});
-            this.periodInput.Location = new System.Drawing.Point(102, 62);
-            this.periodInput.Name = "periodInput";
-            this.periodInput.Size = new System.Drawing.Size(193, 21);
-            this.periodInput.TabIndex = 9;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 65);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Período:";
             // 
             // beforeInput
             // 
@@ -217,8 +190,6 @@
         private System.Windows.Forms.RadioButton OptionButtonCanceled;
         private System.Windows.Forms.RadioButton OptionButtonConfirmed;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox periodInput;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DateTimePicker beforeInput;
         private System.Windows.Forms.DateTimePicker afterInput;
         private System.Windows.Forms.Label label3;

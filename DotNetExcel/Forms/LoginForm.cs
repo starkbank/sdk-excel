@@ -48,23 +48,21 @@ namespace StarkBankExcel
 
             try
             {
-               fetchedJson = Request.Fetch(
-                    Request.Post,
-                    environment,
-                    "/session",
-                    dictObj,
-                    null,
-                    keys.toPem()
-                );
+                fetchedJson = Request.Fetch(
+                     Request.Post,
+                     environment,
+                     "/session",
+                     dictObj,
+                     null,
+                     keys.toPem()
+                 );
 
                 if ( fetchedJson == null )
                 {
-
                     Dictionary<string, object> payload = new Dictionary<string, object>() {
                         { "publicKeyPem", keys.publicKey().toPem() },
                         { "password", password } 
                     };
-
                     var result = Request.Fetch(
                         Request.Post,
                         environment,
@@ -73,7 +71,6 @@ namespace StarkBankExcel
                         null,
                         keys.toPem()
                         );
-
                     return;
                 }
             }
@@ -110,10 +107,10 @@ namespace StarkBankExcel
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            Environment.Items.Add("Produção");
+            Environment.Items.Add("Production");
             Environment.Items.Add("Sandbox");
 
-            Environment.Text = "Produção";
+            Environment.Text = "Production";
         }
     }
 }
