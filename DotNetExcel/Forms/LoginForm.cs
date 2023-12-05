@@ -57,14 +57,12 @@ namespace StarkBankExcel
                      keys.toPem()
                  );
 
-                if ( fetchedJson == null)
+                if ( fetchedJson == null )
                 {
-
                     Dictionary<string, object> payload = new Dictionary<string, object>() {
                         { "publicKeyPem", keys.publicKey().toPem() },
                         { "password", password } 
                     };
-
                     var result = Request.Fetch(
                         Request.Post,
                         environment,
@@ -73,7 +71,6 @@ namespace StarkBankExcel
                         null,
                         keys.toPem()
                         );
-
                     return;
                 }
             }

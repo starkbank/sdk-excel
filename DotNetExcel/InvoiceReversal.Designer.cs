@@ -15,7 +15,7 @@ namespace StarkBankExcel {
     /// 
     [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(15)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
-    public sealed partial class InvoiceRevesal : Microsoft.Office.Tools.Excel.WorksheetBase {
+    public sealed partial class InvoiceReversal : Microsoft.Office.Tools.Excel.WorksheetBase {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
@@ -33,7 +33,7 @@ namespace StarkBankExcel {
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-        public InvoiceRevesal(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
+        public InvoiceReversal(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
                 base(factory, serviceProvider, "Planilha13", "Planilha13") {
         }
         
@@ -43,7 +43,7 @@ namespace StarkBankExcel {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         protected override void Initialize() {
             base.Initialize();
-            Globals.InvoiceRevesal = this;
+            Globals.InvoiceReversal = this;
             global::System.Windows.Forms.Application.EnableVisualStyles();
             this.InitializeCachedData();
             this.InitializeControls();
@@ -209,15 +209,15 @@ namespace StarkBankExcel {
     
     internal sealed partial class Globals {
         
-        private static InvoiceRevesal _InvoiceRevesal;
+        private static InvoiceReversal _InvoiceReversal;
         
-        internal static InvoiceRevesal InvoiceRevesal {
+        internal static InvoiceReversal InvoiceReversal {
             get {
-                return _InvoiceRevesal;
+                return _InvoiceReversal;
             }
             set {
-                if ((_InvoiceRevesal == null)) {
-                    _InvoiceRevesal = value;
+                if ((_InvoiceReversal == null)) {
+                    _InvoiceReversal = value;
                 }
                 else {
                     throw new System.NotSupportedException();

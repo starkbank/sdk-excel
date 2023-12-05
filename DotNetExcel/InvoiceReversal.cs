@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
-    public partial class InvoiceRevesal
+    public partial class InvoiceReversal
     {
         private void Planilha13_Startup(object sender, System.EventArgs e)
         {
