@@ -89,7 +89,7 @@ namespace StarkBankExcel
         public static void ClearAll(Microsoft.Office.Interop.Excel.Worksheet ws)
         {
             int lastRow = ws.Cells[ws.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            Range range = ws.Range["A1:Z" + lastRow];
+            Range range = ws.Range["A" + (TableFormat.HeaderRow + 1) + lastRow];
             range.ClearContents();
         }
 

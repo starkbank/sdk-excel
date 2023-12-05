@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(3)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(10)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class BoletoPayment : Microsoft.Office.Tools.Excel.WorksheetBase {
         
@@ -181,7 +181,7 @@ namespace StarkBankExcel {
             this.button5.Text = "Sair da Conta";
             this.button5.UseVisualStyleBackColor = false;
             // 
-            // Planilha16
+            // BoletoPayment
             // 
             this.button1.BindingContext = this.BindingContext;
             this.button3.BindingContext = this.BindingContext;

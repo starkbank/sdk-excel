@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Text;
 using EllipticCurve;
 using System.Numerics;
 using System.Security.Cryptography;
-
+using System.Windows.Forms;
 
 namespace StarkBankExcel.Resources
 {
@@ -15,7 +15,20 @@ namespace StarkBankExcel.Resources
 
             string encodedEmail = email.ToLower();
 
-            string encodedSalt = "saltDeDev";
+            string encodedSalt = "";
+
+            if (Globals.Credentials.Range["B3"].Value == "production")
+            {
+                encodedSalt = "1fcb2ff0-e78b-4292-ae7d-80e41161025c";
+            }
+            if (Globals.Credentials.Range["B3"].Value == "sandbox")
+            {
+                encodedSalt = "7186ead6-55ff-42ac-87d2-f2ccdf7a2b5d";
+            }
+            if (Globals.Credentials.Range["B3"].Value == "development")
+            {
+                encodedSalt = "31cf81be-341f-43fa-bd75-391e0b1a3d3a";
+            }
 
             using (SHA256 sha256 = SHA256.Create())
             {

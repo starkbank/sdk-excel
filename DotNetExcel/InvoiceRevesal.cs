@@ -71,7 +71,15 @@ namespace StarkBankExcel
 
                 string invoiceId = worksheet.Range["A" + row].Value?.ToString();
                 string amountString = worksheet.Range["B" + row].Value?.ToString();
-                int amount = int.Parse(amountString);
+                int amount;
+                try
+                {
+                    amount = int.Parse(amountString);
+                } catch
+                {
+                    MessageBox.Show("Valor deve ser passado como inteiro");
+                    return;
+                }
 
                 Dictionary<string, object> invoiceReversal = new Dictionary<string, object> {
                     { "amount", amount }
@@ -87,11 +95,13 @@ namespace StarkBankExcel
 
                     string createInvoice = (string)res["message"];
                     worksheet.Range["C" + row].Value = createInvoice;
+                    worksheet.Range["D" + row].Value = "";
                     returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createInvoice + "\n";
                 }
                 catch (Exception ex)
                 {
                     errorMessage = ex.Message;
+                    worksheet.Range["C" + row].Value = "";
                     worksheet.Range["D" + row].Value = ex.Message;
                 }
             nextIteration:

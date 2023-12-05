@@ -202,10 +202,7 @@ namespace StarkBankExcel.Forms
 
                     foreach(JObject boleto in boletos)
                     {
-                        if ((string) boleto["status"] == "paid")
-                            {
-                                SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string) boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
-                            };                            
+                        if ((string) boleto["status"] == "paid") SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string) boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
 
                         logRow++;
                     }

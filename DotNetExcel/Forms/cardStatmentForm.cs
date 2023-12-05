@@ -116,8 +116,8 @@ namespace StarkBankExcel.Forms
                         worksheet.Range["B" + row].Value = transaction["id"].ToString();
                         worksheet.Range["C" + row].Value = purchase["merchantName"].ToString();
                         worksheet.Range["D" + row].Value = transaction["description"].ToString();
-                        worksheet.Range["E" + row].Value = transaction["amount"].ToString();
-                        worksheet.Range["F" + row].Value = transaction["balance"].ToString();
+                        worksheet.Range["E" + row].Value = (double.Parse((string)transaction["amount"]) / 100).ToString().ToString();
+                        worksheet.Range["F" + row].Value = (double.Parse((string)transaction["balance"]) / 100).ToString();
                         worksheet.Range["G" + row].Value = transaction["source"].ToString();
                         worksheet.Range["H" + row].Value = Utils.ListToString(transaction["tags"].ToObject<List<string>>(), ",");
 
