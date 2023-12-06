@@ -90,15 +90,16 @@ namespace StarkBankExcel
                         Close();
                         return;
                     }
-                    int amount = (int) double.Parse(amountString) * 100;
+                    int amount = (int) (double.Parse(amountString) * 100);
                     string ispb = worksheet.Range["D" + row].Value?.ToString();
                     string branchCode = worksheet.Range["E" + row].Value?.ToString();
                     string accountNumber = worksheet.Range["F" + row].Value?.ToString();
-                    string accountType = worksheet.Range["G" + row].Value?.ToString();
+                    string due = worksheet.Range["G" + row].Value?.ToString();
+                    string accountType = worksheet.Range["H" + row].Value?.ToString();
 
-                    string tags = worksheet.Range["H" + row].Value?.ToString();
-                    string description = worksheet.Range["I" + row].Value?.ToString();
-                    string externalID = worksheet.Range["J" + row].Value?.ToString();
+                    string tags = worksheet.Range["I" + row].Value?.ToString();
+                    string description = worksheet.Range["J" + row].Value?.ToString();
+                    string externalID = worksheet.Range["K" + row].Value?.ToString();
 
                     string calculatedExternalID = Utils.calculateExtrenalId(amount, name, taxID, ispb, branchCode, accountNumber);
 
@@ -118,19 +119,22 @@ namespace StarkBankExcel
                             { "accountType", accountType }
                         };
 
-
-                        if (tags != null) { payment["tags"] = new List<string> { tags }; }
-
                         if (description != null) { payment["description"] = description; }
 
                         orderNumbers.Add(row);
                         externalIds.Add(calculatedExternalID);
 
-                        orders.Add(new Dictionary<string, object> {
+                        Dictionary<string, object> paymentRequestData = new Dictionary<string, object> {
                             { "centerId", teamId },
                             { "type", "transfer" },
                             { "payment", payment }
-                        });
+                            };
+
+                        if (due != null) { paymentRequestData.Add("due", new StarkDate(due).ToString());}
+
+                        if (tags != null) { paymentRequestData.Add("tags", payment["tags"] = tags.Split(','));}
+
+                        orders.Add(paymentRequestData);
                     }
                 }
 
@@ -169,7 +173,6 @@ namespace StarkBankExcel
                 MessageBox.Show(errorMessage);
                 return;
             }
-            MessageBox.Show("Todos os pedidos listados já foram enviados");
         }
     }
 }

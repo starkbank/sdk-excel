@@ -50,12 +50,14 @@ namespace StarkBankExcel
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Nome";
             worksheet.Range["B" + TableFormat.HeaderRow].Value = "CPF/CNPJ";
+
             worksheet.Range["C" + TableFormat.HeaderRow].Value = "Logradouro";
             worksheet.Range["D" + TableFormat.HeaderRow].Value = "Complemento";
             worksheet.Range["E" + TableFormat.HeaderRow].Value = "Bairo";
             worksheet.Range["F" + TableFormat.HeaderRow].Value = "Cidade";
             worksheet.Range["G" + TableFormat.HeaderRow].Value = "Código do Estado";
             worksheet.Range["H" + TableFormat.HeaderRow].Value = "CEP";
+
             worksheet.Range["I" + TableFormat.HeaderRow].Value = "Valor";
             worksheet.Range["J" + TableFormat.HeaderRow].Value = "Data de Vencimento";
             worksheet.Range["K" + TableFormat.HeaderRow].Value = "Multa";
@@ -93,14 +95,14 @@ namespace StarkBankExcel
                 string stateCode = worksheet.Range["G" + row].Value?.ToString();
                 string zipCode = worksheet.Range["H" + row].Value?.ToString();
                 string amountString = worksheet.Range["I" + row].Value?.ToString();
-                int amount = int.Parse(amountString);
+                int amount = (int)(double.Parse(amountString) * 100);
                 string due = worksheet.Range["J" + row].Value?.ToString();
                 string fineString = worksheet.Range["K" + row].Value?.ToString();
                 string interestString = worksheet.Range["L" + row].Value?.ToString().Replace(",", ".");
                 string expirationString = worksheet.Range["M" + row].Value?.ToString().Replace(",", ".");
 
-                List<Dictionary<string, string>> descriptions = new List<Dictionary<string, string>>();
-                
+                List<Dictionary<string, object>> descriptions = new List<Dictionary<string, object>>();
+
                 string description1 = worksheet.Range["N" + row].Value?.ToString();
                 string value1 = worksheet.Range["O" + row].Value?.ToString();
                 string description2 = worksheet.Range["P" + row].Value?.ToString();
@@ -110,28 +112,28 @@ namespace StarkBankExcel
 
                 if (description1 != null && value1 != null)
                 {
-                    descriptions.Add(new Dictionary<string, string>
+                    descriptions.Add(new Dictionary<string, object>
                     {
-                        { "key", description1 },
-                        { "value", value1 },
+                        { "text", description1 },
+                        { "amount", int.Parse(value1) },
                     });
                 }
 
                 if (description2 != null && value2 != null)
                 {
-                    descriptions.Add(new Dictionary<string, string>
+                    descriptions.Add(new Dictionary<string, object>
                     {
-                        { "key", description2 },
-                        { "value", value2 },
+                        { "text", description2 },
+                        { "amount", int.Parse(value2) },
                     });
                 }
 
                 if (description3 != null && value3 != null)
                 {
-                    descriptions.Add(new Dictionary<string, string>
+                    descriptions.Add(new Dictionary<string, object>
                     {
-                        { "key", description3 },
-                        { "value", value3 },
+                        { "text", description3 },
+                        { "amount", int.Parse(value3) },
                     });
                 }
 
@@ -149,7 +151,8 @@ namespace StarkBankExcel
                 };
 
                 if (due != null) boleto.Add("due", new StarkDate(due).ToString());
-                if (expirationString != null) boleto.Add("expiration", int.Parse(expirationString));
+
+                if (expirationString != null) boleto.Add("overdueLimit", int.Parse(expirationString));
                 if (fineString != null) boleto.Add("fine", float.Parse(fineString));
                 if (interestString != null) boleto.Add("interest", float.Parse(interestString));
 

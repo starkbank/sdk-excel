@@ -66,6 +66,7 @@ namespace StarkBankExcel
         {
             var worksheet = Globals.GetBoleto;
 
+
             Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();
         }

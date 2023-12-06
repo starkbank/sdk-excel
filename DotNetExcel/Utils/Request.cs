@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 namespace StarkBankExcel
 {
-    internal class V2Request
+    internal class Request
     {
         private static HttpClient makeClient()
         {
@@ -31,8 +31,11 @@ namespace StarkBankExcel
         internal static readonly HttpMethod Delete = new HttpMethod("DELETE");
 
         internal static Response Fetch(
-            HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
-            Dictionary<string, object> query = null
+            HttpMethod method, string environment, 
+            string path, 
+            Dictionary<string, object> payload = null,
+            Dictionary<string, object> query = null, 
+            string privateKeyPem = null
         )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -44,16 +47,24 @@ namespace StarkBankExcel
                 url += Url.Encode(query);
             }
 
+            string accessId;
+
+            if (privateKeyPem != null)
+            {
+                accessId = keyGen.generateMemberAccessId(Globals.Credentials.Range["B6"].Value, Globals.Credentials.Range["B2"].Value);
+            } else
+            {
+                privateKeyPem = Globals.Credentials.Range["B11"].Value;
+                accessId = Globals.Credentials.Range["B13"].Value;
+            }
+
             string accessTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(new CultureInfo("en-US"));
-            string accessId = Globals.Credentials.Range["B13"].Value;
             string body = "";
 
             if (payload != null)
             {
                 body = Json.Encode(payload);
-            }
-
-            string privateKeyPem = Globals.Credentials.Range["B11"].Value;
+            }            
 
             if(privateKeyPem == null)
             {
@@ -93,7 +104,16 @@ namespace StarkBankExcel
             }
             if (response.Status == 400)
             {
-                throw new Exception(response.Content);
+                if (response.ToJson()["errors"][0]["code"].ToString() == "missingPublicKey")
+                {
+
+                    MessageBox.Show(response.Content + "\n\n Efetue o login novamente !");
+                    return null;
+
+                } else
+                {
+                    throw new Exception(response.Content);
+                }
             }
             if (response.Status != 200)
             {

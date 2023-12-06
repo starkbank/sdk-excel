@@ -65,7 +65,10 @@ namespace StarkBankExcel
             string cell_A = selectedRange.Address.Split('$')[1];
             string cell_J = selectedRange.Address.Split('$')[3];
 
-            MessageBox.Show(cell_J + "-" + cell_A);
+            if (cell_A != "A" | cell_J != "J")
+            {
+                MessageBox.Show("Todas as colunas devem ser selecionadas !");
+            }
 
             if (cell_A == "A" & cell_J == "J")
             {
