@@ -43,8 +43,6 @@ namespace StarkBankExcel
             var worksheet = Globals.SendInvoices;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
-            Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":M" + lastRow];
-            range.ClearContents();
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Nome do Cliente";
             worksheet.Range["B" + TableFormat.HeaderRow].Value = "CPF/CNPJ do Cliente";
@@ -79,10 +77,10 @@ namespace StarkBankExcel
                 string name = worksheet.Range["A" + row].Value?.ToString();
                 string taxID = worksheet.Range["B" + row].Value?.ToString();
                 string amountString = worksheet.Range["C" + row].Value?.ToString();
-                int amount = int.Parse(amountString);
+                int amount = (int)(double.Parse(amountString) * 100);
                 string due = worksheet.Range["D" + row].Value?.ToString();
                 string fineString = worksheet.Range["E" + row].Value?.ToString();
-                string interestString = worksheet.Range["F" + row].Value?.ToString().Replace(",", ".");
+                string interestString = worksheet.Range["F" + row].Value?.ToString();
                 string expirationString = worksheet.Range["G" + row].Value?.ToString().Replace(",", ".");
 
                 List<Dictionary<string, string>> descriptions = new List<Dictionary<string, string>>();
@@ -129,7 +127,7 @@ namespace StarkBankExcel
                 };
 
                 if (due != null) invoice.Add("due", new StarkDateTime(due).ToString());
-                if (expirationString != null) invoice.Add("expiration", int.Parse(expirationString));
+                if (expirationString != null) invoice.Add("expiration", int.Parse(expirationString) * 60 * 60);
                 if (fineString != null) invoice.Add("fine", float.Parse(fineString));
                 if (interestString != null) invoice.Add("interest", float.Parse(interestString));
 
@@ -144,6 +142,7 @@ namespace StarkBankExcel
                     try
                     {
                         JObject res = Invoice.Create(invoices);
+
                         string createInvoice = (string)res["message"];
                         returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createInvoice + "\n";
                     }

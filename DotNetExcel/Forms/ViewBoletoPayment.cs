@@ -77,7 +77,7 @@ namespace StarkBankExcel.Forms
                     foreach (JObject payment in payments)
                     {
                         worksheet.Range["A" + row].Value = payment["created"];
-                        worksheet.Range["B" + row].Value = payment["amount"];
+                        worksheet.Range["B" + row].Value = double.Parse((string)payment["amount"]) / 100;
                         worksheet.Range["C" + row].Value = payment["status"];
                         worksheet.Range["D" + row].Value = payment["scheduled"];
                         worksheet.Range["E" + row].Value = payment["line"];
@@ -96,7 +96,7 @@ namespace StarkBankExcel.Forms
 
         private void periodInput_SelectedIndexChanged(object sender, EventArgs e)
         {
-            periodInput.Text = "Intervalo";
+            
         }
 
         private void afterInput_ValueChanged(object sender, EventArgs e)

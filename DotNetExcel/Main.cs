@@ -40,8 +40,10 @@ namespace StarkBankExcel
             this.button9.Click += new System.EventHandler(this.button9_Click);
             this.button10.Click += new System.EventHandler(this.button10_Click);
             this.button11.Click += new System.EventHandler(this.button11_Click);
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             this.Startup += new System.EventHandler(this.Planilha1_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha1_Shutdown);
+
         }
 
         #endregion
@@ -106,6 +108,11 @@ namespace StarkBankExcel
         private void button11_Click(object sender, EventArgs e)
         {
             Globals.Planilha11.Activate();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            Globals.GetPaymentApprove.Activate();
         }
     }
 }

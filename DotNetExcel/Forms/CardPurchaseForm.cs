@@ -88,7 +88,7 @@ namespace StarkBankExcel.Forms
                     worksheet.Range["D" + row].Value = purchase["merchantName"];
                     worksheet.Range["E" + row].Value = purchase["description"];
                     worksheet.Range["F" + row].Value = purchase["status"];
-                    worksheet.Range["G" + row].Value = purchase["amount"];
+                    worksheet.Range["G" + row].Value = double.Parse((string)purchase["amount"]) / 100;
 
                     foreach (JToken attachment in purchase["attachments"])
                     {

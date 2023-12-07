@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Data;
-using System.Linq;
 using System.Text;
+using System.Linq;
+using System.Data;
 using EllipticCurve;
 using System.Drawing;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
@@ -11,54 +12,23 @@ using System.Threading.Tasks;
 using StarkBankExcel.Resources;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
-using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace StarkBankExcel.Forms
 {
-    public partial class BoletoPaymentRequest : Form
+    public partial class BoletoPaymentForm : Form
     {
-        public BoletoPaymentRequest()
+        public BoletoPaymentForm()
         {
             InitializeComponent();
         }
 
-        private void BoletoPaymentRequest_Load(object sender, EventArgs e)
+        private void BoletoPayment_Load(object sender, EventArgs e)
         {
-            JObject costCenter;
 
-            label2.Visible = false;
-
-            Dictionary<string, object> query = new Dictionary<string, object>() { { "fields", "id, name, badgeCount" } };
-
-            try
-            {
-                costCenter = CostCenter.Get(null, query);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString(), "Erro na Requisiçâo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-                return;
-            }
-
-            var teams = costCenter["centers"];
-
-            foreach (JObject t in teams)
-            {
-                comboBox1.Items.Add(t["name"].ToString() + " ( id = " + t["id"] + " )");
-            }
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void Login_Click(object sender, EventArgs e)
         {
-            var worksheet = Globals.BoletoPayment;
-
-            label2.Visible = true;
-
-            string teamId = comboBox1.SelectedItem.ToString();
-            string pattern = @"(?<=id\s=\s)\d+";
-
-            teamId = Regex.Match(teamId, pattern).Value;
 
             string email = Email.Text.ToLower();
             string password = Password.Text.ToString();
@@ -66,6 +36,8 @@ namespace StarkBankExcel.Forms
             PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
 
             string privateKeyPem = keys.toPem();
+
+            var worksheet = Globals.BoletoPayment;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
 
@@ -94,16 +66,24 @@ namespace StarkBankExcel.Forms
 
                 string line = worksheet.Range["A" + row].Value?.ToString();
                 string taxId = worksheet.Range["B" + row].Value?.ToString();
-                string due = worksheet.Range["C" + row].Value?.ToString();
+                string scheduled = worksheet.Range["C" + row].Value?.ToString();
                 string description = worksheet.Range["D" + row].Value?.ToString();
                 string tags = worksheet.Range["E" + row].Value?.ToString();
-
-                Dictionary<string, object> payment = new Dictionary<string, object>();
 
                 Dictionary<string, object> boleto = new Dictionary<string, object> {
                     { "taxId", taxId },
                     { "description", description },
                 };
+
+                if (scheduled != null)
+                {
+                    boleto.Add("scheduled", new StarkDate(scheduled).ToString());
+                }
+
+                if (tags != null)
+                {
+                    boleto.Add("tags", tags.Split(','));
+                }
 
                 if (line.Split('.').Length > 1)
                 {
@@ -115,21 +95,7 @@ namespace StarkBankExcel.Forms
                     boleto.Add("barCode", line);
                 }
 
-                payment.Add("centerId", teamId);
-                payment.Add("type", "boleto-payment");
-                payment.Add("payment", boleto);
-
-                if (due != null)
-                {
-                    payment.Add("due", new StarkDate(due).ToString());
-                }
-
-                if (tags != null)
-                {
-                    payment.Add("tags", tags.Split(','));
-                }
-
-                boletos.Add(payment);
+                boletos.Add(boleto);
 
                 boletoPaymentNumbers.Add(iteration);
 
@@ -139,7 +105,7 @@ namespace StarkBankExcel.Forms
 
                     try
                     {
-                        JObject res = PaymentRequest.Create(boletos, privateKeyPem);
+                        JObject res = BoletoPaymentClass.Create(new Dictionary<string, object>() { { "payments", boletos } }, privateKeyPem);
 
                         string createoBoletoPayment = (string)res["message"];
                         returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createoBoletoPayment + "\n";
@@ -154,28 +120,7 @@ namespace StarkBankExcel.Forms
                 }
             }
             MessageBox.Show(warningMessage + returnMessage + errorMessage);
-
-
         }
 
-        private void Email_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Password_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

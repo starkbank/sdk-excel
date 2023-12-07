@@ -136,7 +136,7 @@ namespace StarkBankExcel.Forms
                         worksheet.Range["A" + row].Value = payment["created"];
                         worksheet.Range["B" + row].Value = payment["type"];
                         worksheet.Range["C" + row].Value = payment["description"];
-                        worksheet.Range["D" + row].Value = payment["amount"];
+                        worksheet.Range["D" + row].Value = double.Parse((string)payment["amount"]) / 100;
                         worksheet.Range["E" + row].Value = payment["actions"][1]["name"];
                         worksheet.Range["F" + row].Value = payment["status"];
                         worksheet.Range["G" + row].Value = payment["id"];
