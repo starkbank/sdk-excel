@@ -76,7 +76,7 @@ namespace StarkBankExcel.Forms
 
                     foreach (JObject payment in payments)
                     {
-                        worksheet.Range["A" + row].Value = payment["created"];
+                        worksheet.Range["A" + row].Value = new StarkDateTime((string)payment["created"]).Value;
                         worksheet.Range["B" + row].Value = double.Parse((string)payment["amount"]) / 100;
                         worksheet.Range["C" + row].Value = payment["status"];
                         worksheet.Range["D" + row].Value = payment["scheduled"];

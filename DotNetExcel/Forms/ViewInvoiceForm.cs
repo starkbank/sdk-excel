@@ -88,7 +88,7 @@ namespace StarkBankExcel.Forms
 
                 foreach (JObject invoice in invoices)
                 {
-                    worksheet.Range["A" + row].Value = new StarkDateTime((string)invoice["created"]).ToString();
+                    worksheet.Range["A" + row].Value = new StarkDateTime((string)invoice["created"]).Value.ToString();
                     worksheet.Range["B" + row].Value = invoice["name"];
                     worksheet.Range["C" + row].Value = invoice["taxId"];
                     worksheet.Range["D" + row].Value = GetStatusInPt((string)invoice["status"]);
