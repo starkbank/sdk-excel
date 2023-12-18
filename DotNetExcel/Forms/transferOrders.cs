@@ -119,22 +119,35 @@ namespace StarkBankExcel
                             { "accountType", accountType }
                         };
 
-                        if (description != null) { payment["description"] = description; }
-
                         orderNumbers.Add(row);
                         externalIds.Add(calculatedExternalID);
 
-                        Dictionary<string, object> paymentRequestData = new Dictionary<string, object> {
+                        Dictionary<string, object> paymentRequestData = new Dictionary<string, object>();
+
+                        if (description != null)
+                        {
+                            paymentRequestData = new Dictionary<string, object> {
+                            { "centerId", teamId },
+                            { "type", "transfer" },
+                            { "payment", payment },
+                            { "description", description }
+                            };
+                        }
+
+                        if (description == null)
+                        {
+                            paymentRequestData = new Dictionary<string, object> {
                             { "centerId", teamId },
                             { "type", "transfer" },
                             { "payment", payment }
                             };
+                        }
 
                         if (due != null) { paymentRequestData.Add("due", new StarkDate(due).ToString());}
 
                         if (tags != null) { paymentRequestData.Add("tags", payment["tags"] = tags.Split(','));}
-
                         orders.Add(paymentRequestData);
+
                     }
                 }
 
@@ -151,7 +164,7 @@ namespace StarkBankExcel
                         returnMessage = returnMessage + Utils.rowsMessage(start, end) + createOrder + "\n";
                         for (int j = 0; j < externalIds.Count; j++)
                         {
-                            worksheet.Range["J" + orderNumbers[j]].Value = externalIds[j];
+                            worksheet.Range["K" + orderNumbers[j]].Value = externalIds[j];
                         }
                     }
                     catch (Exception ex)

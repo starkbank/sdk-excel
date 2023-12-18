@@ -82,7 +82,7 @@ namespace StarkBankExcel.Forms
 
                 foreach (JObject purchase in purchases)
                 {
-                    worksheet.Range["A" + row].Value = purchase["created"];
+                    worksheet.Range["A" + row].Value = new StarkDateTime(purchase["created"].ToString()).Value;
                     worksheet.Range["B" + row].Value = purchase["id"];
                     worksheet.Range["C" + row].Value = purchase["merchantCategoryCode"];
                     worksheet.Range["D" + row].Value = purchase["merchantName"];

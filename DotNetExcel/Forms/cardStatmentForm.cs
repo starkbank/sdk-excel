@@ -112,7 +112,7 @@ namespace StarkBankExcel.Forms
                         string transactionIndx = transaction["source"].ToString().Substring(19);
                         JObject purchase = corporatePurchaseById[transactionIndx];
 
-                        worksheet.Range["A" + row].Value = transaction["created"].ToString();
+                        worksheet.Range["A" + row].Value = new StarkDateTime(transaction["created"].ToString()).Value;
                         worksheet.Range["B" + row].Value = transaction["id"].ToString();
                         worksheet.Range["C" + row].Value = purchase["merchantName"].ToString();
                         worksheet.Range["D" + row].Value = transaction["description"].ToString();

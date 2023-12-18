@@ -112,12 +112,12 @@ namespace StarkBankExcel.Forms
                     foreach (JObject log in logs)
                     {
                         string logEvent = (string)log["type"];
-                        string eventDate = new StarkDateTime((string)log["created"]).ToString();
+                        string eventDate = new StarkDateTime((string)log["created"]).Value.ToString();
 
                         JObject boleto = (JObject)log["boleto"];
-                        string issueDate = new StarkDateTime((string)boleto["created"]).ToString();
+                        string issueDate = new StarkDateTime((string)boleto["created"]).Value.ToString();
                         string boletoStatus = (string)boleto["status"];
-                        string dueDate = new StarkDateTime((string)boleto["due"]).ToString();
+                        string dueDate = new StarkDateTime((string)boleto["due"]).Value.ToString();
                         string id = (string)boleto["id"];
 
                         worksheet.Range["A" + row].Value = eventDate;
@@ -170,12 +170,12 @@ namespace StarkBankExcel.Forms
                 foreach(JObject log in logs)
                 {
                     string logEvent = (string)log["type"];
-                    string eventDate = new StarkDateTime((string)log["created"]).ToString();
+                    string eventDate = new StarkDateTime((string)log["created"]).Value.ToString();
 
                     JObject boleto = (JObject)log["boleto"];
-                    string issueDate = new StarkDateTime((string)boleto["created"]).ToString();
+                    string issueDate = new StarkDateTime((string)boleto["created"]).Value.ToString();
                     string boletoStatus = (string)boleto["status"];
-                    string dueDate = new StarkDateTime((string)boleto["due"]).ToString();
+                    string dueDate = new StarkDateTime((string)boleto["due"]).Value.ToString();
                     string id = (string)boleto["id"];
 
                     worksheet.Range["A" + row].Value = eventDate;
