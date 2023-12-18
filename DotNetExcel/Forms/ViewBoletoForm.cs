@@ -111,13 +111,13 @@ namespace StarkBankExcel.Forms
                     string boletoStatus = (string)boleto["status"];
                     string id = (string)boleto["id"];
 
-                    worksheet.Range["A" + row].Value = new StarkDateTime((string)boleto["created"]).ToString();
+                    worksheet.Range["A" + row].Value = new StarkDateTime((string)boleto["created"]).Value.ToString();
                     worksheet.Range["B" + row].Value = boleto["name"];
                     worksheet.Range["C" + row].Value = boleto["taxId"];
                     worksheet.Range["D" + row].Value = GetStatusInPt(boletoStatus);
                     worksheet.Range["E" + row].Value = double.Parse((string)boleto["amount"]) / 100;
 
-                    worksheet.Range["K" + row].Value = new StarkDateTime((string)boleto["due"]).ToString();
+                    worksheet.Range["K" + row].Value = new StarkDateTime((string)boleto["due"]).Value.ToString();
                     worksheet.Range["L" + row].Value = boleto["line"];
                     worksheet.Range["M" + row].Value = id;
                     worksheet.Range["N" + row].Value = double.Parse((string)boleto["fee"]) / 100;
