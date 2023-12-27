@@ -90,7 +90,7 @@ namespace StarkBankExcel
                         Close();
                         return;
                     }
-                    int amount = (int) (double.Parse(amountString) * 100);
+                    int amount = Convert.ToInt32(double.Parse(amountString) * 100);
                     string ispb = worksheet.Range["D" + row].Value?.ToString();
                     string branchCode = worksheet.Range["E" + row].Value?.ToString();
                     string accountNumber = worksheet.Range["F" + row].Value?.ToString();
@@ -118,7 +118,6 @@ namespace StarkBankExcel
                             { "accountNumber", accountNumber },
                             { "accountType", accountType }
                         };
-
                         orderNumbers.Add(row);
                         externalIds.Add(calculatedExternalID);
 

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Net.Sockets;
-using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using StarkBankExcel.Resources;
@@ -167,7 +168,7 @@ namespace StarkBankExcel.Forms
                 JArray logs = (JArray)respJson["logs"];
                 if (logs.Count == 0) break;
 
-                foreach(JObject log in logs)
+                foreach (JObject log in logs)
                 {
                     string logEvent = (string)log["type"];
                     string eventDate = new StarkDateTime((string)log["created"]).Value.ToString();
@@ -223,11 +224,10 @@ namespace StarkBankExcel.Forms
                 }
 
                 logsParam.Add("boletoIds", keys);
+                logsParam.Add("types", "registered,");
 
                 do
                 {
-                    logsParam.Add("types", "registered,");
-
                     try
                     {
                         respJson = Boleto.Log.Get(registeredCursor, logsParam);
@@ -249,12 +249,12 @@ namespace StarkBankExcel.Forms
                     }
                 } while (registeredCursor != null);
 
-                foreach(JObject log in logs)
+                foreach (JObject log in logs)
                 {
                     JObject boleto = (JObject)log["boleto"];
-                    if ((string) boleto["status"] == "paid")
+                    if ((string)boleto["status"] == "paid")
                     {
-                        SetChargeEventInfo(boleto, (JObject) logsRegisteredByCharge[(string)boleto["id"]], logRow);
+                        SetChargeEventInfo(boleto, (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
                     }
                     logRow++;
                 }
@@ -262,7 +262,7 @@ namespace StarkBankExcel.Forms
                 logsPaidByCharge = new Dictionary<string, object>();
                 logsRegisteredByCharge = new Dictionary<string, object>();
 
-            } while(cursor != null);
+            } while (cursor != null);
 
             Close();
         }

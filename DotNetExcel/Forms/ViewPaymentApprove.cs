@@ -93,6 +93,8 @@ namespace StarkBankExcel.Forms
             if (OptionButtonPendente.Checked) events += "pending";
             if (OptionButtonAgendado.Checked) events += "scheduled";
             if (OptionButtonNegado.Checked) events += "denied";
+            if (OptionButtonPago.Checked) events += "success";
+            if (OptionButtonFalhado.Checked) events += "failed";
 
             if (radioButton3.Checked) types += "transfer";
             if (radioButton1.Checked) types += "boleto-payment";

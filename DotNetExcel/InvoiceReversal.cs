@@ -45,7 +45,7 @@ namespace StarkBankExcel
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var worksheet = Globals.InvoiceRevesal;
+            var worksheet = Globals.InvoiceReversal;
 
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
 
@@ -71,15 +71,7 @@ namespace StarkBankExcel
 
                 string invoiceId = worksheet.Range["A" + row].Value?.ToString();
                 string amountString = worksheet.Range["B" + row].Value?.ToString();
-                int amount;
-                try
-                {
-                    amount = int.Parse(amountString);
-                } catch
-                {
-                    MessageBox.Show("Valor deve ser passado como inteiro");
-                    return;
-                }
+                int amount = Convert.ToInt32(double.Parse(amountString) * 100);
 
                 Dictionary<string, object> invoiceReversal = new Dictionary<string, object> {
                     { "amount", amount }
@@ -114,7 +106,7 @@ namespace StarkBankExcel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var worksheet = Globals.InvoiceRevesal;
+            var worksheet = Globals.InvoiceReversal;
 
             Range range = worksheet.Range["A" + (TableFormat.HeaderRow + 1) + ":K1048576"];
             range.ClearContents();

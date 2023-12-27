@@ -3,14 +3,15 @@ using System.Linq;
 using System.Data;
 using System.Text;
 using System.Drawing;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using StarkBankExcel.Resources;
 using System.Collections.Generic;
-using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Excel;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel.Forms
 {
@@ -127,7 +128,7 @@ namespace StarkBankExcel.Forms
                     rng.Value = "PDF";
                     Hyperlink link = rng.Hyperlinks.Add(rng, Utils.BaseUrl(Globals.Credentials.Range["B3"].Value) + "/v2/boleto/" + id + "/pdf");
 
-                    if(OptionButtonEventCredited.Checked)
+                    if (OptionButtonEventCredited.Checked)
                     {
                         worksheet.Range["Q" + row].Value = boleto["streetLine1"];
                         worksheet.Range["R" + row].Value = boleto["streetLine2"];
@@ -136,7 +137,7 @@ namespace StarkBankExcel.Forms
                         worksheet.Range["U" + row].Value = boleto["stateCode"];
                         worksheet.Range["V" + row].Value = boleto["zipCode"];
 
-                        if(boletoStatus == "paid")
+                        if (boletoStatus == "paid")
                         {
                             logsPaidByCharge.Add(id, new Dictionary<string, object>());
                             logsRegisteredByCharge.Add(id, new Dictionary<string, object>());
@@ -162,47 +163,66 @@ namespace StarkBankExcel.Forms
 
                     logsParam.Add("boletoIds", keys);
 
-                    try
-                    {
-                        respJson = Boleto.Log.Get("", logsParam);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Close();
-                        return;
-                    }
+                    string logsCursor = "";
 
-                    JArray boletoLogs = (JArray)respJson["logs"];
+                    JArray boletoLogs;
 
-                    foreach (JObject boletoLog in boletoLogs)
+                    do
                     {
-                        logsPaidByCharge[(string)boletoLog["boleto"]["id"]] = boletoLog;
-                    }
+                        try
+                        {
+                            respJson = Boleto.Log.Get(logsCursor, logsParam);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Close();
+                            return;
+                        }
+
+                        boletoLogs = (JArray)respJson["logs"];
+                        if ((string)respJson["cursor"] != "") logsCursor = (string)respJson["cursor"];
+
+                        foreach (JObject boletoLog in boletoLogs)
+                        {
+                            logsPaidByCharge[(string)boletoLog["boleto"]["id"]] = boletoLog;
+                        }
+
+                    } while (logsCursor != null);
+
+
+                    logsCursor = "";
 
                     logsParam["types"] = "registered";
 
-                    try
+                    do
                     {
-                        respJson = Boleto.Log.Get("", logsParam);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Close();
-                        return;
-                    }
+                        try
+                        {
+                            respJson = Boleto.Log.Get(logsCursor, logsParam);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Close();
+                            return;
+                        }
 
-                    boletoLogs = (JArray)respJson["logs"];
+                        boletoLogs = (JArray)respJson["logs"];
+                        if ((string)respJson["cursor"] != "") logsCursor = (string)respJson["cursor"];
 
-                    foreach (JObject boletoLog in boletoLogs)
-                    {
-                        logsRegisteredByCharge[(string)boletoLog["boleto"]["id"]] = boletoLog;
-                    }
+                        foreach (JObject boletoLog in boletoLogs)
+                        {
+                            logsRegisteredByCharge[(string)boletoLog["boleto"]["id"]] = boletoLog;
+                        }
+                    } while (logsCursor != null);
 
-                    foreach(JObject boleto in boletos)
+                    foreach (JObject boleto in boletos)
                     {
-                        if ((string) boleto["status"] == "paid") SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string) boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
+                        if ((string)boleto["status"] == "paid")
+                        {
+                            SetBoletoInfo(boleto, (JObject)logsPaidByCharge[(string)boleto["id"]], (JObject)logsRegisteredByCharge[(string)boleto["id"]], logRow);
+                        }
 
                         logRow++;
                     }
@@ -230,13 +250,13 @@ namespace StarkBankExcel.Forms
 
             worksheet.Range["F" + row].Value = nominalAmount;
 
-            if(deltaAmount < 0)
+            if (deltaAmount < 0)
             {
                 Range discountCell = worksheet.Range["G" + row];
                 discountCell.Value = deltaAmount;
                 discountCell.Font.Color = XlRgbColor.rgbGreen;
             }
-            if(deltaAmount > 0)
+            if (deltaAmount > 0)
             {
                 double fine = (double.Parse((string)boleto["amount"]) / 100) * nominalAmount;
                 double interest = amount - fine - nominalAmount;
@@ -257,15 +277,15 @@ namespace StarkBankExcel.Forms
             {
                 case "Todos":
                     return "all";
-                case "Pagos":  
+                case "Pagos":
                     return "paid";
-                case "Pendentes de Registro":  
+                case "Pendentes de Registro":
                     return "created";
-                case "Registrados":  
+                case "Registrados":
                     return "registered";
-                case "Vencidos":  
+                case "Vencidos":
                     return "overdue";
-                case "Cancelados":  
+                case "Cancelados":
                     return "canceled";
                 default:
                     return "all";
@@ -300,7 +320,8 @@ namespace StarkBankExcel.Forms
             if (OptionButtonEventCredited.Checked)
             {
                 OptionButtonEventCredited.Checked = true;
-            } else
+            }
+            else
             {
                 OptionButtonEventCredited.Checked = false;
             }

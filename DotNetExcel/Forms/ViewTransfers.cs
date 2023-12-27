@@ -5,8 +5,8 @@ using System.Text;
 using EllipticCurve;
 using System.Drawing;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using StarkBankExcel.Resources;
@@ -15,7 +15,7 @@ using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel.Forms
 {
-    public partial class ViewTranfers : Form
+    public partial class ViewTransfers : Form
     {
         public ViewTransfers()
         {
@@ -59,17 +59,20 @@ namespace StarkBankExcel.Forms
 
             bool ratioChecked = false;
 
-            if (TransactionId.Text != null)
+            if (TransactionId.Text != "")
             {
                 optionalParam["transactionIds"] = TransactionId.Text.ToString();
             }
 
-            if (afterInput.Enabled == true) optionalParam["after"] = after;
-            if (beforeInput.Enabled == true) optionalParam["before"] = before;
+            if (TransactionId.Text == "")
+            {
+                if (afterInput.Enabled == true) optionalParam["after"] = after;
+                if (beforeInput.Enabled == true) optionalParam["before"] = before;
 
-            if (success.Checked) status += "success";
-            if (processing.Checked) status += "processing";
-            if (failed.Checked) status += "failed";
+                if (success.Checked) status += "success";
+                if (processing.Checked) status += "processing";
+                if (failed.Checked) status += "failed";
+            }
 
             if (detail.Checked) ratioChecked = true;
 
@@ -104,7 +107,7 @@ namespace StarkBankExcel.Forms
 
                     foreach (JObject transfer in transfers)
                     {
-                        worksheet.Range["A" + row].Value = new StarkDateTime((string)transfer["created"]).Value;
+                        worksheet.Range["A" + row].Value = new StarkDateTime((string)transfer["created"]).Value; 
                         worksheet.Range["B" + row].Value = transfer["id"];
                         worksheet.Range["C" + row].Value = double.Parse((string)transfer["amount"]) / 100;
                         worksheet.Range["D" + row].Value = transfer["status"];
