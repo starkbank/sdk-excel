@@ -95,7 +95,7 @@ namespace StarkBankExcel
                 string stateCode = worksheet.Range["G" + row].Value?.ToString();
                 string zipCode = worksheet.Range["H" + row].Value?.ToString();
                 string amountString = worksheet.Range["I" + row].Value?.ToString();
-                int amount = (int)(double.Parse(amountString) * 100);
+                int amount = Convert.ToInt32(double.Parse(amountString) * 100);
                 string due = worksheet.Range["J" + row].Value?.ToString();
                 string fineString = worksheet.Range["K" + row].Value?.ToString();
                 string interestString = worksheet.Range["L" + row].Value?.ToString().Replace(",", ".");
@@ -115,7 +115,7 @@ namespace StarkBankExcel
                     descriptions.Add(new Dictionary<string, object>
                     {
                         { "text", description1 },
-                        { "amount", int.Parse(value1) },
+                        { "amount", Convert.ToInt32(double.Parse(value1) * 100) },
                     });
                 }
 
@@ -124,7 +124,7 @@ namespace StarkBankExcel
                     descriptions.Add(new Dictionary<string, object>
                     {
                         { "text", description2 },
-                        { "amount", int.Parse(value2) },
+                        { "amount", Convert.ToInt32(double.Parse(value2) * 100) },
                     });
                 }
 
@@ -133,7 +133,7 @@ namespace StarkBankExcel
                     descriptions.Add(new Dictionary<string, object>
                     {
                         { "text", description3 },
-                        { "amount", int.Parse(value3) },
+                        { "amount", Convert.ToInt32(double.Parse(value3) * 100) },
                     });
                 }
 

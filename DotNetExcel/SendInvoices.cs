@@ -77,7 +77,7 @@ namespace StarkBankExcel
                 string name = worksheet.Range["A" + row].Value?.ToString();
                 string taxID = worksheet.Range["B" + row].Value?.ToString();
                 string amountString = worksheet.Range["C" + row].Value?.ToString();
-                int amount = (int)(double.Parse(amountString) * 100);
+                int amount = Convert.ToInt32(double.Parse(amountString) * 100);
                 string due = worksheet.Range["D" + row].Value?.ToString();
                 string fineString = worksheet.Range["E" + row].Value?.ToString();
                 string interestString = worksheet.Range["F" + row].Value?.ToString();
@@ -127,7 +127,7 @@ namespace StarkBankExcel
                 };
 
                 if (due != null) invoice.Add("due", new StarkDateTime(due).ToString());
-                if (expirationString != null) invoice.Add("expiration", int.Parse(expirationString) * 60 * 60);
+                if (expirationString != null) invoice.Add("expiration", int.Parse(expirationString) * 3600);
                 if (fineString != null) invoice.Add("fine", float.Parse(fineString));
                 if (interestString != null) invoice.Add("interest", float.Parse(interestString));
 
