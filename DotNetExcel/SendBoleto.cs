@@ -69,6 +69,8 @@ namespace StarkBankExcel
             worksheet.Range["Q" + TableFormat.HeaderRow].Value = "Valor 2";
             worksheet.Range["R" + TableFormat.HeaderRow].Value = "Descrição 3";
             worksheet.Range["S" + TableFormat.HeaderRow].Value = "Valor 3";
+            worksheet.Range["T" + TableFormat.HeaderRow].Value = "Nome do Sacador Avalista";
+            worksheet.Range["U" + TableFormat.HeaderRow].Value = "CPF/CNPJ do Sacador Avalista";
 
             string returnMessage = "";
             string warningMessage = "";
@@ -149,6 +151,10 @@ namespace StarkBankExcel
                     { "amount", amount },
                     { "descriptions" , descriptions }
                 };
+
+                if (receiverName != null) boleto.Add("receiverName", receiverName);
+
+                if (receiverTaxId != null) boleto.Add("receiverTaxId", receiverTaxId);
 
                 if (due != null) boleto.Add("due", new StarkDate(due).ToString());
 
