@@ -22,6 +22,29 @@ namespace StarkBankExcel
             return bankCode + branchCode + accountNumber + name + taxID + amount.ToString();
         }
 
+        public static string ParsingErrors(string element, int number)
+        {
+            JObject json = JObject.Parse(element);
+
+            string result = "";
+            string errorMessage = "";
+
+            foreach (JObject errorJson in json["errors"])
+            {
+                try
+                {
+                    string error = string.Join(" ", errorJson["message"].ToString().Split(':'));
+                    string splited = errorJson["message"].ToString().Split(':')[0].Substring(8);
+                    int resultNumber = number + Convert.ToInt32(splited);
+                    result = resultNumber.ToString();
+                    errorMessage += "Linha: " + result + " Erro: " + error + "\n\n";
+                }
+                catch (Exception ex) { errorMessage = errorJson["message"].ToString().Split(':')[1]; }
+            };
+
+            return errorMessage;
+        }
+
         public static string rowsMessage(int startRow, int currentRow)
         {
             return "Linhas " + startRow.ToString() + " a " + currentRow.ToString() + ": ";

@@ -82,6 +82,7 @@ namespace StarkBankExcel.Forms
             string errorMessage = "";
 
             int iteration = 0;
+            int errorNum = 10;
 
             var initRow = TableFormat.HeaderRow + 1;
             lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
@@ -135,21 +136,26 @@ namespace StarkBankExcel.Forms
 
                 if (iteration % 100 == 0 || row >= lastRow)
                 {
+
                     if (boletoPaymentNumbers.Count == 0) goto nextIteration;
 
                     try
                     {
                         JObject res = PaymentRequest.Create(boletos, privateKeyPem);
 
-                        string createoBoletoPayment = (string)res["message"];
-                        returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createoBoletoPayment + "\n";
+                        string createBoletoPayment = (string)res["message"];
+                        returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createBoletoPayment + "\n";
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = ex.Message;
+                        errorMessage = Utils.ParsingErrors(ex.Message, errorNum);
                     }
+
+                    errorNum += 100;
+
                 nextIteration:
                     initRow = row + 1;
+                    boletos = new List<Dictionary<string, object>>();
                     boletoPaymentNumbers = new List<int>();
                 }
             }

@@ -63,6 +63,7 @@ namespace StarkBankExcel
             string errorMessage = "";
 
             int iteration = 0;
+            int errorNum = 10;
 
             var initRow = TableFormat.HeaderRow + 1;
             lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
@@ -148,8 +149,11 @@ namespace StarkBankExcel
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = ex.Message;
+                        errorMessage = Utils.ParsingErrors(ex.Message, errorNum);
                     }
+
+                errorNum += 100;
+
                 nextIteration:
                     initRow = row + 1;
                     invoices = new List<Dictionary<string, object>>();
