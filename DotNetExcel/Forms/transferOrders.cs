@@ -90,6 +90,7 @@ namespace StarkBankExcel
                         Close();
                         return;
                     }
+
                     int amount = Convert.ToInt32(double.Parse(amountString) * 100);
                     string ispb = worksheet.Range["D" + row].Value?.ToString();
                     string branchCode = worksheet.Range["E" + row].Value?.ToString();
@@ -168,7 +169,7 @@ namespace StarkBankExcel
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = ex.Message;
+                        errorMessage = Utils.ParsingErrors(ex.Message, 10 + (100 * batchIndex));
                     }
                 }
             });

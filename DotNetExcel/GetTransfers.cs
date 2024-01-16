@@ -2,19 +2,19 @@
 using System.IO;
 using System.Data;
 using System.Drawing;
+using System.Windows.Forms;
 using StarkBankExcel.Forms;
 using Newtonsoft.Json.Linq;
-using System.Windows.Forms;
 using StarkBankExcel.Resources;
 using System.Collections.Generic;
-using Office = Microsoft.Office.Core;
 using System.Text.RegularExpressions;
+using Office = Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
-    public partial class GetTransactions
+    public partial class GetTransfers
     {
         private void Planilha17_Startup(object sender, System.EventArgs e)
         {
@@ -40,6 +40,7 @@ namespace StarkBankExcel
             this.button7.Click += new System.EventHandler(this.button7_Click);
             this.Startup += new System.EventHandler(this.Planilha17_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha17_Shutdown);
+
         }
 
         #endregion

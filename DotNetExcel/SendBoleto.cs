@@ -77,6 +77,7 @@ namespace StarkBankExcel
             string errorMessage = "";
 
             int iteration = 0;
+            int errorNum = 10;
 
             var initRow = TableFormat.HeaderRow + 1;
             lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
@@ -111,6 +112,8 @@ namespace StarkBankExcel
                 string value2 = worksheet.Range["Q" + row].Value?.ToString();
                 string description3 = worksheet.Range["R" + row].Value?.ToString();
                 string value3 = worksheet.Range["S" + row].Value?.ToString();
+                string receiverName = worksheet.Range["T" + row].Value?.ToString();
+                string receiverTaxId = worksheet.Range["U" + row].Value?.ToString();
 
                 if (description1 != null && value1 != null)
                 {
@@ -178,8 +181,11 @@ namespace StarkBankExcel
                     }
                     catch (Exception ex)
                     {
-                        errorMessage = ex.Message;
+                        errorMessage = Utils.ParsingErrors(ex.Message, errorNum);
                     }
+
+                errorNum += 100;
+
                 nextIteration:
                     initRow = row + 1;
                     boletos = new List<Dictionary<string, object>>();
