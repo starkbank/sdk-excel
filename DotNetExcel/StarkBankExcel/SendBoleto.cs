@@ -1,15 +1,15 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.VisualStudio.Tools.Applications.Runtime;
+﻿using System;
+using System.Data;
+using System.Drawing;
+using System.Diagnostics;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StarkBankExcel.Resources;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Runtime;
 
 namespace StarkBankExcel
 {
@@ -51,14 +51,12 @@ namespace StarkBankExcel
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Nome";
             worksheet.Range["B" + TableFormat.HeaderRow].Value = "CPF/CNPJ";
-
             worksheet.Range["C" + TableFormat.HeaderRow].Value = "Logradouro";
             worksheet.Range["D" + TableFormat.HeaderRow].Value = "Complemento";
             worksheet.Range["E" + TableFormat.HeaderRow].Value = "Bairo";
             worksheet.Range["F" + TableFormat.HeaderRow].Value = "Cidade";
             worksheet.Range["G" + TableFormat.HeaderRow].Value = "Código do Estado";
             worksheet.Range["H" + TableFormat.HeaderRow].Value = "CEP";
-
             worksheet.Range["I" + TableFormat.HeaderRow].Value = "Valor";
             worksheet.Range["J" + TableFormat.HeaderRow].Value = "Data de Vencimento";
             worksheet.Range["K" + TableFormat.HeaderRow].Value = "Multa";

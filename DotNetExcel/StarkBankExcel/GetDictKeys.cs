@@ -1,11 +1,11 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.Office.Tools.Excel;
+using Microsoft.Office.Interop.Excel;
 
 namespace StarkBankExcel
 {
@@ -120,7 +120,6 @@ namespace StarkBankExcel
                 }
                 string tags = worksheet.Range["C" + row].Value?.ToString();
                 string description = worksheet.Range["D" + row].Value?.ToString();
-
                 string name = worksheet.Range["E" + row].Value?.ToString();
                 string taxID = worksheet.Range["F" + row].Value?.ToString();
                 string ispb = worksheet.Range["G" + row].Value?.ToString();
@@ -131,15 +130,15 @@ namespace StarkBankExcel
                 if(name != null && accountType != null)
                 {
                     validTransfers.Add(new Dictionary<string, object> {
-                            {"Nome", name},
-                            {"CPF/CNPJ", taxID },
-                            {"Valor", value },
-                            {"ISPB", ispb },
-                            {"Agência", branchCode },
-                            {"Conta", accountNumber },
-                            {"Tipo de Conta", accountType },
-                            {"Tags", tags },
-                            {"Descrição", description },
+                            { "Nome", name },
+                            { "CPF/CNPJ", taxID },
+                            { "Valor", value },
+                            { "ISPB", ispb },
+                            { "Agência", branchCode },
+                            { "Conta", accountNumber },
+                            { "Tipo de Conta", accountType },
+                            { "Tags", tags },
+                            { "Descrição", description },
                         }
                     );
                 }
