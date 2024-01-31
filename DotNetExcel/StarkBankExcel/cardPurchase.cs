@@ -122,7 +122,7 @@ namespace StarkBankExcel
 
                                 byte[] attachmentb64 = Convert.FromBase64String(attachment);
 
-                                string fileName = worksheet.Range["A" + i].Value.Substring(0, 10).Replace("-", "") + "-" + worksheet.Range["B" + i].Value + "-" + worksheet.Range["D" + i].Value;
+                                string fileName = worksheet.Range["A" + i].Value.ToString().Substring(0, 10).Replace("/", "") + "-" + worksheet.Range["B" + i].Value + "-" + worksheet.Range["D" + i].Value;
                                 fileName = Regex.Replace(fileName, "[*|@|*|&]", string.Empty);
 
                                 if (fileNumber == 0)
