@@ -74,7 +74,7 @@ namespace StarkBankExcel
                 JObject respJson;
                 int start_range = int.Parse(selectedRange.Address.Substring(3).Split(':')[0]);
                 int end_range = start_range;
-                if (selectedRange.Address.Split('$').Length ==5)
+                if (selectedRange.Address.Split('$').Length == 5)
                 {
                     end_range = int.Parse(selectedRange.Address.Split('$')[4]);
                 }
