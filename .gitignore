@@ -1,1 +1,16 @@
 .idea/
+
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+*.nuget/
+*.paket/
+[Tt]emp/
+[Bb]in/
+[Ll]og/
+[Ll]ogs/
+.vscode/
