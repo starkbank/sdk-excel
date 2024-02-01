@@ -34,7 +34,7 @@ namespace StarkBankExcel.Forms
             range.ClearContents();
 
             worksheet.Range["A" + TableFormat.HeaderRow].Value = "Data";
-            worksheet.Range["B" + TableFormat.HeaderRow].Value = "ID";
+            worksheet.Range["B" + TableFormat.HeaderRow].Value = "ID da Compra";
             worksheet.Range["C" + TableFormat.HeaderRow].Value = "Estabelecimento";
             worksheet.Range["D" + TableFormat.HeaderRow].Value = "Descrição";
             worksheet.Range["E" + TableFormat.HeaderRow].Value = "Valor";
@@ -113,7 +113,7 @@ namespace StarkBankExcel.Forms
                         JObject purchase = corporatePurchaseById[transactionIndx];
 
                         worksheet.Range["A" + row].Value = new StarkDateTime((string)transaction["created"]).Value;
-                        worksheet.Range["B" + row].Value = transaction["id"].ToString();
+                        worksheet.Range["B" + row].Value = purchase["id"].ToString();
                         worksheet.Range["C" + row].Value = purchase["merchantName"].ToString();
                         worksheet.Range["D" + row].Value = transaction["description"].ToString();
                         worksheet.Range["E" + row].Value = (double.Parse((string)transaction["amount"]) / 100).ToString();

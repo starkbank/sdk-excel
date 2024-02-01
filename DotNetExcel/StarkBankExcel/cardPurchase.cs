@@ -62,19 +62,22 @@ namespace StarkBankExcel
 
             Excel.Range selectedRange = worksheet.Application.Selection;
 
-            string cell_A = selectedRange.Address.Split('$')[1];
-            string cell_J = selectedRange.Address.Split('$')[3];
+            string cell_H = selectedRange.Address.Split('$')[1];
 
-            if (cell_A != "A" | cell_J != "J")
+            if (cell_H != "H")
             {
-                MessageBox.Show("Todas as colunas devem ser selecionadas !");
+                MessageBox.Show("Apenas a celula do anexo deve ser selecionada!");
             }
 
-            if (cell_A == "A" & cell_J == "J")
+            if (cell_H == "H")
             {
                 JObject respJson;
                 int start_range = int.Parse(selectedRange.Address.Substring(3).Split(':')[0]);
-                int end_range = int.Parse(selectedRange.Address.Split('$')[4]);
+                int end_range = start_range;
+                if (selectedRange.Address.Split('$').Length ==5)
+                {
+                    end_range = int.Parse(selectedRange.Address.Split('$')[4]);
+                }
                 bool validator = false;
 
                 using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
