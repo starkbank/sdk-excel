@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(5)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(7)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class Planilha11 : Microsoft.Office.Tools.Excel.WorksheetBase {
         
