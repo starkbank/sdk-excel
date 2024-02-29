@@ -7,7 +7,6 @@ using StarkBankExcel.Resources;
 using Office = Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
-using StarkBankExcel.Resources;
 
 namespace StarkBankExcel
 {
@@ -100,7 +99,8 @@ namespace StarkBankExcel
             // ViewHelpForm viewHelpForm = new ViewHelpForm();
             // viewHelpForm.ShowDialog();
 
-            
+            qrCode qrcode = new qrCode();
+            qrcode.ShowDialog();
         }
 
         private void button10_Click(object sender, EventArgs e)

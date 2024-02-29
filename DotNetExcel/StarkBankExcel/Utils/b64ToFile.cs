@@ -5,6 +5,7 @@ using EllipticCurve;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace StarkBankExcel.Resources
 {
@@ -33,9 +34,29 @@ namespace StarkBankExcel.Resources
                 // string fileName = worksheet.Range["A" + i].Value.ToString().Substring(0, 10).Replace("/", "") + "-" + worksheet.Range["B" + i].Value + "-" + worksheet.Range["D" + i].Value;
                 // fileName = Regex.Replace(fileName, "[*|@|*|&]", string.Empty);
 
-                File.WriteAllBytes(selectedPath + "\\" + fileName + "." + extension, attachmentb64);
+                byte[] resizedImageBytes = ResizeImage(attachmentb64, 200, 200);
+
+                File.WriteAllBytes(selectedPath + "\\" + fileName + "." + extension, resizedImageBytes);
 
                 return true;
+            }
+        }
+
+        public static byte[] ResizeImage(byte[] originalImageBytes, int newWidth, int newHeight)
+        {
+            using (MemoryStream msOriginal = new MemoryStream(originalImageBytes))
+            using (Image originalImage = Image.FromStream(msOriginal))
+            using (Bitmap resizedImage = new Bitmap(newWidth, newHeight))
+            using (Graphics g = Graphics.FromImage(resizedImage))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.DrawImage(originalImage, 0, 0, newWidth, newHeight);
+
+                using (MemoryStream msResized = new MemoryStream())
+                {
+                    resizedImage.Save(msResized, originalImage.RawFormat); // Preserve the original image format
+                    return msResized.ToArray();
+                }
             }
         }
 
