@@ -353,6 +353,7 @@
     <Compile Include="Resources\BoletoPayment.cs" />
     <Compile Include="Resources\corporateAttachment.cs" />
     <Compile Include="Resources\corporatePurchase.cs" />
+    <Compile Include="Utils\b64ToFile.cs" />
     <Compile Include="Utils\keyGen.cs" />
     <Compile Include="Resources\Session.cs" />
     <Compile Include="Resources\CorporateTransaction.cs" />

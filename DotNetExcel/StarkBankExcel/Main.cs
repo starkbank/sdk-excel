@@ -7,6 +7,7 @@ using StarkBankExcel.Resources;
 using Office = Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
+using StarkBankExcel.Resources;
 
 namespace StarkBankExcel
 {
@@ -96,9 +97,10 @@ namespace StarkBankExcel
 
         private void Help_Click(object sender, EventArgs e)
         {
-            ViewHelpForm viewHelpForm = new ViewHelpForm();
-            viewHelpForm.ShowDialog();
+            // ViewHelpForm viewHelpForm = new ViewHelpForm();
+            // viewHelpForm.ShowDialog();
 
+            
         }
 
         private void button10_Click(object sender, EventArgs e)
