@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(17)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(16)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class SendBoleto : Microsoft.Office.Tools.Excel.WorksheetBase {
         

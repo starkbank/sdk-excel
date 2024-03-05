@@ -12,7 +12,12 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 - PATCH version when backwards compatible bug **fixes** are implemented.
 
 
-## [Unreleased]
+## [3.0.6] - 2024-03-05
+### Added
+- Excel new version warning
+
+### Removed
+- Cartshop resource
 
 ## [3.0.5] - 2023-10-05
 ### Changed
