@@ -7,6 +7,8 @@ using StarkBankExcel.Resources;
 using Office = Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
+using System.Net.Http;
+using System.Net;
 
 namespace StarkBankExcel
 {
@@ -14,6 +16,44 @@ namespace StarkBankExcel
     {
         private void Planilha1_Startup(object sender, System.EventArgs e)
         {
+
+            var worksheet = Globals.Main;
+            string version = worksheet.Range["A1"].Value;
+
+            version = version.ToString().Split('v')[1].Trim();
+
+            string url = "https://github.com/starkbank/sdk-excel/blob/master/CHANGELOG.md";
+
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage
+            {
+                Method = new HttpMethod("GET"),
+                RequestUri = new Uri(url)
+            };
+
+            HttpClient Client = new HttpClient();
+            Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "*/*");
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var result = Client.SendAsync(httpRequestMessage).Result;
+
+            Response response = new Response(
+                result.Content.ReadAsByteArrayAsync().Result,
+                (int)result.StatusCode
+                );
+
+            var versionWarning = response.ToJson()["payload"]["blob"]["headerInfo"]["toc"][2]["text"];
+
+            versionWarning = versionWarning.ToString().Split(']')[0].Split('[')[1];
+
+            if (version.ToString().Trim() != versionWarning.ToString().Trim())
+            {
+                VersionWarning viewInvoiceForm = new VersionWarning();
+                viewInvoiceForm.ShowDialog();
+            }
         }
 
         private void Planilha1_Shutdown(object sender, System.EventArgs e)
