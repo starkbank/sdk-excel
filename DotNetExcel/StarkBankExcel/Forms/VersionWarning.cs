@@ -42,7 +42,7 @@ namespace StarkBankExcel.Forms
                 (int)result.StatusCode
                 );
 
-            var versionWarning = response.ToJson()["payload"]["blob"]["headerInfo"]["toc"][2]["text"];
+            var versionWarning = response.ToJson()["payload"]["blob"]["headerInfo"]["toc"][1]["text"];
 
             versionWarning = versionWarning.ToString().Split(']')[0].Split('[')[1];
 
