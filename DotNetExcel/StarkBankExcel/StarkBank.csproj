@@ -158,6 +158,13 @@
     <Compile Include="Forms\cardStatmentForm.Designer.cs">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\qrCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\qrCode.Designer.cs">
+      <DependentUpon>qrCode.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\VersionWarning.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -302,6 +309,7 @@
     <Compile Include="Resources\BoletoPayment.cs" />
     <Compile Include="Resources\corporateAttachment.cs" />
     <Compile Include="Resources\corporatePurchase.cs" />
+    <Compile Include="Utils\b64ToFile.cs" />
     <Compile Include="Utils\keyGen.cs" />
     <Compile Include="Resources\Session.cs" />
     <Compile Include="Resources\CorporateTransaction.cs" />
@@ -373,8 +381,16 @@
     <EmbeddedResource Include="Forms\cardStatmentForm.resx">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Forms\VersionWarning.resx">
       <DependentUpon>VersionWarning.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="Forms\qrCode.resx">
+      <DependentUpon>qrCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Redirect.resx">
+      <DependentUpon>Redirect.cs</DependentUpon>
+>>>>>>> a615126 (qrcode)
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ViewBoletoPayment.resx">
       <DependentUpon>ViewBoletoPayment.cs</DependentUpon>
