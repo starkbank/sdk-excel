@@ -139,8 +139,8 @@ namespace StarkBankExcel
             // ViewHelpForm viewHelpForm = new ViewHelpForm();
             // viewHelpForm.ShowDialog();
 
-            qrCode qrcode = new qrCode();
-            qrcode.ShowDialog();
+            qrCode qrcodeForms = new qrCode();
+            qrcodeForms.ShowDialog();
         }
 
         private void button10_Click(object sender, EventArgs e)

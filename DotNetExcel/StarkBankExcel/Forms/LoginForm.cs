@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Text;
+using Newtonsoft.Json;
+using StarkBankExcel.Forms;
 
 namespace StarkBankExcel
 {
@@ -113,6 +116,80 @@ namespace StarkBankExcel
             Environment.Items.Add("Sandbox");
 
             Environment.Text = "Production";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string environment = Environment.Text.ToLower();
+            string workspace = Workspace.Text.ToLower();
+            string email = Email.Text.ToLower();
+            string password = Password.Text.ToString();
+
+            PrivateKey privateKey = new PrivateKey();
+            PublicKey publicKey = privateKey.publicKey();
+
+            List<object> challenge = new List<object>();
+
+            Dictionary<string, object> requestBody = new Dictionary<string, object>()
+            {
+                { "platform", "web" },
+                { "expiration", 5184000 },
+                { "publicKey", publicKey.toPem() }
+            };
+
+            Dictionary<string, object> dictObj = new Dictionary<string, object>()
+            {
+                { "requestBody", JsonConvert.SerializeObject(requestBody) },
+                { "requestMethod", "POST" },
+                { "requestPath", "/session" },
+                { "type", "authenticator" }
+            };
+
+            challenge.Add(dictObj);
+
+            Dictionary<string, object> payload = new Dictionary<string, object>() { { "challenges", challenge } };
+
+            Response fetchedJson;
+
+            PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
+
+            try
+            {
+
+                try
+                {
+                    Session.Create(workspace, environment, email, password);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return;
+                }
+
+                fetchedJson = Request.Fetch(
+                     Request.Post,
+                     "sandbox",
+                     "challenge?expand=qrcode",
+                     payload,
+                     null,
+                     keys.toPem()
+                  );
+
+                string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
+
+                Globals.Credentials.Range["A14"].Value = "Qrcode";
+                Globals.Credentials.Range["B14"].Value = qrcode;
+
+                qrCode qrcodeForms = new qrCode();
+                qrcodeForms.ShowDialog();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+
+            Close();
         }
     }
 }

@@ -38,11 +38,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.Environment = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Login
             // 
-            this.Login.Location = new System.Drawing.Point(15, 124);
+            this.Login.Location = new System.Drawing.Point(15, 111);
             this.Login.Name = "Login";
             this.Login.Size = new System.Drawing.Size(258, 23);
             this.Login.TabIndex = 5;
@@ -117,12 +118,23 @@
             this.Environment.Size = new System.Drawing.Size(190, 21);
             this.Environment.TabIndex = 1;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(15, 133);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(258, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "QrCode";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(293, 161);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.Environment);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -156,5 +168,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox Environment;
+        private System.Windows.Forms.Button button1;
     }
 }
