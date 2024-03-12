@@ -26,10 +26,14 @@ namespace StarkBankExcel.Forms
 
 
            string bString = Globals.Credentials.Range["B14"].Value;
+           string id = Globals.Credentials.Range["B15"].Value;
+           string challengePk = Globals.Credentials.Range["B16"].Value;
 
             Debug.WriteLine("---b64---");
             Debug.WriteLine(bString);
             Debug.WriteLine("---end b64---");
+
+            
 
             string attachment = bString.Substring(bString.IndexOf("base64,") + "base64,".Length);
 
@@ -40,6 +44,27 @@ namespace StarkBankExcel.Forms
            Image originalImage = ByteArrayToImage(resizedImageBytes);
 
            pictureBox1.Image = originalImage;
+
+           string path = "challenge/" + id;
+           
+            for (int i = 0; i < 100; i++)
+            {
+               Response response = Request.Fetch(
+                  Request.Get,
+                  "sandbox",
+                  path,
+                  null,
+                  null,
+                  challengePk
+               );
+
+                // Debug
+                Debug.WriteLine("---challenge---");
+                Debug.WriteLine(response.ToJson());
+                Debug.WriteLine("---end challenge---");
+            }
+
+
         }
 
         public string polling()

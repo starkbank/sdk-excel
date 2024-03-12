@@ -176,12 +176,21 @@ namespace StarkBankExcel
                   );
 
                 string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
+                string challengeId = fetchedJson.ToJson()["challenges"][0]["id"].ToString();
+                string challengPk = keys.toPem();
 
                 Globals.Credentials.Range["A14"].Value = "Qrcode";
                 Globals.Credentials.Range["B14"].Value = qrcode;
 
+                Globals.Credentials.Range["A15"].Value = "challenge";
+                Globals.Credentials.Range["B15"].Value = challengeId;
+
+                Globals.Credentials.Range["A16"].Value = "ChallengePk";
+                Globals.Credentials.Range["B16"].Value = challengPk;
+
                 qrCode qrcodeForms = new qrCode();
                 qrcodeForms.ShowDialog();
+
 
             }
             catch (Exception ex)
