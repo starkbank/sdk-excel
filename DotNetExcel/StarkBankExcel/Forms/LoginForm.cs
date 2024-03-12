@@ -125,6 +125,16 @@ namespace StarkBankExcel
             string email = Email.Text.ToLower();
             string password = Password.Text.ToString();
 
+            try
+            {
+                Session.Create(workspace, environment, email, password);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return;
+            }
+
             PrivateKey privateKey = new PrivateKey();
             PublicKey publicKey = privateKey.publicKey();
 
@@ -155,16 +165,6 @@ namespace StarkBankExcel
 
             try
             {
-
-                try
-                {
-                    Session.Create(workspace, environment, email, password);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return;
-                }
 
                 fetchedJson = Request.Fetch(
                      Request.Post,
