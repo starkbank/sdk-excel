@@ -28,29 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label4 = new System.Windows.Forms.Label();
-            this.Password = new System.Windows.Forms.TextBox();
             this.Login = new System.Windows.Forms.Button();
+            this.Password = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.Email = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 55);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(41, 13);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "Senha:";
-            // 
-            // Password
-            // 
-            this.Password.Location = new System.Drawing.Point(79, 52);
-            this.Password.Name = "Password";
-            this.Password.PasswordChar = '*';
-            this.Password.Size = new System.Drawing.Size(190, 20);
-            this.Password.TabIndex = 11;
             // 
             // Login
             // 
@@ -61,6 +44,23 @@
             this.Login.Text = "Enviar";
             this.Login.UseVisualStyleBackColor = true;
             this.Login.Click += new System.EventHandler(this.Login_Click);
+            // 
+            // Password
+            // 
+            this.Password.Location = new System.Drawing.Point(79, 52);
+            this.Password.Name = "Password";
+            this.Password.PasswordChar = '*';
+            this.Password.Size = new System.Drawing.Size(190, 20);
+            this.Password.TabIndex = 11;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 55);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(41, 13);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Senha:";
             // 
             // label2
             // 
@@ -78,7 +78,7 @@
             this.Email.Size = new System.Drawing.Size(190, 20);
             this.Email.TabIndex = 17;
             // 
-            // BoletoPayment
+            // BoletoPaymentForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -88,7 +88,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.Password);
             this.Controls.Add(this.Login);
-            this.Name = "BoletoPayment";
+            this.Name = "BoletoPaymentForm";
             this.Text = "BoletoPayment";
             this.Load += new System.EventHandler(this.BoletoPayment_Load);
             this.ResumeLayout(false);
@@ -97,10 +97,9 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox Password;
         private System.Windows.Forms.Button Login;
+        private System.Windows.Forms.TextBox Password;
+        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox Email;
     }
