@@ -45,25 +45,6 @@ namespace StarkBankExcel.Forms
 
            pictureBox1.Image = originalImage;
 
-           string path = "challenge/" + id;
-           
-            for (int i = 0; i < 100; i++)
-            {
-               Response response = Request.Fetch(
-                  Request.Get,
-                  "sandbox",
-                  path,
-                  null,
-                  null,
-                  challengePk
-               );
-
-                // Debug
-                Debug.WriteLine("---challenge---");
-                Debug.WriteLine(response.ToJson());
-                Debug.WriteLine("---end challenge---");
-            }
-
 
         }
 

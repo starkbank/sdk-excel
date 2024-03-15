@@ -34,7 +34,7 @@ namespace StarkBankExcel
 
         internal static Response Fetch(
             HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
-            Dictionary<string, object> query = null, string privateKeyPem = null
+            Dictionary<string, object> query = null, string privateKeyPem = null, string headersChallenge = null
         )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -72,6 +72,17 @@ namespace StarkBankExcel
             PrivateKey privateKey = PrivateKey.fromPem(privateKeyPem);
 
             string message = accessId + ":" + accessTime + ":" + body;
+
+            if (path == "/session" && method == Post)
+            {
+                message = accessId + ":" + accessTime + ":" + payload["content"].ToString();
+            }
+
+            if (headersChallenge != null)
+            {
+                message += ":" + headersChallenge;
+            }
+
             string signature = Ecdsa.sign(message, privateKey).toBase64();
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
@@ -79,9 +90,19 @@ namespace StarkBankExcel
                 Method = method,
                 RequestUri = new Uri(url)
             };
+
             if (body.Length > 0)
             {
                 httpRequestMessage.Content = new StringContent(body);
+            }
+
+            if (path == "/session")
+            {
+                // Debug
+                Debug.WriteLine("-----dentro fecth-----");
+                Debug.WriteLine(payload["content"].ToString());
+                Debug.WriteLine("-----dentro fecth-----");
+                httpRequestMessage.Content = new StringContent(payload["content"].ToString());
             }
 
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Id", accessId);
@@ -89,6 +110,25 @@ namespace StarkBankExcel
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Signature", signature);
             httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
+            if (headersChallenge != null)
+            {
+                httpRequestMessage.Headers.TryAddWithoutValidation("Access-Challenge-Ids", headersChallenge);
+            }
+
+            // Debug
+            // challenge 5738709764800512
+            if (method == Post)
+            {
+                Debug.WriteLine("----req aqui----");
+                Debug.WriteLine(url);
+                Debug.WriteLine(body);
+                Debug.WriteLine(message);
+                Debug.WriteLine(headersChallenge);
+                Debug.WriteLine("----end req aqui----");
+                Debug.WriteLine("----headers----");
+                Debug.WriteLine(httpRequestMessage.Headers.ToString());
+                Debug.WriteLine("----end headers----");
+            }
 
             var result = Client.SendAsync(httpRequestMessage).Result;
 

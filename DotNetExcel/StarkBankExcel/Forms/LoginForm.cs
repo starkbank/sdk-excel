@@ -10,6 +10,9 @@ using System.Drawing;
 using System.Text;
 using Newtonsoft.Json;
 using StarkBankExcel.Forms;
+using Microsoft.Office.Tools.Excel.Controls;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StarkBankExcel
 {
@@ -177,6 +180,7 @@ namespace StarkBankExcel
 
                 string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
                 string challengeId = fetchedJson.ToJson()["challenges"][0]["id"].ToString();
+                // string challengeId = "6359177920249856";
                 string challengPk = keys.toPem();
 
                 Globals.Credentials.Range["A14"].Value = "Qrcode";
@@ -184,13 +188,62 @@ namespace StarkBankExcel
 
                 Globals.Credentials.Range["A15"].Value = "challenge";
                 Globals.Credentials.Range["B15"].Value = challengeId;
+                //Globals.Credentials.Range["B15"].Value = "6359177920249856";
 
                 Globals.Credentials.Range["A16"].Value = "ChallengePk";
                 Globals.Credentials.Range["B16"].Value = challengPk;
 
-                qrCode qrcodeForms = new qrCode();
-                qrcodeForms.ShowDialog();
+                Task task1 = Task.Run(() => Dowork1());
+                Task task2 = Task.Run(() => Dowork2());
 
+                Task.WaitAll(task2);
+
+                Dictionary<string, object>  dictObj2 = new Dictionary<string, object>()
+                {
+                    { "content", JsonConvert.SerializeObject(requestBody) },
+                };
+
+                try
+                {
+                    fetchedJson = Request.Fetch(
+                         Request.Post,
+                         environment,
+                         "/session",
+                         dictObj2,
+                         null,
+                         keys.toPem(),
+                         challengeId
+                     );
+
+                } catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return;
+                }
+
+                Globals.Credentials.Range["A11"].Value = "Session Private";
+                Globals.Credentials.Range["B11"].Value = privateKey.toPem();
+
+                Globals.Credentials.Range["A12"].Value = "Session Public";
+                Globals.Credentials.Range["B12"].Value = publicKey.toPem();
+
+                Globals.Credentials.Range["A13"].Value = "Access ID";
+                Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
+
+
+                Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;
+
+                foreach (Worksheet sheet in workbook.Worksheets)
+                {
+                    if (sheet.Name != "Credentials")
+                    {
+                        Utils.DisplayInfo(sheet);
+                    }
+                }
+
+                MessageBox.Show("Logado com sucesso!");
+
+                Close();
 
             }
             catch (Exception ex)
@@ -199,6 +252,54 @@ namespace StarkBankExcel
             }
 
             Close();
+
+            // 6359177920249856
+            // :<challengeId>
         }
+
+        static void Dowork1()
+        {
+            qrCode qrcodeForms = new qrCode();
+            qrcodeForms.ShowDialog();
+        }
+
+        static void Dowork2()
+        {
+            string id = Globals.Credentials.Range["B15"].Value;
+            string challengePk = Globals.Credentials.Range["B16"].Value;
+
+
+            string path = "challenge/" + id;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                Response response = Request.Fetch(
+                  Request.Get,
+                  "sandbox",
+                  path,
+                  null,
+                  null,
+                  challengePk
+               );
+
+                // Debug
+                // Debug.WriteLine("---challenge---");
+                // Debug.WriteLine(response.ToJson());
+                // Debug.WriteLine("---end challenge---");
+
+                Debug.WriteLine(response.ToJson()["challenge"]["id"].ToString());
+                Debug.WriteLine(response.ToJson()["challenge"]["status"].ToString());
+                Debug.WriteLine(response.ToJson());
+
+                if (response.ToJson()["challenge"]["status"].ToString() == "approved")
+                {
+                    break;
+                }
+
+                Thread.Sleep(5000);
+
+            }
+        }
+
     }
 }

@@ -15,7 +15,7 @@ namespace StarkBankExcel.Resources
 
             string encodedEmail = email.ToLower();
 
-            string encodedSalt = "";
+            string encodedSalt = "31cf81be-341f-43fa-bd75-391e0b1a3d3a";
 
             if (Globals.Credentials.Range["B3"].Value == "production")
             {
