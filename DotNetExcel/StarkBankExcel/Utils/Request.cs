@@ -98,10 +98,6 @@ namespace StarkBankExcel
 
             if (path == "/session")
             {
-                // Debug
-                Debug.WriteLine("-----dentro fecth-----");
-                Debug.WriteLine(payload["content"].ToString());
-                Debug.WriteLine("-----dentro fecth-----");
                 httpRequestMessage.Content = new StringContent(payload["content"].ToString());
             }
 
@@ -113,21 +109,6 @@ namespace StarkBankExcel
             if (headersChallenge != null)
             {
                 httpRequestMessage.Headers.TryAddWithoutValidation("Access-Challenge-Ids", headersChallenge);
-            }
-
-            // Debug
-            // challenge 5738709764800512
-            if (method == Post)
-            {
-                Debug.WriteLine("----req aqui----");
-                Debug.WriteLine(url);
-                Debug.WriteLine(body);
-                Debug.WriteLine(message);
-                Debug.WriteLine(headersChallenge);
-                Debug.WriteLine("----end req aqui----");
-                Debug.WriteLine("----headers----");
-                Debug.WriteLine(httpRequestMessage.Headers.ToString());
-                Debug.WriteLine("----end headers----");
             }
 
             var result = Client.SendAsync(httpRequestMessage).Result;

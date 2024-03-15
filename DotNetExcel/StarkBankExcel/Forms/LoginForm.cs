@@ -180,7 +180,6 @@ namespace StarkBankExcel
 
                 string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
                 string challengeId = fetchedJson.ToJson()["challenges"][0]["id"].ToString();
-                // string challengeId = "6359177920249856";
                 string challengPk = keys.toPem();
 
                 Globals.Credentials.Range["A14"].Value = "Qrcode";
@@ -188,7 +187,6 @@ namespace StarkBankExcel
 
                 Globals.Credentials.Range["A15"].Value = "challenge";
                 Globals.Credentials.Range["B15"].Value = challengeId;
-                //Globals.Credentials.Range["B15"].Value = "6359177920249856";
 
                 Globals.Credentials.Range["A16"].Value = "ChallengePk";
                 Globals.Credentials.Range["B16"].Value = challengPk;
@@ -252,9 +250,6 @@ namespace StarkBankExcel
             }
 
             Close();
-
-            // 6359177920249856
-            // :<challengeId>
         }
 
         static void Dowork1()
@@ -282,22 +277,12 @@ namespace StarkBankExcel
                   challengePk
                );
 
-                // Debug
-                // Debug.WriteLine("---challenge---");
-                // Debug.WriteLine(response.ToJson());
-                // Debug.WriteLine("---end challenge---");
-
-                Debug.WriteLine(response.ToJson()["challenge"]["id"].ToString());
-                Debug.WriteLine(response.ToJson()["challenge"]["status"].ToString());
-                Debug.WriteLine(response.ToJson());
-
                 if (response.ToJson()["challenge"]["status"].ToString() == "approved")
                 {
                     break;
                 }
 
-                Thread.Sleep(5000);
-
+                Thread.Sleep(1000);
             }
         }
 

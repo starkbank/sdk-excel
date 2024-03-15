@@ -21,21 +21,11 @@ namespace StarkBankExcel.Forms
     {
         public qrCode()
         {
-          InitializeComponent();
-
-
+           InitializeComponent();
 
            string bString = Globals.Credentials.Range["B14"].Value;
-           string id = Globals.Credentials.Range["B15"].Value;
-           string challengePk = Globals.Credentials.Range["B16"].Value;
 
-            Debug.WriteLine("---b64---");
-            Debug.WriteLine(bString);
-            Debug.WriteLine("---end b64---");
-
-            
-
-            string attachment = bString.Substring(bString.IndexOf("base64,") + "base64,".Length);
+           string attachment = bString.Substring(bString.IndexOf("base64,") + "base64,".Length);
 
            byte[] attachmentb64 = Convert.FromBase64String(attachment);
 
@@ -44,15 +34,6 @@ namespace StarkBankExcel.Forms
            Image originalImage = ByteArrayToImage(resizedImageBytes);
 
            pictureBox1.Image = originalImage;
-
-
-        }
-
-        public string polling()
-        {
-
-
-            return "";
         }
 
         static Image ByteArrayToImage(byte[] byteArrayIn)
