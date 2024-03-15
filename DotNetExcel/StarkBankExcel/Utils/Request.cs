@@ -13,6 +13,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace StarkBankExcel
 {
@@ -32,8 +33,8 @@ namespace StarkBankExcel
         internal static readonly HttpMethod Patch = new HttpMethod("PATCH");
         internal static readonly HttpMethod Delete = new HttpMethod("DELETE");
 
-        internal static Response Fetch(
-            HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
+        internal static Response maskFetch(
+            HttpMethod method, string environment, string path, string payload = null,
             Dictionary<string, object> query = null, string privateKeyPem = null, string headersChallenge = null
         )
         {
@@ -58,25 +59,21 @@ namespace StarkBankExcel
             }
 
             string accessTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(new CultureInfo("en-US"));
+
             string body = "";
 
             if (payload != null)
             {
-                body = Json.Encode(payload);
-            }            
+                body = payload;
+            }
 
-            if(privateKeyPem == null)
+            if (privateKeyPem == null)
             {
                 throw new Exception("Credenciais Inválidas, necessário realizar Login novamente!");
             }
             PrivateKey privateKey = PrivateKey.fromPem(privateKeyPem);
 
             string message = accessId + ":" + accessTime + ":" + body;
-
-            if (path == "/session" && method == Post)
-            {
-                message = accessId + ":" + accessTime + ":" + payload["content"].ToString();
-            }
 
             if (headersChallenge != null)
             {
@@ -94,11 +91,6 @@ namespace StarkBankExcel
             if (body.Length > 0)
             {
                 httpRequestMessage.Content = new StringContent(body);
-            }
-
-            if (path == "/session")
-            {
-                httpRequestMessage.Content = new StringContent(payload["content"].ToString());
             }
 
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Id", accessId);
@@ -142,5 +134,21 @@ namespace StarkBankExcel
 
             return response;
         }
+
+        internal static Response Fetch(
+            HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
+            Dictionary<string, object> query = null, string privateKeyPem = null, string headersChallenge = null
+        )
+        {
+            string body = "";
+
+            if (payload != null)
+            {
+                body = Json.Encode(payload);
+            }
+
+            return maskFetch(method, environment, path, body, query, privateKeyPem, headersChallenge);
+        }
+
     }
 }
