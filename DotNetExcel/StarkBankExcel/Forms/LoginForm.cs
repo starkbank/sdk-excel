@@ -81,7 +81,7 @@ namespace StarkBankExcel
 
                 fetchedJson = Request.Fetch(
                      Request.Post,
-                     "sandbox",
+                     environment,
                      "challenge?expand=qrcode",
                      payload,
                      null,
@@ -104,7 +104,7 @@ namespace StarkBankExcel
                 Task task1 = Task.Run(() => Dowork1());
                 Task task2 = Task.Run(() => Dowork2());
 
-                Task.WaitAll(task2);
+                Task.WaitAny(task1, task2);
 
                 string dictObj2 = JsonConvert.SerializeObject(requestBody);
 
