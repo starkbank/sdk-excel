@@ -13,28 +13,18 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(8)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(3)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
-    public sealed partial class Transfers : Microsoft.Office.Tools.Excel.WorksheetBase {
+    public sealed partial class SendCartShop : Microsoft.Office.Tools.Excel.WorksheetBase {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
         
-        internal Microsoft.Office.Tools.Excel.Controls.Button button1;
-        
-        internal Microsoft.Office.Tools.Excel.Controls.Button button2;
-        
-        internal Microsoft.Office.Tools.Excel.Controls.Button button3;
-        
-        internal Microsoft.Office.Tools.Excel.Controls.Button button4;
-        
-        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
-        
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-        public Transfers(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
-                base(factory, serviceProvider, "Planilha4", "Planilha4") {
+        public SendCartShop(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
+                base(factory, serviceProvider, "Planilha18", "Planilha18") {
         }
         
         /// 
@@ -43,7 +33,7 @@ namespace StarkBankExcel {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         protected override void Initialize() {
             base.Initialize();
-            Globals.Transfers = this;
+            Globals.SendCartShop = this;
             global::System.Windows.Forms.Application.EnableVisualStyles();
             this.InitializeCachedData();
             this.InitializeControls();
@@ -139,11 +129,6 @@ namespace StarkBankExcel {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeControls() {
-            this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "1D3C8440119274147F5190E81CB29314F1A0B1", "1D3C8440119274147F5190E81CB29314F1A0B1", this, "button1");
-            this.button2 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2F27997732C2CB2441C298BB24A21C18565F42", "2F27997732C2CB2441C298BB24A21C18565F42", this, "button2");
-            this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "32D5429B8373DD34ED03A9043941F439C19723", "32D5429B8373DD34ED03A9043941F439C19723", this, "button3");
-            this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "4725C0A2E4AB894430D4AEF74EE21D1AD6A734", "4725C0A2E4AB894430D4AEF74EE21D1AD6A734", this, "button4");
-            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "5F3C3A5AA5DBB654AFD5A7C25896612CBE6DC5", "5F3C3A5AA5DBB654AFD5A7C25896612CBE6DC5", this, "button5");
         }
         
         /// 
@@ -151,54 +136,6 @@ namespace StarkBankExcel {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeComponents() {
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.SystemColors.Control;
-            this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button1.Name = "button1";
-            this.button1.Text = "Enviar Ordens";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.SystemColors.Control;
-            this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button2.Name = "button2";
-            this.button2.Text = "Limpar Ordens";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.SystemColors.Control;
-            this.button3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button3.Name = "button3";
-            this.button3.Text = "Retormar para principal";
-            this.button3.UseVisualStyleBackColor = false;
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.SystemColors.Control;
-            this.button4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button4.Name = "button4";
-            this.button4.Text = "Acessar Conta";
-            this.button4.UseVisualStyleBackColor = false;
-            // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.SystemColors.Control;
-            this.button5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button5.Name = "button5";
-            this.button5.Text = "Sair da Conta";
-            this.button5.UseVisualStyleBackColor = false;
-            // 
-            // Transfers
-            // 
-            this.button1.BindingContext = this.BindingContext;
-            this.button2.BindingContext = this.BindingContext;
-            this.button3.BindingContext = this.BindingContext;
-            this.button4.BindingContext = this.BindingContext;
-            this.button5.BindingContext = this.BindingContext;
         }
         
         /// 
@@ -211,15 +148,15 @@ namespace StarkBankExcel {
     
     internal sealed partial class Globals {
         
-        private static Transfers _Transfers;
+        private static SendCartShop _SendCartShop;
         
-        internal static Transfers Transfers {
+        internal static SendCartShop SendCartShop {
             get {
-                return _Transfers;
+                return _SendCartShop;
             }
             set {
-                if ((_Transfers == null)) {
-                    _Transfers = value;
+                if ((_SendCartShop == null)) {
+                    _SendCartShop = value;
                 }
                 else {
                     throw new System.NotSupportedException();
