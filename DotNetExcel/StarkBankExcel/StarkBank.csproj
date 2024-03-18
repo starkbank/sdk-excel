@@ -158,6 +158,12 @@
     <Compile Include="Forms\cardStatmentForm.Designer.cs">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Redirect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Redirect.Designer.cs">
+      <DependentUpon>Redirect.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\VersionWarning.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -296,6 +302,12 @@
     <Compile Include="GetTransfers.Designer.cs">
       <DependentUpon>GetTransfers.Designer.xml</DependentUpon>
     </Compile>
+    <Compile Include="SendCards.cs">
+      <DependentUpon>StarkBank.xlsx</DependentUpon>
+    </Compile>
+    <Compile Include="SendCards.Designer.cs">
+      <DependentUpon>SendCards.Designer.xml</DependentUpon>
+    </Compile>
     <Compile Include="Resources\TransferLog .cs" />
     <Compile Include="Resources\Transfer.cs" />
     <Compile Include="Resources\Balance.cs" />
@@ -373,6 +385,9 @@
     <EmbeddedResource Include="Forms\cardStatmentForm.resx">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Redirect.resx">
+      <DependentUpon>Redirect.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\VersionWarning.resx">
       <DependentUpon>VersionWarning.cs</DependentUpon>
     </EmbeddedResource>
@@ -438,6 +453,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BoletoPayment.resx">
       <DependentUpon>BoletoPayment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SendCards.resx">
+      <DependentUpon>SendCards.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SendInvoices.resx">
       <DependentUpon>SendInvoices.cs</DependentUpon>
@@ -537,6 +555,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="emblem.ico" />
+    <None Include="SendCards.Designer.xml">
+      <DependentUpon>SendCards.cs</DependentUpon>
+    </None>
     <None Include="GetTransfers.Designer.xml">
       <DependentUpon>GetTransfers.cs</DependentUpon>
     </None>
@@ -571,7 +592,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>800F162A549E1646F04280FE316E429511342870</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>7C7295272C8F7C0888C42E3E7D1C120B2E521411</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>emblem.ico</ApplicationIcon>
@@ -615,6 +636,7 @@
           <HostItem Name="Planilha13" Code="InvoiceReversal.cs" CanonicalName="Planilha13" PublishedHash="E09CE33B796706DA88682E9A571A51C39103CB35" DisplayName="Reversão de invoice" Blueprint="InvoiceReversal.Designer.xml" GeneratedCode="InvoiceReversal.Designer.cs" />
           <HostItem Name="Planilha1" Code="Main.cs" CanonicalName="Planilha1" PublishedHash="53A7B0379B671ED8A07CC0B18B11D9BFBA5B02AF" DisplayName="Principal" Blueprint="Main.Designer.xml" GeneratedCode="Main.Designer.cs" />
           <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="7812CA00663872E861918C4E6620637AA5899AC1" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
+          <HostItem Name="Planilha18" Code="SendCards.cs" CanonicalName="Planilha18" DisplayName="Solicitações de Cartões" Blueprint="SendCards.Designer.xml" GeneratedCode="SendCards.Designer.cs" />
           <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="3D6C682231BD12A5A66E43F30F2F1413D6C2E92F" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="0696E9ADD17201950E3FB0F452519D928CE01C11" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
           <HostItem Name="Planilha4" Code="Transfers.cs" CanonicalName="Planilha4" PublishedHash="9EC91DE3BA1C1BE381B1D3912616AB8D624A7090" DisplayName="Transferências Com Aprovação" Blueprint="Transfers.Designer.xml" GeneratedCode="Transfers.Designer.cs" />
