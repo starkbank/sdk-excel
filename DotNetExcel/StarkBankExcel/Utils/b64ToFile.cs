@@ -13,33 +13,18 @@ namespace StarkBankExcel.Resources
     {
         public static bool b64ToFile(string attachmentString)
         {
-            // string attachment = attachmentString.Substring(attachmentString.IndexOf("base64,") + "base64,".Length);
-            // string[] parts = attachmentString.Split(new[] { ";base64," }, StringSplitOptions.None);
+            string extension = "png";
 
-            if (true)
-            {
+            string fileName = "qrcode-starkbank";
+            string selectedPath = "C:\\Users\\Stark - Admin\\Documents\\qrcode";
 
-                // string contentType = parts[0].Split(':')[1];
-                // string extension = contentType.Split('/')[1];
+            byte[] attachmentb64 = Convert.FromBase64String(attachmentString);
 
-                // string contentType = attachmentString
+            byte[] resizedImageBytes = ResizeImage(attachmentb64, 200, 200);
 
-                string extension = "png";
+            File.WriteAllBytes(selectedPath + "\\" + fileName + "." + extension, resizedImageBytes);
 
-                string fileName = "qrcode-starkbank";
-                string selectedPath = "C:\\Users\\Stark - Admin\\Documents\\qrcode";
-
-                byte[] attachmentb64 = Convert.FromBase64String(attachmentString);
-
-                // string fileName = worksheet.Range["A" + i].Value.ToString().Substring(0, 10).Replace("/", "") + "-" + worksheet.Range["B" + i].Value + "-" + worksheet.Range["D" + i].Value;
-                // fileName = Regex.Replace(fileName, "[*|@|*|&]", string.Empty);
-
-                byte[] resizedImageBytes = ResizeImage(attachmentb64, 200, 200);
-
-                File.WriteAllBytes(selectedPath + "\\" + fileName + "." + extension, resizedImageBytes);
-
-                return true;
-            }
+            return true;
         }
 
         public static byte[] ResizeImage(byte[] originalImageBytes, int newWidth, int newHeight)

@@ -23,7 +23,7 @@ namespace StarkBankExcel.Resources
             }
             if (Globals.Credentials.Range["B3"].Value == "sandbox")
             {
-                encodedSalt = "31cf81be-341f-43fa-bd75-391e0b1a3d3a";
+                encodedSalt = "7186ead6-55ff-42ac-87d2-f2ccdf7a2b5d";
             }
             if (Globals.Credentials.Range["B3"].Value == "development")
             {

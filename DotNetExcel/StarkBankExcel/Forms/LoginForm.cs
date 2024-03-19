@@ -27,6 +27,7 @@ namespace StarkBankExcel
         {
             Environment.Items.Add("Production");
             Environment.Items.Add("Sandbox");
+            // Environment.Items.Add("Development");
 
             Environment.Text = "Production";
         }
@@ -169,6 +170,7 @@ namespace StarkBankExcel
         {
             string id = Globals.Credentials.Range["B15"].Value;
             string challengePk = Globals.Credentials.Range["B16"].Value;
+            string development = Globals.Credentials.Range["B3"].Value;
 
 
             string path = "challenge/" + id;
@@ -177,7 +179,7 @@ namespace StarkBankExcel
             {
                 Response response = Request.Fetch(
                   Request.Get,
-                  "sandbox",
+                  development,
                   path,
                   null,
                   null,
