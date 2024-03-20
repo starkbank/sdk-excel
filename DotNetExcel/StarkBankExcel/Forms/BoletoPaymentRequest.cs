@@ -60,13 +60,6 @@ namespace StarkBankExcel.Forms
 
             teamId = Regex.Match(teamId, pattern).Value;
 
-            string email = Email.Text.ToLower();
-            string password = Password.Text.ToString();
-
-            PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
-
-            string privateKeyPem = keys.toPem();
-
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
 
             List<Dictionary<string, object>> boletos = new List<Dictionary<string, object>>();
@@ -141,7 +134,7 @@ namespace StarkBankExcel.Forms
 
                     try
                     {
-                        JObject res = PaymentRequest.Create(boletos, privateKeyPem);
+                        JObject res = PaymentRequest.Create(boletos);
 
                         string createBoletoPayment = (string)res["message"];
                         returnMessage = returnMessage + Utils.rowsMessage(initRow, row) + createBoletoPayment + "\n";
