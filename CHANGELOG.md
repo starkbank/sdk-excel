@@ -11,6 +11,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 - MINOR version when **breaking changes** are introduced OR **new functionalities** are added in a backwards compatible manner;
 - PATCH version when backwards compatible bug **fixes** are implemented.
 
+## [3.0.8] - 2024-03-25
+### Fixed
+- startup request
+
 ## [3.0.7] - 2024-03-05
 ### Fixed
 - versionWarning index to Main.cs
