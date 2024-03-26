@@ -32,7 +32,7 @@ namespace StarkBankExcel
             Environment.Text = "Production";
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             string environment = Environment.Text.ToLower();
             string workspace = Workspace.Text.ToLower();
@@ -102,55 +102,64 @@ namespace StarkBankExcel
                 Globals.Credentials.Range["A16"].Value = "ChallengePk";
                 Globals.Credentials.Range["B16"].Value = challengPk;
 
-                Task task1 = Task.Run(() => Dowork1());
-                Task task2 = Task.Run(() => Dowork2());
+
+                qrCode qrcodeForms = new qrCode();
+
+                Task task1 = Task.Run(() => Dowork1(qrcodeForms));
+                Task<bool> task2 = Task.Run(() => Dowork2());
 
                 Task.WaitAny(task1, task2);
 
-                string dictObj2 = JsonConvert.SerializeObject(requestBody);
+                qrcodeForms.Close();
 
-                try
+                if (await task2)
                 {
-                    fetchedJson = Request.maskFetch(
-                         Request.Post,
-                         environment,
-                         "/session",
-                         dictObj2,
-                         null,
-                         keys.toPem(),
-                         challengeId
-                     );
 
-                } catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return;
-                }
+                    string dictObj2 = JsonConvert.SerializeObject(requestBody);
 
-                Globals.Credentials.Range["A11"].Value = "Session Private";
-                Globals.Credentials.Range["B11"].Value = privateKey.toPem();
-
-                Globals.Credentials.Range["A12"].Value = "Session Public";
-                Globals.Credentials.Range["B12"].Value = publicKey.toPem();
-
-                Globals.Credentials.Range["A13"].Value = "Access ID";
-                Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
-
-
-                Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;
-
-                foreach (Worksheet sheet in workbook.Worksheets)
-                {
-                    if (sheet.Name != "Credentials")
+                    try
                     {
-                        Utils.DisplayInfo(sheet);
+                        fetchedJson = Request.maskFetch(
+                             Request.Post,
+                             environment,
+                             "/session",
+                             dictObj2,
+                             null,
+                             keys.toPem(),
+                             challengeId
+                         );
+
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                        return;
+                    }
+
+                    Globals.Credentials.Range["A11"].Value = "Session Private";
+                    Globals.Credentials.Range["B11"].Value = privateKey.toPem();
+
+                    Globals.Credentials.Range["A12"].Value = "Session Public";
+                    Globals.Credentials.Range["B12"].Value = publicKey.toPem();
+
+                    Globals.Credentials.Range["A13"].Value = "Access ID";
+                    Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
+
+
+                    Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;
+
+                    foreach (Worksheet sheet in workbook.Worksheets)
+                    {
+                        if (sheet.Name != "Credentials")
+                        {
+                            Utils.DisplayInfo(sheet);
+                        }
+                    }
+
+                    MessageBox.Show("Logado com sucesso!");
+
+                    Close();
                 }
-
-                MessageBox.Show("Logado com sucesso!");
-
-                Close();
-
             }
             catch (Exception ex)
             {
@@ -160,13 +169,14 @@ namespace StarkBankExcel
             Close();
         }
 
-        static void Dowork1()
+        static void Dowork1(Form qrcodeForms)
         {
-            qrCode qrcodeForms = new qrCode();
+            
             qrcodeForms.ShowDialog();
+
         }
 
-        static void Dowork2()
+        static bool Dowork2()
         {
             string id = Globals.Credentials.Range["B15"].Value;
             string challengePk = Globals.Credentials.Range["B16"].Value;
@@ -184,15 +194,23 @@ namespace StarkBankExcel
                   null,
                   null,
                   challengePk
-               );
+                );
 
                 if (response.ToJson()["challenge"]["status"].ToString() == "approved")
                 {
-                    break;
+                    return true;
                 }
+
+                if (response.ToJson()["challenge"]["status"].ToString() == "denied")
+                {
+                    MessageBox.Show("Acesso Negado");
+                    return false;
+                } 
+                
 
                 Thread.Sleep(1000);
             }
+            return false;
         }
 
     }
