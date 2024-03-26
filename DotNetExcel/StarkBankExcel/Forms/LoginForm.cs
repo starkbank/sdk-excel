@@ -27,7 +27,7 @@ namespace StarkBankExcel
         {
             Environment.Items.Add("Production");
             Environment.Items.Add("Sandbox");
-            // Environment.Items.Add("Development");
+            Environment.Items.Add("Development");
 
             Environment.Text = "Production";
         }
