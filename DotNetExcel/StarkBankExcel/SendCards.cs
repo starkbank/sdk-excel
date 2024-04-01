@@ -1,4 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.VisualStudio.Tools.Applications.Runtime;
 using Newtonsoft.Json.Linq;
 using System;
@@ -38,7 +38,6 @@ namespace StarkBankExcel
             this.button5.Click += new System.EventHandler(this.button5_Click);
             this.Startup += new System.EventHandler(this.Planilha18_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha18_Shutdown);
-
         }
 
         #endregion

@@ -27,7 +27,7 @@ namespace StarkBankExcel {
         internal Microsoft.Office.Tools.Excel.Controls.Button button4;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button5;
-        
+
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
