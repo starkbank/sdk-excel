@@ -11,6 +11,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using System.Windows.Forms;
 using StarkBankExcel.Forms;
+using System.Diagnostics;
 
 namespace StarkBankExcel
 {
@@ -108,18 +109,20 @@ namespace StarkBankExcel
                     string shippingStreetLine2 = worksheet.Range["F" + row].Value?.ToString();
                     string shippingDistrict = worksheet.Range["G" + row].Value?.ToString();
                     string shippingCity = worksheet.Range["H" + row].Value?.ToString();
-                    string shippingStateCode = worksheet.Range["I" + row].Value?.ToString();
-                    string shippingZipCode = worksheet.Range["J" + row].Value?.ToString();
+                    string shippingStateCode = worksheet.Range["I" + row].Value?.ToString().Trim().ToUpper();
+                    string shippingZipCode = worksheet.Range["J" + row].Value?.Trim().ToString();
                     string shippingCountryCode = "BRA";
+
+                    bool hasError = false;
 
                     if (displayName1 == null)
                     {
-                        MessageBox.Show("Por favor, não deixe o campo 'Portador' em branco", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        hasError = true;
                         return;
                     }
                     if (shippingPhone == null)
                     {
-                        MessageBox.Show("Por favor, não deixe o campo 'Telefone' em branco", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        hasError = true;
                         return;
                     }
                     if (shippingPhone.Trim().Substring(0, 1) != "(")
@@ -129,18 +132,28 @@ namespace StarkBankExcel
                     }
                     if (shippingDistrict == null)
                     {
-                        MessageBox.Show("Por favor, não deixe o campo 'Bairro' em branco", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        hasError = true;
                         return;
                     }
                     if (shippingStateCode == null)
                     {
-                        MessageBox.Show("Por favor, não deixe o campo 'UF' em branco", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        hasError = true;
                         return;
                     }
                     if (shippingZipCode == null)
                     {
-                        MessageBox.Show("Por favor, não deixe o campo 'CEP' em branco", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        hasError = true;
                         return;
+                    }
+
+                    if (hasError)
+                    {
+                        MessageBox.Show("Por favor, preencha todos os campos", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    if (shippingZipCode.Substring(4, 1) != "-")
+                    {
+                        shippingZipCode = shippingZipCode.Substring(0, 5) + "-" + shippingZipCode.Substring(5, 3);
                     }
 
                     Dictionary<string, object> item = new Dictionary<string, object> {
