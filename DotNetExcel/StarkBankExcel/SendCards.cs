@@ -76,7 +76,7 @@ namespace StarkBankExcel
             string errorMessage = "";
 
             var initRow = TableFormat.HeaderRow + 1;
-            int lastRow = worksheet.Cells[worksheet.Rows.Count, "A"].End[XlDirection.xlUp].Row;
+            int lastRow = worksheet.Cells[worksheet.Rows.Count, "B"].End[XlDirection.xlUp].Row;
 
             int batchSize = 100;
             int errorNum = 10;
