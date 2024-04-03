@@ -28,8 +28,6 @@ namespace StarkBankExcel {
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button5;
         
-        internal Microsoft.Office.Tools.Excel.Controls.Button button6;
-        
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -143,7 +141,6 @@ namespace StarkBankExcel {
             this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2AE3450482C58E244C5291B3282A90F9A78E42", "2AE3450482C58E244C5291B3282A90F9A78E42", this, "button3");
             this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "397AE3E0A32833341B5399FC391E12926F72C3", "397AE3E0A32833341B5399FC391E12926F72C3", this, "button4");
             this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "5974E136658C5454320585C85BAB48B9439E65", "5974E136658C5454320585C85BAB48B9439E65", this, "button5");
-            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "6BFC21A776750A64A676B05D6ACABCB02B86D6", "6BFC21A776750A64A676B05D6ACABCB02B86D6", this, "button6");
         }
         
         /// 
@@ -184,21 +181,12 @@ namespace StarkBankExcel {
             this.button5.Text = "Sair da Conta";
             this.button5.UseVisualStyleBackColor = false;
             // 
-            // button6
-            // 
-            this.button6.BackColor = System.Drawing.SystemColors.Control;
-            this.button6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button6.Name = "button6";
-            this.button6.Text = "Debug";
-            this.button6.UseVisualStyleBackColor = false;
-            // 
             // SendCards
             // 
             this.button1.BindingContext = this.BindingContext;
             this.button3.BindingContext = this.BindingContext;
             this.button4.BindingContext = this.BindingContext;
             this.button5.BindingContext = this.BindingContext;
-            this.button6.BindingContext = this.BindingContext;
         }
         
         /// 
