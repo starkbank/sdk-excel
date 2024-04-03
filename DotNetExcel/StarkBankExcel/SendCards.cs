@@ -80,6 +80,12 @@ namespace StarkBankExcel
             var initRow = TableFormat.HeaderRow + 1;
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "B"].End[XlDirection.xlUp].Row;
 
+            if (lastRow > 1000)
+            {
+                MessageBox.Show("Quantidade limite de itens no carrinho excedida, faça um carrinho até 1000 itens", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             int batchSize = 100;
             int errorNum = 10;
             int batchCount = (int)Math.Ceiling((double)(lastRow - 10) / batchSize);
