@@ -151,7 +151,8 @@ namespace StarkBankExcel
                         MessageBox.Show("Por favor, preencha todos os campos", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    if (shippingZipCode.Substring(4, 1) != "-")
+
+                    if (shippingZipCode.Substring(5, 1) != "-")
                     {
                         shippingZipCode = shippingZipCode.Substring(0, 5) + "-" + shippingZipCode.Substring(5, 3);
                     }
