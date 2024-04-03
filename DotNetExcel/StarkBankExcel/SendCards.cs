@@ -80,7 +80,7 @@ namespace StarkBankExcel
             var initRow = TableFormat.HeaderRow + 1;
             int lastRow = worksheet.Cells[worksheet.Rows.Count, "B"].End[XlDirection.xlUp].Row;
 
-            if (lastRow > 1000)
+            if (lastRow > 1010)
             {
                 MessageBox.Show("Quantidade limite de itens no carrinho excedida, faça um carrinho até 1000 itens", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -201,8 +201,6 @@ namespace StarkBankExcel
                 {
                     try
                     {
-                        DateTime currentTime = DateTime.UtcNow;
-
                         Dictionary<string, object> payload = new Dictionary<string, object>
                         {
                             { "items", orders }
