@@ -101,6 +101,7 @@ namespace StarkBankExcel
                 {
                     string cartId = id;
                     string kitId = (string)kitIdObjects["kits"][0]["id"];
+                    string kitType = worksheet.Range["A" + row].Value?.ToString();
                     string displayName2 = worksheet.Range["B" + row].Value?.ToString();
                     string displayName1 = worksheet.Range["C" + row].Value?.ToString();
                     string holderName = worksheet.Range["C" + row].Value?.ToString();
@@ -115,40 +116,51 @@ namespace StarkBankExcel
 
                     bool hasError = false;
 
+                    if (kitType == null)
+                    {
+                        hasError = true;
+                    }
+
                     if (displayName1 == null)
                     {
                         hasError = true;
-                        return;
                     }
+
+                    if (displayName2 == null)
+                    {
+                        hasError = true;
+                    }
+
                     if (shippingPhone == null)
                     {
                         hasError = true;
-                        return;
                     }
-                    if (shippingPhone.Trim().Substring(0, 1) != "(")
-                    {
-                        MessageBox.Show("Telefone deve ser enviado nesse formato: (xx) xxxxx-xxxx", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    
                     if (shippingDistrict == null)
                     {
                         hasError = true;
-                        return;
-                    }
+                    } 
                     if (shippingStateCode == null)
                     {
                         hasError = true;
-                        return;
                     }
                     if (shippingZipCode == null)
                     {
                         hasError = true;
+                    }
+                    if (shippingPhone == null)
+                    {
+                        hasError = true;
+                    }
+                    if (hasError == true)
+                    {
+                        MessageBox.Show("Por favor, preencha todos os campos", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    if (hasError)
+                    if (shippingPhone.Trim().Substring(0, 1) != "(")
                     {
-                        MessageBox.Show("Por favor, preencha todos os campos", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Telefone deve ser enviado nesse formato: (xx) xxxxx-xxxx", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
