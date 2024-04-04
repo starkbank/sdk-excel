@@ -16,7 +16,6 @@ namespace StarkBankExcel
     {
         private void Planilha1_Startup(object sender, System.EventArgs e)
         {
-
         }
 
         private void Planilha1_Shutdown(object sender, System.EventArgs e)
@@ -44,6 +43,7 @@ namespace StarkBankExcel
             this.button10.Click += new System.EventHandler(this.button10_Click);
             this.button11.Click += new System.EventHandler(this.button11_Click);
             this.button12.Click += new System.EventHandler(this.button12_Click);
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             this.Startup += new System.EventHandler(this.Planilha1_Startup);
             this.Shutdown += new System.EventHandler(this.Planilha1_Shutdown);
 
@@ -122,6 +122,11 @@ namespace StarkBankExcel
         private void button12_Click(object sender, EventArgs e)
         {
             Globals.GetPaymentApprove.Activate();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            Globals.SendCards.Activate();
         }
     }
 }

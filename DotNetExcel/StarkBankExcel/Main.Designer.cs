@@ -46,6 +46,8 @@ namespace StarkBankExcel {
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button12;
         
+        internal Microsoft.Office.Tools.Excel.Controls.Button button13;
+        
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -168,6 +170,7 @@ namespace StarkBankExcel {
             this.button10 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "23FDAD7A329F60245422A56B22EA1482F84402", "23FDAD7A329F60245422A56B22EA1482F84402", this, "button10");
             this.button11 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "2EF132486228D8243F428A6C298561D10E6622", "2EF132486228D8243F428A6C298561D10E6622", this, "button11");
             this.button12 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "1D1500907189BD14DA51B2181B162FBD75FE31", "1D1500907189BD14DA51B2181B162FBD75FE31", this, "button12");
+            this.button13 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "23A4525A1295E524FB7284BA2EA2DC8317EF42", "23A4525A1295E524FB7284BA2EA2DC8317EF42", this, "button13");
         }
         
         /// 
@@ -280,6 +283,14 @@ namespace StarkBankExcel {
             this.button12.Text = "Consulta de Aprovações";
             this.button12.UseVisualStyleBackColor = false;
             // 
+            // button13
+            // 
+            this.button13.BackColor = System.Drawing.SystemColors.Control;
+            this.button13.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button13.Name = "button13";
+            this.button13.Text = "Solicitações de Cartões";
+            this.button13.UseVisualStyleBackColor = false;
+            // 
             // Main
             // 
             this.login.BindingContext = this.BindingContext;
@@ -295,6 +306,7 @@ namespace StarkBankExcel {
             this.button10.BindingContext = this.BindingContext;
             this.button11.BindingContext = this.BindingContext;
             this.button12.BindingContext = this.BindingContext;
+            this.button13.BindingContext = this.BindingContext;
         }
         
         /// 

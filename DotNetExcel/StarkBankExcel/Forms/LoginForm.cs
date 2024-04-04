@@ -24,6 +24,16 @@ namespace StarkBankExcel
             string email = Email.Text.ToLower();
             string password = Password.Text.ToString();
 
+            if (environment.Trim().Length < 10)
+            {
+               environment = "production";
+            }
+
+            if (environment.Trim().Length > 10)
+            {
+                environment = "sandbox";
+            }
+
             try
             {
                 Session.Create(workspace, environment, email, password);
@@ -109,8 +119,8 @@ namespace StarkBankExcel
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            Environment.Items.Add("Production");
-            Environment.Items.Add("Sandbox");
+            Environment.Items.Add("Produção");
+            Environment.Items.Add("Ambiente Desenvolvedor");
 
             Environment.Text = "Production";
         }

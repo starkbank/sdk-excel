@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(14)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(15)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class GetInvoices : Microsoft.Office.Tools.Excel.WorksheetBase {
         
