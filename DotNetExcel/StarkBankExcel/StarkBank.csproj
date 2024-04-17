@@ -19,7 +19,7 @@
     <PublishUrl>C:\StarkExcelInstaller\</PublishUrl>
     <InstallUrl />
     <TargetCulture>pt-BR</TargetCulture>
-    <ApplicationVersion>1.9.0.70</ApplicationVersion>
+    <ApplicationVersion>1.10.0.80</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -72,8 +72,8 @@
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
@@ -163,6 +163,13 @@
     </Compile>
     <Compile Include="Forms\Redirect.Designer.cs">
       <DependentUpon>Redirect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\qrCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\qrCode.Designer.cs">
+      <DependentUpon>qrCode.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\VersionWarning.cs">
       <SubType>Form</SubType>
@@ -314,6 +321,7 @@
     <Compile Include="Resources\BoletoPayment.cs" />
     <Compile Include="Resources\corporateAttachment.cs" />
     <Compile Include="Resources\corporatePurchase.cs" />
+    <Compile Include="Utils\b64ToFile.cs" />
     <Compile Include="Utils\keyGen.cs" />
     <Compile Include="Resources\Session.cs" />
     <Compile Include="Resources\CorporateTransaction.cs" />
@@ -390,6 +398,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\VersionWarning.resx">
       <DependentUpon>VersionWarning.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\qrCode.resx">
+      <DependentUpon>qrCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ViewBoletoPayment.resx">
       <DependentUpon>ViewBoletoPayment.cs</DependentUpon>
@@ -480,6 +491,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Transfers.resx">
       <DependentUpon>Transfers.cs</DependentUpon>
@@ -555,6 +567,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="emblem.ico" />
+    <None Include="Resources\modal-excel %284%29.png" />
     <None Include="SendCards.Designer.xml">
       <DependentUpon>SendCards.cs</DependentUpon>
     </None>

@@ -113,6 +113,7 @@ namespace StarkBankExcel
 
                             JObject attachmentFile = (JObject)respJson["attachment"];
                             string attachmentString = attachmentFile["content"].ToString();
+
                             string attachment = attachmentString.Substring(attachmentString.IndexOf("base64,") + "base64,".Length);
                             string[] parts = attachmentString.Split(new[] { ";base64," }, StringSplitOptions.None);
 

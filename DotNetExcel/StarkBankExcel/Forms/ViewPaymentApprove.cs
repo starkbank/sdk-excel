@@ -90,11 +90,12 @@ namespace StarkBankExcel.Forms
             if (afterInput.Enabled == true) optionalParam["after"] = after;
             if (beforeInput.Enabled == true) optionalParam["before"] = before;
 
-            if (OptionButtonPendente.Checked) events += "pending";
-            if (OptionButtonAgendado.Checked) events += "scheduled";
-            if (OptionButtonNegado.Checked) events += "denied";
-            if (OptionButtonPago.Checked) events += "success";
-            if (OptionButtonFalhado.Checked) events += "failed";
+            if (OptionButtonPendente.Checked) events += "pending,";
+            if (OptionButtonAgendado.Checked) events += "scheduled,";
+            if (OptionButtonNegado.Checked) events += "denied,";
+            if (OptionButtonPago.Checked) events += "success,";
+            if (OptionButtonFalhado.Checked) events += "failed,";
+            if (OptionButtonAprovado.Checked) events += "approved,";  
 
             if (radioButton3.Checked) types += "transfer";
             if (radioButton1.Checked) types += "boleto-payment";
