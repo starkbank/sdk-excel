@@ -13,6 +13,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace StarkBankExcel
 {
@@ -21,7 +22,7 @@ namespace StarkBankExcel
         private static HttpClient makeClient()
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
+            client.DefaultRequestHeaders.Add("User-Agent", "App-StarkBank-Excel-v3.0.10b");
             return client;
         }
 
@@ -32,9 +33,9 @@ namespace StarkBankExcel
         internal static readonly HttpMethod Patch = new HttpMethod("PATCH");
         internal static readonly HttpMethod Delete = new HttpMethod("DELETE");
 
-        internal static Response Fetch(
-            HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
-            Dictionary<string, object> query = null, string privateKeyPem = null
+        internal static Response maskFetch(
+            HttpMethod method, string environment, string path, string payload = null,
+            Dictionary<string, object> query = null, string privateKeyPem = null, string headersChallenge = null
         )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -58,20 +59,27 @@ namespace StarkBankExcel
             }
 
             string accessTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(new CultureInfo("en-US"));
+
             string body = "";
 
             if (payload != null)
             {
-                body = Json.Encode(payload);
-            }            
+                body = payload;
+            }
 
-            if(privateKeyPem == null)
+            if (privateKeyPem == null)
             {
                 throw new Exception("Credenciais Inválidas, necessário realizar Login novamente!");
             }
             PrivateKey privateKey = PrivateKey.fromPem(privateKeyPem);
 
             string message = accessId + ":" + accessTime + ":" + body;
+
+            if (headersChallenge != null)
+            {
+                message += ":" + headersChallenge;
+            }
+
             string signature = Ecdsa.sign(message, privateKey).toBase64();
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
@@ -79,6 +87,7 @@ namespace StarkBankExcel
                 Method = method,
                 RequestUri = new Uri(url)
             };
+
             if (body.Length > 0)
             {
                 httpRequestMessage.Content = new StringContent(body);
@@ -88,7 +97,13 @@ namespace StarkBankExcel
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Time", accessTime);
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Signature", signature);
             httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Platform-id", "excel");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Platform-Version", "3.0.10");
             httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
+            if (headersChallenge != null)
+            {
+                httpRequestMessage.Headers.TryAddWithoutValidation("Access-Challenge-Ids", headersChallenge);
+            }
 
             var result = Client.SendAsync(httpRequestMessage).Result;
 
@@ -121,5 +136,21 @@ namespace StarkBankExcel
 
             return response;
         }
+
+        internal static Response Fetch(
+            HttpMethod method, string environment, string path, Dictionary<string, object> payload = null,
+            Dictionary<string, object> query = null, string privateKeyPem = null, string headersChallenge = null
+        )
+        {
+            string body = "";
+
+            if (payload != null)
+            {
+                body = Json.Encode(payload);
+            }
+
+            return maskFetch(method, environment, path, body, query, privateKeyPem, headersChallenge);
+        }
+
     }
 }

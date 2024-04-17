@@ -13,6 +13,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.0] - 2024-04-16
+### Changed
+- authentication method
+
 ## [3.0.9] - 2024-04-03
 ### Added
 - cardShop resource

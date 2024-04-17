@@ -35,9 +35,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.OptionButtonAgendado = new System.Windows.Forms.RadioButton();
-            this.OptionButtonNegado = new System.Windows.Forms.RadioButton();
-            this.OptionButtonPendente = new System.Windows.Forms.RadioButton();
+            this.OptionButtonFalhado = new System.Windows.Forms.CheckBox();
+            this.OptionButtonPago = new System.Windows.Forms.CheckBox();
+            this.OptionButtonNegado = new System.Windows.Forms.CheckBox();
+            this.OptionButtonAgendado = new System.Windows.Forms.CheckBox();
+            this.OptionButtonPendente = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
@@ -46,8 +48,7 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.OptionButtonPago = new System.Windows.Forms.RadioButton();
-            this.OptionButtonFalhado = new System.Windows.Forms.RadioButton();
+            this.OptionButtonAprovado = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -113,10 +114,11 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.OptionButtonAprovado);
             this.groupBox2.Controls.Add(this.OptionButtonFalhado);
             this.groupBox2.Controls.Add(this.OptionButtonPago);
-            this.groupBox2.Controls.Add(this.OptionButtonAgendado);
             this.groupBox2.Controls.Add(this.OptionButtonNegado);
+            this.groupBox2.Controls.Add(this.OptionButtonAgendado);
             this.groupBox2.Controls.Add(this.OptionButtonPendente);
             this.groupBox2.Location = new System.Drawing.Point(23, 217);
             this.groupBox2.Name = "groupBox2";
@@ -125,35 +127,53 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Consulta por Evento";
             // 
-            // OptionButtonAgendado
+            // OptionButtonFalhado
             // 
-            this.OptionButtonAgendado.AutoSize = true;
-            this.OptionButtonAgendado.Location = new System.Drawing.Point(109, 14);
-            this.OptionButtonAgendado.Name = "OptionButtonAgendado";
-            this.OptionButtonAgendado.Size = new System.Drawing.Size(74, 17);
-            this.OptionButtonAgendado.TabIndex = 8;
-            this.OptionButtonAgendado.Text = "Agendado";
-            this.OptionButtonAgendado.UseVisualStyleBackColor = true;
+            this.OptionButtonFalhado.AutoSize = true;
+            this.OptionButtonFalhado.Location = new System.Drawing.Point(109, 38);
+            this.OptionButtonFalhado.Name = "OptionButtonFalhado";
+            this.OptionButtonFalhado.Size = new System.Drawing.Size(64, 17);
+            this.OptionButtonFalhado.TabIndex = 15;
+            this.OptionButtonFalhado.Text = "Falhado";
+            this.OptionButtonFalhado.UseVisualStyleBackColor = true;
+            // 
+            // OptionButtonPago
+            // 
+            this.OptionButtonPago.AutoSize = true;
+            this.OptionButtonPago.Location = new System.Drawing.Point(6, 38);
+            this.OptionButtonPago.Name = "OptionButtonPago";
+            this.OptionButtonPago.Size = new System.Drawing.Size(51, 17);
+            this.OptionButtonPago.TabIndex = 14;
+            this.OptionButtonPago.Text = "Pago";
+            this.OptionButtonPago.UseVisualStyleBackColor = true;
             // 
             // OptionButtonNegado
             // 
             this.OptionButtonNegado.AutoSize = true;
-            this.OptionButtonNegado.Location = new System.Drawing.Point(208, 14);
+            this.OptionButtonNegado.Location = new System.Drawing.Point(206, 18);
             this.OptionButtonNegado.Name = "OptionButtonNegado";
-            this.OptionButtonNegado.Size = new System.Drawing.Size(63, 17);
-            this.OptionButtonNegado.TabIndex = 7;
+            this.OptionButtonNegado.Size = new System.Drawing.Size(64, 17);
+            this.OptionButtonNegado.TabIndex = 13;
             this.OptionButtonNegado.Text = "Negado";
             this.OptionButtonNegado.UseVisualStyleBackColor = true;
+            // 
+            // OptionButtonAgendado
+            // 
+            this.OptionButtonAgendado.AutoSize = true;
+            this.OptionButtonAgendado.Location = new System.Drawing.Point(109, 18);
+            this.OptionButtonAgendado.Name = "OptionButtonAgendado";
+            this.OptionButtonAgendado.Size = new System.Drawing.Size(75, 17);
+            this.OptionButtonAgendado.TabIndex = 12;
+            this.OptionButtonAgendado.Text = "Agendado";
+            this.OptionButtonAgendado.UseVisualStyleBackColor = true;
             // 
             // OptionButtonPendente
             // 
             this.OptionButtonPendente.AutoSize = true;
-            this.OptionButtonPendente.Checked = true;
-            this.OptionButtonPendente.Location = new System.Drawing.Point(6, 15);
+            this.OptionButtonPendente.Location = new System.Drawing.Point(6, 17);
             this.OptionButtonPendente.Name = "OptionButtonPendente";
-            this.OptionButtonPendente.Size = new System.Drawing.Size(71, 17);
-            this.OptionButtonPendente.TabIndex = 6;
-            this.OptionButtonPendente.TabStop = true;
+            this.OptionButtonPendente.Size = new System.Drawing.Size(72, 17);
+            this.OptionButtonPendente.TabIndex = 11;
             this.OptionButtonPendente.Text = "Pendente";
             this.OptionButtonPendente.UseVisualStyleBackColor = true;
             // 
@@ -243,25 +263,15 @@
             this.comboBox2.TabIndex = 2;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // OptionButtonPago
+            // OptionButtonAprovado
             // 
-            this.OptionButtonPago.AutoSize = true;
-            this.OptionButtonPago.Location = new System.Drawing.Point(6, 35);
-            this.OptionButtonPago.Name = "OptionButtonPago";
-            this.OptionButtonPago.Size = new System.Drawing.Size(50, 17);
-            this.OptionButtonPago.TabIndex = 9;
-            this.OptionButtonPago.Text = "Pago";
-            this.OptionButtonPago.UseVisualStyleBackColor = true;
-            // 
-            // OptionButtonFalhado
-            // 
-            this.OptionButtonFalhado.AutoSize = true;
-            this.OptionButtonFalhado.Location = new System.Drawing.Point(109, 36);
-            this.OptionButtonFalhado.Name = "OptionButtonFalhado";
-            this.OptionButtonFalhado.Size = new System.Drawing.Size(63, 17);
-            this.OptionButtonFalhado.TabIndex = 10;
-            this.OptionButtonFalhado.Text = "Falhado";
-            this.OptionButtonFalhado.UseVisualStyleBackColor = true;
+            this.OptionButtonAprovado.AutoSize = true;
+            this.OptionButtonAprovado.Location = new System.Drawing.Point(206, 37);
+            this.OptionButtonAprovado.Name = "OptionButtonAprovado";
+            this.OptionButtonAprovado.Size = new System.Drawing.Size(72, 17);
+            this.OptionButtonAprovado.TabIndex = 16;
+            this.OptionButtonAprovado.Text = "Aprovado";
+            this.OptionButtonAprovado.UseVisualStyleBackColor = true;
             // 
             // ViewPaymentApprove
             // 
@@ -296,9 +306,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RadioButton OptionButtonAgendado;
-        private System.Windows.Forms.RadioButton OptionButtonNegado;
-        private System.Windows.Forms.RadioButton OptionButtonPendente;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
@@ -307,7 +314,11 @@
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.RadioButton OptionButtonFalhado;
-        private System.Windows.Forms.RadioButton OptionButtonPago;
+        private System.Windows.Forms.CheckBox OptionButtonFalhado;
+        private System.Windows.Forms.CheckBox OptionButtonPago;
+        private System.Windows.Forms.CheckBox OptionButtonNegado;
+        private System.Windows.Forms.CheckBox OptionButtonAgendado;
+        private System.Windows.Forms.CheckBox OptionButtonPendente;
+        private System.Windows.Forms.CheckBox OptionButtonAprovado;
     }
 }
