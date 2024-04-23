@@ -23,9 +23,17 @@ namespace StarkBankExcel.Forms
             string workspace = Globals.Credentials.Range["B1"].Value;
             string environment = Globals.Credentials.Range["B3"].Value;
             string cartId = Globals.Credentials.Range["C6"].Value;
-
-            string url = "https://" + workspace + "." + environment + ".starkbank.com/cart/" + cartId;
-            Process.Start(url);
+            
+            if (environment == "production")
+            {
+                string url = "https://" + workspace + ".starkbank.com/cart/" + cartId;
+                Process.Start(url);
+            }
+            if (environment != "production")
+            {
+                string url = "https://" + workspace + "." + environment + ".starkbank.com/cart/" + cartId;
+                Process.Start(url);
+            }
         }
     }
 }

@@ -60,7 +60,7 @@ namespace StarkBankExcel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show("O workspace " + workspace.Trim() + " não existe no ambiente selecionado");
                 return;
             }
 
