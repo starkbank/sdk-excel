@@ -13,28 +13,26 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(6)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(5)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
-    public sealed partial class Planilha12 : Microsoft.Office.Tools.Excel.WorksheetBase {
+    public sealed partial class SendReceiver : Microsoft.Office.Tools.Excel.WorksheetBase {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
         
-        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
-        
         internal Microsoft.Office.Tools.Excel.Controls.Button button3;
         
-        internal Microsoft.Office.Tools.Excel.Controls.Button button4;
-        
         internal Microsoft.Office.Tools.Excel.Controls.Button button1;
+        
+        internal Microsoft.Office.Tools.Excel.Controls.Button button5;
         
         internal Microsoft.Office.Tools.Excel.Controls.Button button6;
         
         /// 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-        public Planilha12(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
-                base(factory, serviceProvider, "Planilha12", "Planilha12") {
+        public SendReceiver(global::Microsoft.Office.Tools.Excel.Factory factory, global::System.IServiceProvider serviceProvider) : 
+                base(factory, serviceProvider, "Planilha20", "Planilha20") {
         }
         
         /// 
@@ -43,7 +41,7 @@ namespace StarkBankExcel {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         protected override void Initialize() {
             base.Initialize();
-            Globals.Planilha12 = this;
+            Globals.SendReceiver = this;
             global::System.Windows.Forms.Application.EnableVisualStyles();
             this.InitializeCachedData();
             this.InitializeControls();
@@ -139,11 +137,10 @@ namespace StarkBankExcel {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeControls() {
-            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "71F4FF3617034374D487A4537B51302A0C89B7", "71F4FF3617034374D487A4537B51302A0C89B7", this, "button5");
-            this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "5FE4E9EDE5117D54C395AB0B52D849B4179075", "5FE4E9EDE5117D54C395AB0B52D849B4179075", this, "button3");
-            this.button4 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "690DE6C82662BD648A469A3C645736EF297746", "690DE6C82662BD648A469A3C645736EF297746", this, "button4");
-            this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "43935BDA7439194471449D234CFD527D9886B4", "43935BDA7439194471449D234CFD527D9886B4", this, "button1");
-            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "80815DC5B82C3B8498489E26894C5C52875E28", "80815DC5B82C3B8498489E26894C5C52875E28", this, "button6");
+            this.button3 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "1E979824A1EC7B145D81A73D12A315F9EE7F61", "1E979824A1EC7B145D81A73D12A315F9EE7F61", this, "button3");
+            this.button1 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "276984BE82622724D2829AD32CC77B450D8CB2", "276984BE82622724D2829AD32CC77B450D8CB2", this, "button1");
+            this.button5 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "3E72B73533463334A09396C63850D5D3146F23", "3E72B73533463334A09396C63850D5D3146F23", this, "button5");
+            this.button6 = new Microsoft.Office.Tools.Excel.Controls.Button(Globals.Factory, this.ItemProvider, this.HostContext, "5664E4FA354E53547A85877C5681815C86E255", "5664E4FA354E53547A85877C5681815C86E255", this, "button6");
         }
         
         /// 
@@ -152,49 +149,43 @@ namespace StarkBankExcel {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeComponents() {
             // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.SystemColors.Control;
-            this.button5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button5.Name = "button5";
-            this.button5.Text = "Sair da Conta";
-            this.button5.UseVisualStyleBackColor = false;
-            // 
             // button3
             // 
             this.button3.BackColor = System.Drawing.SystemColors.Control;
             this.button3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button3.Name = "button3";
-            this.button3.Text = "Acessar Conta";
+            this.button3.Text = "Criar Receivers";
             this.button3.UseVisualStyleBackColor = false;
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.SystemColors.Control;
-            this.button4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button4.Name = "button4";
-            this.button4.Text = "Retornar para principal";
-            this.button4.UseVisualStyleBackColor = false;
             // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.Control;
             this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button1.Name = "button1";
-            this.button1.Text = "Compras";
+            this.button1.Text = "Retornar para principal";
             this.button1.UseVisualStyleBackColor = false;
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.SystemColors.Control;
+            this.button5.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button5.Name = "button5";
+            this.button5.Text = "Acessar Conta";
+            this.button5.UseVisualStyleBackColor = false;
             // 
             // button6
             // 
             this.button6.BackColor = System.Drawing.SystemColors.Control;
             this.button6.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button6.Name = "button6";
-            this.button6.Text = "Baixar Anexos Selecionados";
+            this.button6.Text = "Sair da Conta";
             this.button6.UseVisualStyleBackColor = false;
-            this.button5.BindingContext = this.BindingContext;
+            // 
+            // SendReceiver
+            // 
             this.button3.BindingContext = this.BindingContext;
-            this.button4.BindingContext = this.BindingContext;
             this.button1.BindingContext = this.BindingContext;
+            this.button5.BindingContext = this.BindingContext;
             this.button6.BindingContext = this.BindingContext;
         }
         
@@ -208,15 +199,15 @@ namespace StarkBankExcel {
     
     internal sealed partial class Globals {
         
-        private static Planilha12 _Planilha12;
+        private static SendReceiver _SendReceiver;
         
-        internal static Planilha12 Planilha12 {
+        internal static SendReceiver SendReceiver {
             get {
-                return _Planilha12;
+                return _SendReceiver;
             }
             set {
-                if ((_Planilha12 == null)) {
-                    _Planilha12 = value;
+                if ((_SendReceiver == null)) {
+                    _SendReceiver = value;
                 }
                 else {
                     throw new System.NotSupportedException();

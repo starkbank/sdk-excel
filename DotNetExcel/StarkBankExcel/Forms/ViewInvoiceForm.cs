@@ -86,6 +86,46 @@ namespace StarkBankExcel.Forms
 
                 JArray invoices = (JArray)respJson["invoices"];
 
+                string invoiceListString = "";
+                Dictionary<string, List<string>> splitByInvoice = new Dictionary<string, List<string>>();
+
+                foreach (JObject split in invoices)
+                {
+
+                    invoiceListString += "invoice/" + split["id"].ToString() + ",";
+
+                }
+
+                Dictionary<string, object> queryParams = new Dictionary<string, object>() { { "tags", invoiceListString } };
+
+                try
+                {
+                    respJson = Split.Get(null, queryParams);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Close();
+                    return;
+                }
+
+                JArray splits = (JArray)respJson["splits"];
+
+
+                foreach (JObject split in splits)
+                {
+
+                    try
+                    {
+                        splitByInvoice[split["source"].ToString().Substring(8)].Add(split["amount"].ToString());
+                    }
+                    catch
+                    {
+                        splitByInvoice.Add(split["source"].ToString().Substring(8), new List<string>() { split["amount"].ToString() });
+                    }
+
+                }
+
                 foreach (JObject invoice in invoices)
                 {
                     worksheet.Range["A" + row].Value = new StarkDateTime((string)invoice["created"]).Value.ToString();
@@ -107,6 +147,19 @@ namespace StarkBankExcel.Forms
                     Microsoft.Office.Interop.Excel.Range rng = worksheet.Range["P" + row];
                     rng.Value = "PDF";
                     Microsoft.Office.Interop.Excel.Hyperlink link = rng.Hyperlinks.Add(rng, (string)invoice["pdf"]);
+
+                    worksheet.Range["Q" + row].Value = "NÃO";
+
+                    try
+                    {
+
+                        worksheet.Range["R" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][0]) / 100;
+                        worksheet.Range["Q" + row].Value = "SIM";
+                        worksheet.Range["S" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][1]) / 100;
+                        worksheet.Range["T" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][2]) / 100;
+
+                    }
+                    catch { }
 
                     row++;
                 }

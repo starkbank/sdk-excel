@@ -309,6 +309,20 @@
     <Compile Include="GetTransfers.Designer.cs">
       <DependentUpon>GetTransfers.Designer.xml</DependentUpon>
     </Compile>
+    <Compile Include="GetSplit.cs">
+      <DependentUpon>StarkBank.xlsx</DependentUpon>
+    </Compile>
+    <Compile Include="GetSplit.Designer.cs">
+      <DependentUpon>GetSplit.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\SplitReceiverResource.cs" />
+    <Compile Include="Resources\SplitResource.cs" />
+    <Compile Include="SendReceiver.cs">
+      <DependentUpon>StarkBank.xlsx</DependentUpon>
+    </Compile>
+    <Compile Include="SendReceiver.Designer.cs">
+      <DependentUpon>SendReceiver.Designer.xml</DependentUpon>
+    </Compile>
     <Compile Include="SendCards.cs">
       <DependentUpon>StarkBank.xlsx</DependentUpon>
     </Compile>
@@ -441,6 +455,9 @@
     <EmbeddedResource Include="GetInvoices.resx">
       <DependentUpon>GetInvoices.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GetSplit.resx">
+      <DependentUpon>GetSplit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GetTransfers.resx">
       <DependentUpon>GetTransfers.cs</DependentUpon>
     </EmbeddedResource>
@@ -493,6 +510,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SendReceiver.resx">
+      <DependentUpon>SendReceiver.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transfers.resx">
       <DependentUpon>Transfers.cs</DependentUpon>
     </EmbeddedResource>
@@ -567,6 +587,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="emblem.ico" />
+    <None Include="SendReceiver.Designer.xml">
+      <DependentUpon>SendReceiver.cs</DependentUpon>
+    </None>
+    <None Include="GetSplit.Designer.xml">
+      <DependentUpon>GetSplit.cs</DependentUpon>
+    </None>
     <None Include="Resources\modal-excel %284%29.png" />
     <None Include="SendCards.Designer.xml">
       <DependentUpon>SendCards.cs</DependentUpon>
@@ -648,6 +674,8 @@
           <HostItem Name="Planilha17" Code="GetTransfers.cs" CanonicalName="Planilha17" PublishedHash="A85AD76612E467A5F09918715EBF457E2451D65B" DisplayName="Consulta de Transferencias" Blueprint="GetTransfers.Designer.xml" GeneratedCode="GetTransfers.Designer.cs" />
           <HostItem Name="Planilha13" Code="InvoiceReversal.cs" CanonicalName="Planilha13" PublishedHash="23D8E77ED6C4593F966157CE1CBE09E425848273" DisplayName="Reversão de invoice" Blueprint="InvoiceReversal.Designer.xml" GeneratedCode="InvoiceReversal.Designer.cs" />
           <HostItem Name="Planilha1" Code="Main.cs" CanonicalName="Planilha1" PublishedHash="2A5DE5BBCB785C704C10FFA230F69F74732EBB0E" DisplayName="Principal" Blueprint="Main.Designer.xml" GeneratedCode="Main.Designer.cs" />
+          <HostItem Name="Planilha19" Code="GetSplit.cs" CanonicalName="Planilha19" DisplayName="Consultar Splits" Blueprint="GetSplit.Designer.xml" GeneratedCode="GetSplit.Designer.cs" />
+          <HostItem Name="Planilha20" Code="SendReceiver.cs" CanonicalName="Planilha20" DisplayName="Criar Receivers" Blueprint="SendReceiver.Designer.xml" GeneratedCode="SendReceiver.Designer.cs" />
           <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="FD735FB02BE573AE724DE83C21B01842BEE6AB1A" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
           <HostItem Name="Planilha18" Code="SendCards.cs" CanonicalName="Planilha18" PublishedHash="BF7427EC1DEAB1D9FA3D700B1912D60A6F92999C" DisplayName="Solicitações de Cartões" Blueprint="SendCards.Designer.xml" GeneratedCode="SendCards.Designer.cs" />
           <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="9D4A3846B3C800B8C0B9D1BCB393BC48FE3F95C8" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
