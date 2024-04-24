@@ -129,17 +129,18 @@ namespace StarkBankExcel
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            Globals.Main.Activate();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            LoginForm loginForm = new LoginForm();
+            loginForm.ShowDialog();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-
+            Utils.LogOut();
         }
     }
 }
