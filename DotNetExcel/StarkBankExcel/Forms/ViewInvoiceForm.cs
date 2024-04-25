@@ -2,6 +2,8 @@
 using StarkBankExcel.Resources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace StarkBankExcel.Forms
@@ -128,6 +130,12 @@ namespace StarkBankExcel.Forms
 
                 foreach (JObject invoice in invoices)
                 {
+
+                    // debug
+                    Debug.WriteLine("---------debgu-------");
+                    Debug.WriteLine(invoice["splits"]);
+                    Debug.WriteLine("---------end debgu-------");
+
                     worksheet.Range["A" + row].Value = new StarkDateTime((string)invoice["created"]).Value.ToString();
                     worksheet.Range["B" + row].Value = invoice["name"];
                     worksheet.Range["C" + row].Value = invoice["taxId"];
@@ -150,18 +158,43 @@ namespace StarkBankExcel.Forms
 
                     worksheet.Range["Q" + row].Value = "NÃO";
 
+                    // try
+                    // {
+                    //
+                    //    worksheet.Range["R" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][0]) / 100;
+                    //    worksheet.Range["Q" + row].Value = "SIM";
+                    //    worksheet.Range["S" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][1]) / 100;
+                    //    worksheet.Range["T" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][2]) / 100;
+                    // ;
+                    // }
+                    // catch { }
+
                     try
                     {
 
-                        worksheet.Range["R" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][0]) / 100;
-                        worksheet.Range["Q" + row].Value = "SIM";
-                        worksheet.Range["S" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][1]) / 100;
-                        worksheet.Range["T" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][2]) / 100;
+                        int splitNums = 0;
 
-                    }
-                    catch { }
+                        foreach (JToken c in invoice["splits"])
+                        {
+                            splitNums++;
+                            if (splitNums == 1)
+                            {
+                                worksheet.Range["Q" + row].Value = "SIM";
+                                worksheet.Range["R" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                            }
+                            if (splitNums == 2)
+                            {
+                                worksheet.Range["S" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                            }
+                            if (splitNums == 3)
+                            {
+                                worksheet.Range["T" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                            }
+                        }
+                        splitNums = 0;
+                        row++;
 
-                    row++;
+                    } catch { }
                 }
 
             } while (cursor != null);
