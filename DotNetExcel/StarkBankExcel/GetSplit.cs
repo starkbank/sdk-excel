@@ -106,8 +106,6 @@ namespace StarkBankExcel
 
                 receivers = (JArray)respJson["splits"];
 
-                // vai ter que implemetar uma caralhada de condição e codigo aqui pra fazer essa parada que foi alinhada por produto
-
                 List<string> checkReceiverList = new List<string>();
                 Dictionary<string, Dictionary<string, int>> directionIds = new Dictionary<string, Dictionary<string, int>>();
                 int column = 7;

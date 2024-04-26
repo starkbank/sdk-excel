@@ -88,54 +88,8 @@ namespace StarkBankExcel.Forms
 
                 JArray invoices = (JArray)respJson["invoices"];
 
-                string invoiceListString = "";
-                Dictionary<string, List<string>> splitByInvoice = new Dictionary<string, List<string>>();
-
-                foreach (JObject split in invoices)
-                {
-
-                    invoiceListString += "invoice/" + split["id"].ToString() + ",";
-
-                }
-
-                Dictionary<string, object> queryParams = new Dictionary<string, object>() { { "tags", invoiceListString } };
-
-                try
-                {
-                    respJson = Split.Get(null, queryParams);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Close();
-                    return;
-                }
-
-                JArray splits = (JArray)respJson["splits"];
-
-
-                foreach (JObject split in splits)
-                {
-
-                    try
-                    {
-                        splitByInvoice[split["source"].ToString().Substring(8)].Add(split["amount"].ToString());
-                    }
-                    catch
-                    {
-                        splitByInvoice.Add(split["source"].ToString().Substring(8), new List<string>() { split["amount"].ToString() });
-                    }
-
-                }
-
                 foreach (JObject invoice in invoices)
                 {
-
-                    // debug
-                    Debug.WriteLine("---------debgu-------");
-                    Debug.WriteLine(invoice["splits"]);
-                    Debug.WriteLine("---------end debgu-------");
-
                     worksheet.Range["A" + row].Value = new StarkDateTime((string)invoice["created"]).Value.ToString();
                     worksheet.Range["B" + row].Value = invoice["name"];
                     worksheet.Range["C" + row].Value = invoice["taxId"];
@@ -158,43 +112,27 @@ namespace StarkBankExcel.Forms
 
                     worksheet.Range["Q" + row].Value = "NÃO";
 
-                    // try
-                    // {
-                    //
-                    //    worksheet.Range["R" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][0]) / 100;
-                    //    worksheet.Range["Q" + row].Value = "SIM";
-                    //    worksheet.Range["S" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][1]) / 100;
-                    //    worksheet.Range["T" + row].Value = double.Parse((string)splitByInvoice[invoice["id"].ToString()][2]) / 100;
-                    // ;
-                    // }
-                    // catch { }
+                    int splitNums = 0;
 
-                    try
+                    foreach (JToken c in invoice["splits"])
                     {
-
-                        int splitNums = 0;
-
-                        foreach (JToken c in invoice["splits"])
+                        splitNums++;
+                        if (splitNums == 1)
                         {
-                            splitNums++;
-                            if (splitNums == 1)
-                            {
-                                worksheet.Range["Q" + row].Value = "SIM";
-                                worksheet.Range["R" + row].Value = double.Parse(c["amount"].ToString()) / 100;
-                            }
-                            if (splitNums == 2)
-                            {
-                                worksheet.Range["S" + row].Value = double.Parse(c["amount"].ToString()) / 100;
-                            }
-                            if (splitNums == 3)
-                            {
-                                worksheet.Range["T" + row].Value = double.Parse(c["amount"].ToString()) / 100;
-                            }
+                            worksheet.Range["Q" + row].Value = "SIM";
+                            worksheet.Range["R" + row].Value = double.Parse(c["amount"].ToString()) / 100;
                         }
-                        splitNums = 0;
-                        row++;
-
-                    } catch { }
+                        if (splitNums == 2)
+                        {
+                            worksheet.Range["S" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                        }
+                        if (splitNums == 3)
+                        {
+                            worksheet.Range["T" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                        }
+                    }
+                    splitNums = 0;
+                    row++;
                 }
 
             } while (cursor != null);
