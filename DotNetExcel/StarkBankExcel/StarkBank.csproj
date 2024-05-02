@@ -231,6 +231,12 @@
     <Compile Include="Forms\ViewInvoiceForm.Designer.cs">
       <DependentUpon>ViewInvoiceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ViewSplit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ViewSplit.Designer.cs">
+      <DependentUpon>ViewSplit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ViewStatementForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -442,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ViewPaymentApprove.resx">
       <DependentUpon>ViewPaymentApprove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ViewSplit.resx">
+      <DependentUpon>ViewSplit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ViewStatementForm.resx">
       <DependentUpon>ViewStatementForm.cs</DependentUpon>
@@ -670,15 +679,15 @@
           <HostItem Name="Planilha3" Code="getDictKeys.cs" CanonicalName="Planilha3" PublishedHash="B2D7856C2DBDCE5EA1C6DF14243AE46D4ED02958" DisplayName="Consulta de Chaves Pix" Blueprint="getDictKeys.Designer.xml" GeneratedCode="getDictKeys.Designer.cs" />
           <HostItem Name="Planilha6" Code="GetInvoices.cs" CanonicalName="Planilha6" PublishedHash="0AD801EA7CD8705AAD0C7FCCF6AF348FC48E500F" DisplayName="Consulta de Invoice Emitidas" Blueprint="GetInvoices.Designer.xml" GeneratedCode="GetInvoices.Designer.cs" />
           <HostItem Name="Planilha15" Code="GetPaymentApprove.cs" CanonicalName="Planilha15" PublishedHash="86116461795C8B94C9A1D27B26AEC4F544526546" DisplayName="Consulta de Aprovações" Blueprint="GetPaymentApprove.Designer.xml" GeneratedCode="GetPaymentApprove.Designer.cs" />
+          <HostItem Name="Planilha19" Code="GetSplit.cs" CanonicalName="Planilha19" DisplayName="Consultar Splits" Blueprint="GetSplit.Designer.xml" GeneratedCode="GetSplit.Designer.cs" />
           <HostItem Name="Planilha7" Code="GetStatement.cs" CanonicalName="Planilha7" PublishedHash="4B936C339520FB89F3ABBA4964267244B41CB552" DisplayName="Extrato" Blueprint="GetStatement.Designer.xml" GeneratedCode="GetStatement.Designer.cs" />
           <HostItem Name="Planilha17" Code="GetTransfers.cs" CanonicalName="Planilha17" PublishedHash="A85AD76612E467A5F09918715EBF457E2451D65B" DisplayName="Consulta de Transferencias" Blueprint="GetTransfers.Designer.xml" GeneratedCode="GetTransfers.Designer.cs" />
           <HostItem Name="Planilha13" Code="InvoiceReversal.cs" CanonicalName="Planilha13" PublishedHash="23D8E77ED6C4593F966157CE1CBE09E425848273" DisplayName="Reversão de invoice" Blueprint="InvoiceReversal.Designer.xml" GeneratedCode="InvoiceReversal.Designer.cs" />
           <HostItem Name="Planilha1" Code="Main.cs" CanonicalName="Planilha1" PublishedHash="2A5DE5BBCB785C704C10FFA230F69F74732EBB0E" DisplayName="Principal" Blueprint="Main.Designer.xml" GeneratedCode="Main.Designer.cs" />
-          <HostItem Name="Planilha19" Code="GetSplit.cs" CanonicalName="Planilha19" DisplayName="Consultar Splits" Blueprint="GetSplit.Designer.xml" GeneratedCode="GetSplit.Designer.cs" />
-          <HostItem Name="Planilha20" Code="SendReceiver.cs" CanonicalName="Planilha20" DisplayName="Criar Receivers" Blueprint="SendReceiver.Designer.xml" GeneratedCode="SendReceiver.Designer.cs" />
           <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="FD735FB02BE573AE724DE83C21B01842BEE6AB1A" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
           <HostItem Name="Planilha18" Code="SendCards.cs" CanonicalName="Planilha18" PublishedHash="BF7427EC1DEAB1D9FA3D700B1912D60A6F92999C" DisplayName="Solicitações de Cartões" Blueprint="SendCards.Designer.xml" GeneratedCode="SendCards.Designer.cs" />
           <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="9D4A3846B3C800B8C0B9D1BCB393BC48FE3F95C8" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
+          <HostItem Name="Planilha20" Code="SendReceiver.cs" CanonicalName="Planilha20" DisplayName="Criar Receivers" Blueprint="SendReceiver.Designer.xml" GeneratedCode="SendReceiver.Designer.cs" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="0696E9ADD17201950E3FB0F452519D928CE01C11" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
           <HostItem Name="Planilha4" Code="Transfers.cs" CanonicalName="Planilha4" PublishedHash="5C80118BB98EBBD69636C404E1D1BA61C8C6F926" DisplayName="Transferências Com Aprovação" Blueprint="Transfers.Designer.xml" GeneratedCode="Transfers.Designer.cs" />
         </Host>
