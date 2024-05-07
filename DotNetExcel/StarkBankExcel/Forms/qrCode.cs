@@ -31,9 +31,11 @@ namespace StarkBankExcel.Forms
 
             if (sizeValue != null)
             {
-                Dictionary<string, int> qrCodeLocationValue = locationReturner(sizeValue, 1674, 2398);
+                Dictionary<string, int> qrCodeLocationValue = locationReturner(sizeValue, 1620, 2398);
 
                 Dictionary<string, int> textLocationValue = locationReturner(sizeValue, 10880, 4567);
+
+                Dictionary<string, System.Single> textSizeValue = sizeReturner(sizeValue, 32);
 
                 string bString = Globals.Credentials.Range["B14"].Value;
 
@@ -48,9 +50,11 @@ namespace StarkBankExcel.Forms
                 Image originalImage = ByteArrayToImage(resizedImageBytes);
 
                 pictureBox1.Image = originalImage;
+                pictureBox2.Location = new System.Drawing.Point(0, 0);
                 pictureBox2.Size = new Size(Int32.Parse(sizeValue["Width"]), Int32.Parse(sizeValue["Height"]));
                 pictureBox1.Location = new System.Drawing.Point(qrCodeLocationValue["x"], qrCodeLocationValue["y"]);
                 emailLabel.Location = new System.Drawing.Point(textLocationValue["x"], textLocationValue["y"]);
+                emailLabel.Font = new System.Drawing.Font("Mundial", 2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 
                 emailLabel.Text = email.ToString();
             }
@@ -73,9 +77,6 @@ namespace StarkBankExcel.Forms
             int mx = mxValue;
             int my = myValue;
 
-            // int mx = 1674;
-            // int my = 2398;
-
             int x = Int32.Parse(inputLocation["Width"]) * delta;
             int y = Int32.Parse(inputLocation["Height"]) * delta;
 
@@ -86,6 +87,31 @@ namespace StarkBankExcel.Forms
             {
                 { "x", x },
                 { "y", y },
+            };
+
+            return locationDict;
+        }
+
+        static Dictionary<string, System.Single> sizeReturner(Dictionary<string, string> inputLocation, System.Single value)
+        {
+
+            value = value / 10;
+
+            int areaValue = Int32.Parse(inputLocation["Width"]) * Int32.Parse(inputLocation["Height"]);
+
+            System.Single pointValue = (areaValue * value) / 100000;
+            
+            // Debug
+
+            Debug.WriteLine("---------debug---------");
+            Debug.WriteLine(pointValue.ToString());
+            Debug.WriteLine("---------end debug---------");
+
+            // new System.Drawing.Size(65, 29);
+
+            Dictionary<string, System.Single> locationDict = new Dictionary<string, System.Single>()
+            {
+                { "font", pointValue },
             };
 
             return locationDict;

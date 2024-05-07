@@ -57,6 +57,199 @@ namespace StarkBankExcel
             try
             {
                 Session.Create(workspace, environment, email, password);
+                // Debug
+                Globals.Main.Range["L2"].Value = "passou da session";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("O workspace " + workspace.Trim() + " não existe no ambiente selecionado");
+                return;
+            }
+
+            PrivateKey privateKey = new PrivateKey();
+            PublicKey publicKey = privateKey.publicKey();
+
+            List<object> challenge = new List<object>();
+
+            Dictionary<string, object> requestBody = new Dictionary<string, object>()
+            {
+                { "platform", "web" },
+                { "expiration", 604800 },
+                { "publicKey", publicKey.toPem() }
+            };
+
+            Dictionary<string, object> dictObj = new Dictionary<string, object>()
+            {
+                { "requestBody", JsonConvert.SerializeObject(requestBody) },
+                { "requestMethod", "POST" },
+                { "requestPath", "/session" },
+                { "type", "authenticator" }
+            };
+
+            challenge.Add(dictObj);
+
+            Dictionary<string, object> payload = new Dictionary<string, object>() { { "challenges", challenge } };
+
+            Response fetchedJson;
+
+            PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
+
+            int loginInt = 0;
+
+            try
+            {
+
+                fetchedJson = Request.Fetch(
+                     Request.Post,
+                     environment,
+                     "challenge?expand=qrcode",
+                     payload,
+                     null,
+                     keys.toPem()
+                  );
+
+                // Debug
+                Globals.Main.Range["L3"].Value = "criando challange";
+                Globals.Main.Range["M3"].Value = fetchedJson.ToJson().ToString();
+
+                string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
+                string challengeId = fetchedJson.ToJson()["challenges"][0]["id"].ToString();
+                string challengPk = keys.toPem();
+
+                Globals.Credentials.Range["A14"].Value = "Qrcode";
+                Globals.Credentials.Range["B14"].Value = qrcode;
+
+                Globals.Credentials.Range["A15"].Value = "challenge";
+                Globals.Credentials.Range["B15"].Value = challengeId;
+
+                Globals.Credentials.Range["A16"].Value = "ChallengePk";
+                Globals.Credentials.Range["B16"].Value = challengPk;
+
+                qrCode formSize = new qrCode();
+
+                Globals.Credentials.Range["C16"].Value = formSize.Size.ToString();
+
+                formSize.Close();
+
+                qrCode qrcodeForms = new qrCode();
+
+                Task qrcodeTask = Task.Run(() => qrcodeWork(qrcodeForms));
+                Task<int> pollingTask = Task.Run(() => pollingWork());
+
+                Task.WaitAny(qrcodeTask, pollingTask);
+
+                if (await pollingTask == 1)
+                {
+                    loginInt = 1;
+
+                    Task closeQrcodeTask = Task.Run(() => closeQrcodeWork(qrcodeForms));
+                    Task.WaitAny(closeQrcodeTask);
+
+                    string dictObj2 = JsonConvert.SerializeObject(requestBody);
+
+                    try
+                    {
+                        fetchedJson = Request.maskFetch(
+                             Request.Post,
+                             environment,
+                             "/session",
+                             dictObj2,
+                             null,
+                             keys.toPem(),
+                             challengeId
+                         );
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                        return;
+                    }
+
+                    Globals.Credentials.Range["A11"].Value = "Session Private";
+                    Globals.Credentials.Range["B11"].Value = privateKey.toPem();
+
+                    Globals.Credentials.Range["A12"].Value = "Session Public";
+                    Globals.Credentials.Range["B12"].Value = publicKey.toPem();
+
+                    Globals.Credentials.Range["A13"].Value = "Access ID";
+                    Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
+
+
+                    Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;
+
+                    foreach (Worksheet sheet in workbook.Worksheets)
+                    {
+                        if (sheet.Name != "Credentials")
+                        {
+                            Utils.DisplayInfo(sheet);
+                        }
+                    }
+
+                }
+
+                if (await pollingTask == 2)
+                {
+                    loginInt = 2;
+
+                    qrcodeForms.DialogResult = DialogResult.Cancel;
+                    qrcodeForms.Close();
+                }
+
+                if (await pollingTask == 3)
+                {
+                    loginInt = 3;
+
+                    qrcodeForms.DialogResult = DialogResult.Cancel;
+                    qrcodeForms.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+
+            if (loginInt == 1)
+            {
+                MessageBox.Show("Logado com sucesso!");
+                Close();
+            }
+            if (loginInt == 2)
+            {
+                MessageBox.Show("Acesso Negado!");
+                Close();
+            }
+            if (loginInt == 3)
+            {
+                MessageBox.Show("Este QR Code expirou. Efetue o login novamente para gerar um novo QR Code antes de continuar.");
+            }
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            string environment = Environment.Text.ToLower();
+            string workspace = Workspace.Text.ToLower();
+            string email = Email.Text.ToLower();
+            string password = Password.Text.ToString();
+
+            if (environment.Trim().Length == 8)
+            {
+                environment = "production";
+            }
+
+            if (environment.Trim().Length == 22)
+            {
+                environment = "sandbox";
+            }
+
+            if (environment.Trim().Length == 11)
+            {
+                environment = "development";
+            }
+
+            try
+            {
+                Session.Create(workspace, environment, email, password);
             }
             catch (Exception ex)
             {
@@ -119,13 +312,201 @@ namespace StarkBankExcel
                 Globals.Credentials.Range["A16"].Value = "ChallengePk";
                 Globals.Credentials.Range["B16"].Value = challengPk;
 
-                qrCode formSize = new qrCode();
+                qrcode2 formSize = new qrcode2();
 
                 Globals.Credentials.Range["C16"].Value = formSize.Size.ToString();
 
                 formSize.Close();
 
-                qrCode qrcodeForms = new qrCode();
+                qrcode2 qrcodeForms = new qrcode2();
+
+                Task qrcodeTask = Task.Run(() => qrcodeWork(qrcodeForms));
+                Task<int> pollingTask = Task.Run(() => pollingWork());
+
+                Task.WaitAny(qrcodeTask, pollingTask);
+
+                if (await pollingTask == 1)
+                {
+                    loginInt = 1;
+
+                    Task closeQrcodeTask = Task.Run(() => closeQrcodeWork(qrcodeForms));
+                    Task.WaitAny(closeQrcodeTask);
+
+                    string dictObj2 = JsonConvert.SerializeObject(requestBody);
+
+                    try
+                    {
+                        fetchedJson = Request.maskFetch(
+                             Request.Post,
+                             environment,
+                             "/session",
+                             dictObj2,
+                             null,
+                             keys.toPem(),
+                             challengeId
+                         );
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                        return;
+                    }
+
+                    Globals.Credentials.Range["A11"].Value = "Session Private";
+                    Globals.Credentials.Range["B11"].Value = privateKey.toPem();
+
+                    Globals.Credentials.Range["A12"].Value = "Session Public";
+                    Globals.Credentials.Range["B12"].Value = publicKey.toPem();
+
+                    Globals.Credentials.Range["A13"].Value = "Access ID";
+                    Globals.Credentials.Range["B13"].Value = "session/" + fetchedJson.ToJson()["session"]["id"].ToString();
+
+
+                    Workbook workbook = Globals.ThisWorkbook.Application.ActiveWorkbook;
+
+                    foreach (Worksheet sheet in workbook.Worksheets)
+                    {
+                        if (sheet.Name != "Credentials")
+                        {
+                            Utils.DisplayInfo(sheet);
+                        }
+                    }
+
+                }
+
+                if (await pollingTask == 2)
+                {
+                    loginInt = 2;
+
+                    qrcodeForms.DialogResult = DialogResult.Cancel;
+                    qrcodeForms.Close();
+                }
+
+                if (await pollingTask == 3)
+                {
+                    loginInt = 3;
+
+                    qrcodeForms.DialogResult = DialogResult.Cancel;
+                    qrcodeForms.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+
+            if (loginInt == 1)
+            {
+                MessageBox.Show("Logado com sucesso!");
+                Close();
+            }
+            if (loginInt == 2)
+            {
+                MessageBox.Show("Acesso Negado!");
+                Close();
+            }
+            if (loginInt == 3)
+            {
+                MessageBox.Show("Este QR Code expirou. Efetue o login novamente para gerar um novo QR Code antes de continuar.");
+            }
+
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            string environment = Environment.Text.ToLower();
+            string workspace = Workspace.Text.ToLower();
+            string email = Email.Text.ToLower();
+            string password = Password.Text.ToString();
+
+            if (environment.Trim().Length == 8)
+            {
+                environment = "production";
+            }
+
+            if (environment.Trim().Length == 22)
+            {
+                environment = "sandbox";
+            }
+
+            if (environment.Trim().Length == 11)
+            {
+                environment = "development";
+            }
+
+            try
+            {
+                Session.Create(workspace, environment, email, password);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("O workspace " + workspace.Trim() + " não existe no ambiente selecionado");
+                return;
+            }
+
+            PrivateKey privateKey = new PrivateKey();
+            PublicKey publicKey = privateKey.publicKey();
+
+            List<object> challenge = new List<object>();
+
+            Dictionary<string, object> requestBody = new Dictionary<string, object>()
+            {
+                { "platform", "web" },
+                { "expiration", 604800 },
+                { "publicKey", publicKey.toPem() }
+            };
+
+            Dictionary<string, object> dictObj = new Dictionary<string, object>()
+            {
+                { "requestBody", JsonConvert.SerializeObject(requestBody) },
+                { "requestMethod", "POST" },
+                { "requestPath", "/session" },
+                { "type", "authenticator" }
+            };
+
+            challenge.Add(dictObj);
+
+            Dictionary<string, object> payload = new Dictionary<string, object>() { { "challenges", challenge } };
+
+            Response fetchedJson;
+
+            PrivateKey keys = keyGen.generateKeyFromPassword(password, email);
+
+            int loginInt = 0;
+
+            try
+            {
+
+                fetchedJson = Request.Fetch(
+                     Request.Post,
+                     environment,
+                     "challenge?expand=qrcode",
+                     payload,
+                     null,
+                     keys.toPem()
+                  );
+
+                string qrcode = fetchedJson.ToJson()["challenges"][0]["qrcode"].ToString();
+                string challengeId = fetchedJson.ToJson()["challenges"][0]["id"].ToString();
+                string challengPk = keys.toPem();
+
+                Globals.Credentials.Range["A14"].Value = "Qrcode";
+                Globals.Credentials.Range["B14"].Value = qrcode;
+
+                Globals.Credentials.Range["A15"].Value = "challenge";
+                Globals.Credentials.Range["B15"].Value = challengeId;
+
+                Globals.Credentials.Range["A16"].Value = "ChallengePk";
+                Globals.Credentials.Range["B16"].Value = challengPk;
+
+                qrCode3 formSize = new qrCode3();
+
+                Globals.Credentials.Range["C16"].Value = formSize.Size.ToString();
+
+                formSize.Close();
+
+                qrCode3 qrcodeForms = new qrCode3();
 
                 Task qrcodeTask = Task.Run(() => qrcodeWork(qrcodeForms));
                 Task<int> pollingTask = Task.Run(() => pollingWork());
@@ -273,6 +654,5 @@ namespace StarkBankExcel
             qrcodeForms.DialogResult = DialogResult.Cancel;
             qrcodeForms.Close();
         }
-
     }
 }

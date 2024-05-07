@@ -19,7 +19,7 @@
     <PublishUrl>C:\StarkExcelInstaller-sandbox\</PublishUrl>
     <InstallUrl />
     <TargetCulture>pt-BR</TargetCulture>
-    <ApplicationVersion>1.12.0.81</ApplicationVersion>
+    <ApplicationVersion>1.12.0.83</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -157,6 +157,18 @@
     </Compile>
     <Compile Include="Forms\cardStatmentForm.Designer.cs">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\qrCode2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\qrCode2.Designer.cs">
+      <DependentUpon>qrCode2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\qrCode3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\qrCode3.Designer.cs">
+      <DependentUpon>qrCode3.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Redirect.cs">
       <SubType>Form</SubType>
@@ -392,6 +404,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\cardStatmentForm.resx">
       <DependentUpon>cardStatmentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\qrCode2.resx">
+      <DependentUpon>qrCode2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\qrCode3.resx">
+      <DependentUpon>qrCode3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Redirect.resx">
       <DependentUpon>Redirect.cs</DependentUpon>
