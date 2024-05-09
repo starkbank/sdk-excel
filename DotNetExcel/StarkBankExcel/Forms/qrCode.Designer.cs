@@ -52,6 +52,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(552, 222);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -60,14 +61,14 @@
             this.pictureBox2.Image = global::StarkBankExcel.Properties.Resources.modal_excel__4_;
             this.pictureBox2.Location = new System.Drawing.Point(-19, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(920, 520);
+            this.pictureBox2.Size = new System.Drawing.Size(920, 492);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
             // qrCode
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(904, 489);
             this.Controls.Add(this.emailLabel);
             this.Controls.Add(this.pictureBox1);

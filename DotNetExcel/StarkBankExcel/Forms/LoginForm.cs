@@ -119,6 +119,10 @@ namespace StarkBankExcel
                 Globals.Credentials.Range["A16"].Value = "ChallengePk";
                 Globals.Credentials.Range["B16"].Value = challengPk;
 
+                qrCode formSize = new qrCode();
+                Globals.Credentials.Range["C16"].Value = formSize.Size.ToString();
+                formSize.Close();
+
                 qrCode qrcodeForms = new qrCode();
 
                 Task qrcodeTask = Task.Run(() => qrcodeWork(qrcodeForms));
