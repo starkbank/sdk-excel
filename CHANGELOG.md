@@ -13,6 +13,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.2] - 2024-05-09
+### Fixed
+- login form view
+
 ## [3.1.1] - 2024-04-23
 ### Fixed
 - cardShop environment redirect
