@@ -605,7 +605,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>800F162A549E1646F04280FE316E429511342870</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>7C7295272C8F7C0888C42E3E7D1C120B2E521411</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>emblem.ico</ApplicationIcon>

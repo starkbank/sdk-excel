@@ -128,6 +128,7 @@ namespace StarkBankExcel
 
                                 string fileName = worksheet.Range["A" + i].Value.ToString().Substring(0, 10).Replace("/", "") + "-" + worksheet.Range["B" + i].Value + "-" + worksheet.Range["D" + i].Value;
                                 fileName = Regex.Replace(fileName, "[*|@|*|&]", string.Empty);
+                                fileName = fileName.Replace("\\", "-");
 
                                 if (fileNumber == 0)
                                 {

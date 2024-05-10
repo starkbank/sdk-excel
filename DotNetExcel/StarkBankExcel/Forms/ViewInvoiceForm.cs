@@ -2,6 +2,7 @@
 using StarkBankExcel.Resources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace StarkBankExcel.Forms
@@ -98,7 +99,18 @@ namespace StarkBankExcel.Forms
                     worksheet.Range["H" + row].Value = double.Parse((string)invoice["fineAmount"]) / 100;
                     worksheet.Range["I" + row].Value = double.Parse((string)invoice["interestAmount"]) / 100;
                     worksheet.Range["J" + row].Value = invoice["due"];
-                    worksheet.Range["K" + row].Value = invoice["expiration"];
+
+
+                    string format = "yyyy-MM-ddTHH:mm:ss.ffffffzzz";
+
+                    DateTimeOffset dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+
+                    int sumSeconds = (int)invoice["expiration"];
+                    DateTimeOffset newDateTimeOffset = dateTimeOffset.AddSeconds(sumSeconds);
+
+                    string formattedDateTime = newDateTimeOffset.ToString();
+
+                    worksheet.Range["K" + row].Value = formattedDateTime;
                     worksheet.Range["L" + row].Value = invoice["brcode"];
                     worksheet.Range["M" + row].Value = invoice["id"];
                     worksheet.Range["N" + row].Value = double.Parse((string)invoice["fee"]) / 100;
