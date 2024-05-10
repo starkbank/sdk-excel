@@ -100,10 +100,20 @@ namespace StarkBankExcel.Forms
                     worksheet.Range["I" + row].Value = double.Parse((string)invoice["interestAmount"]) / 100;
                     worksheet.Range["J" + row].Value = invoice["due"];
 
-
                     string format = "yyyy-MM-ddTHH:mm:ss.ffffffzzz";
 
-                    DateTimeOffset dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                    DateTimeOffset dateTimeOffset = DateTimeOffset.Now;
+
+                    if (invoice["due"].ToString().Length > 25)
+                    {
+                        dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    if (invoice["due"].ToString().Length <= 25)
+                    {
+                        format = "yyyy-MM-ddTHH:mm:sszzz";
+                        dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                    }
 
                     int sumSeconds = (int)invoice["expiration"];
                     DateTimeOffset newDateTimeOffset = dateTimeOffset.AddSeconds(sumSeconds);
