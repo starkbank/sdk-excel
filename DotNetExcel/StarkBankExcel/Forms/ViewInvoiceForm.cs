@@ -2,6 +2,8 @@
 using StarkBankExcel.Resources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace StarkBankExcel.Forms
@@ -98,7 +100,28 @@ namespace StarkBankExcel.Forms
                     worksheet.Range["H" + row].Value = double.Parse((string)invoice["fineAmount"]) / 100;
                     worksheet.Range["I" + row].Value = double.Parse((string)invoice["interestAmount"]) / 100;
                     worksheet.Range["J" + row].Value = invoice["due"];
-                    worksheet.Range["K" + row].Value = invoice["expiration"];
+
+                    string format = "yyyy-MM-ddTHH:mm:ss.ffffffzzz";
+
+                    DateTimeOffset dateTimeOffset = DateTimeOffset.Now;
+
+                    if (invoice["due"].ToString().Length > 25)
+                    {
+                        dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    if (invoice["due"].ToString().Length <= 25)
+                    {
+                        format = "yyyy-MM-ddTHH:mm:sszzz";
+                        dateTimeOffset = DateTimeOffset.ParseExact(invoice["due"].ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    int sumSeconds = (int)invoice["expiration"];
+                    DateTimeOffset newDateTimeOffset = dateTimeOffset.AddSeconds(sumSeconds);
+
+                    string formattedDateTime = newDateTimeOffset.ToString();
+
+                    worksheet.Range["K" + row].Value = formattedDateTime;
                     worksheet.Range["L" + row].Value = invoice["brcode"];
                     worksheet.Range["M" + row].Value = invoice["id"];
                     worksheet.Range["N" + row].Value = double.Parse((string)invoice["fee"]) / 100;
@@ -108,6 +131,28 @@ namespace StarkBankExcel.Forms
                     rng.Value = "PDF";
                     Microsoft.Office.Interop.Excel.Hyperlink link = rng.Hyperlinks.Add(rng, (string)invoice["pdf"]);
 
+                    worksheet.Range["Q" + row].Value = "NÃO";
+
+                    int splitNums = 0;
+
+                    foreach (JToken c in invoice["splits"])
+                    {
+                        splitNums++;
+                        if (splitNums == 1)
+                        {
+                            worksheet.Range["Q" + row].Value = "SIM";
+                            worksheet.Range["R" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                        }
+                        if (splitNums == 2)
+                        {
+                            worksheet.Range["S" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                        }
+                        if (splitNums == 3)
+                        {
+                            worksheet.Range["T" + row].Value = double.Parse(c["amount"].ToString()) / 100;
+                        }
+                    }
+                    splitNums = 0;
                     row++;
                 }
 
