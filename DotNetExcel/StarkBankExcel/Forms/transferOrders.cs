@@ -98,7 +98,6 @@ namespace StarkBankExcel
                     string accountNumber = worksheet.Range["F" + row].Value?.ToString();
                     string due = worksheet.Range["G" + row].Value?.ToString();
                     string accountType = worksheet.Range["H" + row].Value?.ToString();
-
                     string tags = worksheet.Range["I" + row].Value?.ToString();
                     string description = worksheet.Range["J" + row].Value?.ToString();
                     string externalID = worksheet.Range["K" + row].Value?.ToString();

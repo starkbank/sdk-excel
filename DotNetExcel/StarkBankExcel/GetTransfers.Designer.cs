@@ -13,7 +13,7 @@ namespace StarkBankExcel {
     
     
     /// 
-    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(7)]
+    [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(9)]
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class GetTransfers : Microsoft.Office.Tools.Excel.WorksheetBase {
         
