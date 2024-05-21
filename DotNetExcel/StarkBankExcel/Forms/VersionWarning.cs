@@ -17,9 +17,9 @@ namespace StarkBankExcel.Forms
     {
         public VersionWarning()
         {
-            InitializeComponent();
+            InitializeComponent();;
 
-            string url = "https://github.com/starkbank/sdk-excel/blob/master/CHANGELOG.md";
+            string url = "https://raw.githubusercontent.com/starkbank/sdk-excel/master/CHANGELOG.md";
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
             {
@@ -35,18 +35,23 @@ namespace StarkBankExcel.Forms
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            var result = Client.SendAsync(httpRequestMessage).Result;
-
-            Response response = new Response(
+            try
+            {
+                var result = Client.SendAsync(httpRequestMessage).Result;
+                Response response = new Response(
                 result.Content.ReadAsByteArrayAsync().Result,
                 (int)result.StatusCode
                 );
 
-            var versionWarning = response.ToJson()["payload"]["blob"]["headerInfo"]["toc"][1]["text"];
+                string versionWarning = response.Content;
 
-            versionWarning = versionWarning.ToString().Split(']')[0].Split('[')[1];
+                string[] separate = { "[Unreleased]" };
 
-            version.Text = "Versão nova: " + versionWarning.ToString();
+                versionWarning = versionWarning.Split(separate, System.StringSplitOptions.None)[1].Split('-')[0].Split('[')[1].Substring(0, 5).Trim();
+
+                version.Text = "Versão nova: " + versionWarning.ToString();
+            }
+            catch { }
         }
 
         private void button1_Click(object sender, EventArgs e)
