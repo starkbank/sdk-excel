@@ -19,34 +19,40 @@ namespace StarkBankExcel.Forms
         {
             InitializeComponent();
 
-            string url = "https://github.com/starkbank/sdk-excel/blob/master/CHANGELOG.md";
-
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage
+            try
             {
-                Method = new HttpMethod("GET"),
-                RequestUri = new Uri(url)
-            };
 
-            HttpClient Client = new HttpClient();
-            Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "*/*");
+                string url = "https://raw.githubusercontent.com/starkbank/sdk-excel/master/CHANGELOG.md";
 
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage
+                {
+                    Method = new HttpMethod("GET"),
+                    RequestUri = new Uri(url)
+                };
 
-            var result = Client.SendAsync(httpRequestMessage).Result;
+                HttpClient Client = new HttpClient();
+                Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "*/*");
 
-            Response response = new Response(
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                var result = Client.SendAsync(httpRequestMessage).Result;
+                Response response = new Response(
                 result.Content.ReadAsByteArrayAsync().Result,
                 (int)result.StatusCode
                 );
 
-            var versionWarning = response.ToJson()["payload"]["blob"]["headerInfo"]["toc"][1]["text"];
+                string versionWarning = response.Content;
 
-            versionWarning = versionWarning.ToString().Split(']')[0].Split('[')[1];
+                string[] separate = { "[Unreleased]" };
 
-            version.Text = "Versão nova: " + versionWarning.ToString();
+                versionWarning = versionWarning.Split(separate, System.StringSplitOptions.None)[1].Split('-')[0].Split('[')[1].Substring(0, 5).Trim();
+
+                version.Text = "Versão nova: " + versionWarning.ToString();
+            }
+            catch { }
         }
 
         private void button1_Click(object sender, EventArgs e)

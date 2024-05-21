@@ -35,7 +35,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.OptionButtonFalhado = new System.Windows.Forms.CheckBox();
             this.OptionButtonPago = new System.Windows.Forms.CheckBox();
             this.OptionButtonNegado = new System.Windows.Forms.CheckBox();
             this.OptionButtonAgendado = new System.Windows.Forms.CheckBox();
@@ -48,7 +47,7 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.OptionButtonAprovado = new System.Windows.Forms.CheckBox();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -114,8 +113,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.OptionButtonAprovado);
-            this.groupBox2.Controls.Add(this.OptionButtonFalhado);
             this.groupBox2.Controls.Add(this.OptionButtonPago);
             this.groupBox2.Controls.Add(this.OptionButtonNegado);
             this.groupBox2.Controls.Add(this.OptionButtonAgendado);
@@ -127,20 +124,10 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Consulta por Evento";
             // 
-            // OptionButtonFalhado
-            // 
-            this.OptionButtonFalhado.AutoSize = true;
-            this.OptionButtonFalhado.Location = new System.Drawing.Point(109, 38);
-            this.OptionButtonFalhado.Name = "OptionButtonFalhado";
-            this.OptionButtonFalhado.Size = new System.Drawing.Size(64, 17);
-            this.OptionButtonFalhado.TabIndex = 15;
-            this.OptionButtonFalhado.Text = "Falhado";
-            this.OptionButtonFalhado.UseVisualStyleBackColor = true;
-            // 
             // OptionButtonPago
             // 
             this.OptionButtonPago.AutoSize = true;
-            this.OptionButtonPago.Location = new System.Drawing.Point(6, 38);
+            this.OptionButtonPago.Location = new System.Drawing.Point(82, 18);
             this.OptionButtonPago.Name = "OptionButtonPago";
             this.OptionButtonPago.Size = new System.Drawing.Size(51, 17);
             this.OptionButtonPago.TabIndex = 14;
@@ -150,7 +137,7 @@
             // OptionButtonNegado
             // 
             this.OptionButtonNegado.AutoSize = true;
-            this.OptionButtonNegado.Location = new System.Drawing.Point(206, 18);
+            this.OptionButtonNegado.Location = new System.Drawing.Point(233, 18);
             this.OptionButtonNegado.Name = "OptionButtonNegado";
             this.OptionButtonNegado.Size = new System.Drawing.Size(64, 17);
             this.OptionButtonNegado.TabIndex = 13;
@@ -160,11 +147,11 @@
             // OptionButtonAgendado
             // 
             this.OptionButtonAgendado.AutoSize = true;
-            this.OptionButtonAgendado.Location = new System.Drawing.Point(109, 18);
+            this.OptionButtonAgendado.Location = new System.Drawing.Point(151, 18);
             this.OptionButtonAgendado.Name = "OptionButtonAgendado";
-            this.OptionButtonAgendado.Size = new System.Drawing.Size(75, 17);
+            this.OptionButtonAgendado.Size = new System.Drawing.Size(52, 17);
             this.OptionButtonAgendado.TabIndex = 12;
-            this.OptionButtonAgendado.Text = "Agendado";
+            this.OptionButtonAgendado.Text = "Falha";
             this.OptionButtonAgendado.UseVisualStyleBackColor = true;
             // 
             // OptionButtonPendente
@@ -179,6 +166,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.radioButton6);
             this.groupBox3.Controls.Add(this.radioButton5);
             this.groupBox3.Controls.Add(this.radioButton4);
             this.groupBox3.Controls.Add(this.radioButton1);
@@ -263,15 +251,15 @@
             this.comboBox2.TabIndex = 2;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // OptionButtonAprovado
+            // radioButton6
             // 
-            this.OptionButtonAprovado.AutoSize = true;
-            this.OptionButtonAprovado.Location = new System.Drawing.Point(206, 37);
-            this.OptionButtonAprovado.Name = "OptionButtonAprovado";
-            this.OptionButtonAprovado.Size = new System.Drawing.Size(72, 17);
-            this.OptionButtonAprovado.TabIndex = 16;
-            this.OptionButtonAprovado.Text = "Aprovado";
-            this.OptionButtonAprovado.UseVisualStyleBackColor = true;
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Location = new System.Drawing.Point(218, 45);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(54, 17);
+            this.radioButton6.TabIndex = 11;
+            this.radioButton6.Text = "DARF";
+            this.radioButton6.UseVisualStyleBackColor = true;
             // 
             // ViewPaymentApprove
             // 
@@ -314,11 +302,10 @@
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.CheckBox OptionButtonFalhado;
-        private System.Windows.Forms.CheckBox OptionButtonPago;
         private System.Windows.Forms.CheckBox OptionButtonNegado;
         private System.Windows.Forms.CheckBox OptionButtonAgendado;
         private System.Windows.Forms.CheckBox OptionButtonPendente;
-        private System.Windows.Forms.CheckBox OptionButtonAprovado;
+        private System.Windows.Forms.CheckBox OptionButtonPago;
+        private System.Windows.Forms.RadioButton radioButton6;
     }
 }

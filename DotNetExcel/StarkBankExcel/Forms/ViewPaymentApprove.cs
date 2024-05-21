@@ -90,18 +90,17 @@ namespace StarkBankExcel.Forms
             if (afterInput.Enabled == true) optionalParam["after"] = after;
             if (beforeInput.Enabled == true) optionalParam["before"] = before;
 
-            if (OptionButtonPendente.Checked) events += "pending,";
-            if (OptionButtonAgendado.Checked) events += "scheduled,";
-            if (OptionButtonNegado.Checked) events += "denied,";
+            if (OptionButtonPendente.Checked) events += "pending,approved,scheduled,processing,";
             if (OptionButtonPago.Checked) events += "success,";
-            if (OptionButtonFalhado.Checked) events += "failed,";
-            if (OptionButtonAprovado.Checked) events += "approved,";  
+            if (OptionButtonAgendado.Checked) events += "failed,";
+            if (OptionButtonNegado.Checked) events += "denied,canceled,";
 
             if (radioButton3.Checked) types += "transfer";
             if (radioButton1.Checked) types += "boleto-payment";
             if (radioButton4.Checked) types += "tax-payment";
             if (radioButton2.Checked) types += "utility-payment";
             if (radioButton5.Checked) types += "brcode-payment";
+            if (radioButton6.Checked) types += "darf-payment";
 
             optionalParam.Add("status", events);
             optionalParam.Add("type", types);
@@ -189,6 +188,23 @@ namespace StarkBankExcel.Forms
                             }
                         }
                         if (payment["type"].ToString() == "tax-payment")
+                        {
+                            worksheet.Range["I" + TableFormat.HeaderRow].Value = "Linha Digitável / Código de Barras";
+                            worksheet.Range["K" + TableFormat.HeaderRow].Value = "";
+                            worksheet.Range["L" + TableFormat.HeaderRow].Value = "";
+                            worksheet.Range["M" + TableFormat.HeaderRow].Value = "";
+                            worksheet.Range["J" + TableFormat.HeaderRow].Value = "";
+
+                            if (payment["payment"]["line"] != null)
+                            {
+                                worksheet.Range["I" + row].Value = payment["payment"]["line"];
+                            }
+                            if (payment["payment"]["barCode"] != null)
+                            {
+                                worksheet.Range["I" + row].Value = payment["payment"]["barCode"];
+                            }
+                        }
+                        if (payment["type"].ToString() == "darf-payment")
                         {
                             worksheet.Range["I" + TableFormat.HeaderRow].Value = "Linha Digitável / Código de Barras";
                             worksheet.Range["K" + TableFormat.HeaderRow].Value = "";

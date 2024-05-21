@@ -13,6 +13,13 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.4] - 2024-05-21
+### Added
+- warning version
+- Darf to ViewPaymentRequest
+### Changed
+- ViewPaymentRequest filters
+
 ## [3.1.3] - 2024-05-15
 ### Added
 - Splits resources
