@@ -18,29 +18,30 @@ namespace StarkBankExcel
         private void Planilha1_Startup(object sender, System.EventArgs e)
         {
 
-            var worksheet = Globals.Main;
-            string version = worksheet.Range["A1"].Value;
-
-            version = version.ToString().Split('v')[1].Trim();
-
-            string url = "https://raw.githubusercontent.com/starkbank/sdk-excel/master/CHANGELOG.md";
-
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage
-            {
-                Method = new HttpMethod("GET"),
-                RequestUri = new Uri(url)
-            };
-
-            HttpClient Client = new HttpClient();
-            Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "*/*");
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
             try 
             {
+
+                var worksheet = Globals.Main;
+                string version = worksheet.Range["A1"].Value;
+
+                version = version.ToString().Split('v')[1].Trim();
+
+                string url = "https://raw.githubusercontent.com/starkbank/sdk-excel/master/CHANGELOG.md";
+
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage
+                {
+                    Method = new HttpMethod("GET"),
+                    RequestUri = new Uri(url)
+                };
+
+                HttpClient Client = new HttpClient();
+                Client.DefaultRequestHeaders.Add("User-Agent", "Excel-DotNet");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
+                httpRequestMessage.Headers.TryAddWithoutValidation("Accept", "*/*");
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
                 var result = Client.SendAsync(httpRequestMessage).Result;
                 Response response = new Response(
                 result.Content.ReadAsByteArrayAsync().Result,
