@@ -17,7 +17,7 @@ namespace StarkBankExcel.Forms
     {
         public VersionWarning()
         {
-            InitializeComponent();;
+            InitializeComponent();
 
             try
             {
