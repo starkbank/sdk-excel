@@ -107,6 +107,7 @@ namespace StarkBankExcel
                     if (calculatedExternalID == externalID)
                     {
                         warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados! \n \n";
+                        MessageBox.Show(warningMessage);
                     }
                     else
                     {
