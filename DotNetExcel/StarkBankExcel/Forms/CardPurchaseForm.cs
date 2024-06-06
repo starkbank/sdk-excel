@@ -53,12 +53,13 @@ namespace StarkBankExcel.Forms
 
             string status = "";
 
-            if (OptionButtonConfirmed.Checked) optionalParam.Add("status", "confirmed");
-            if (OptionButtonApproved.Checked) optionalParam.Add("status", "approved");
-            if (OptionButtonCanceled.Checked) optionalParam.Add("status", "canceled");
-            if (Denied.Checked) optionalParam.Add("status", "denied");
-            if (Voided.Checked) optionalParam.Add("status", "voided");
+            if (OptionButtonConfirmed.Checked) status += "confirmed,";
+            if (OptionButtonApproved.Checked) status += "approved,";
+            if (OptionButtonDenied.Checked) status += "denied,";
+            if (OptionButtonCanceled.Checked) status += "canceled,";
+            if (OptionButtonVoided.Checked) status += "voided,";
 
+            optionalParam.Add("status", status);
             optionalParam.Add("after", after);
             optionalParam.Add("before", before);
 

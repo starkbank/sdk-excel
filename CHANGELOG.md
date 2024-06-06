@@ -13,6 +13,17 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.5] - 2024-06-06
+### Added
+- PaymentRequest accountType drop list
+- Nsis file
+### Fixed
+- login error warning
+- PaymentRequest error warning
+### Changed
+- CorporatePurchase filters
+- BoletoPayment request batch size
+
 ## [3.1.4] - 2024-05-21
 ### Added
 - warning version

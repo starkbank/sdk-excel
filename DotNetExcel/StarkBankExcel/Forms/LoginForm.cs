@@ -198,7 +198,10 @@ namespace StarkBankExcel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                string code = Utils.ParseError(ex.Message.ToString())[0];
+                string message = Utils.ParseError(ex.Message.ToString())[1];
+
+                MessageBox.Show(message, "Erro na Requisiçâo: " + code, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (loginInt == 1)

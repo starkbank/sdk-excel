@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Voided = new System.Windows.Forms.RadioButton();
-            this.Denied = new System.Windows.Forms.RadioButton();
-            this.OptionButtonApproved = new System.Windows.Forms.RadioButton();
-            this.OptionButtonCanceled = new System.Windows.Forms.RadioButton();
-            this.OptionButtonConfirmed = new System.Windows.Forms.RadioButton();
+            this.OptionButtonVoided = new System.Windows.Forms.CheckBox();
+            this.OptionButtonDenied = new System.Windows.Forms.CheckBox();
+            this.OptionButtonCanceled = new System.Windows.Forms.CheckBox();
+            this.OptionButtonApproved = new System.Windows.Forms.CheckBox();
+            this.OptionButtonConfirmed = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.beforeInput = new System.Windows.Forms.DateTimePicker();
             this.afterInput = new System.Windows.Forms.DateTimePicker();
@@ -46,10 +46,10 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.Voided);
-            this.groupBox2.Controls.Add(this.Denied);
-            this.groupBox2.Controls.Add(this.OptionButtonApproved);
+            this.groupBox2.Controls.Add(this.OptionButtonVoided);
+            this.groupBox2.Controls.Add(this.OptionButtonDenied);
             this.groupBox2.Controls.Add(this.OptionButtonCanceled);
+            this.groupBox2.Controls.Add(this.OptionButtonApproved);
             this.groupBox2.Controls.Add(this.OptionButtonConfirmed);
             this.groupBox2.Location = new System.Drawing.Point(7, 112);
             this.groupBox2.Name = "groupBox2";
@@ -58,53 +58,53 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Consulta por Evento";
             // 
-            // Voided
+            // OptionButtonVoided
             // 
-            this.Voided.AutoSize = true;
-            this.Voided.Location = new System.Drawing.Point(125, 42);
-            this.Voided.Name = "Voided";
-            this.Voided.Size = new System.Drawing.Size(64, 17);
-            this.Voided.TabIndex = 10;
-            this.Voided.Text = "Anulado";
-            this.Voided.UseVisualStyleBackColor = true;
+            this.OptionButtonVoided.AutoSize = true;
+            this.OptionButtonVoided.Location = new System.Drawing.Point(125, 45);
+            this.OptionButtonVoided.Name = "OptionButtonVoided";
+            this.OptionButtonVoided.Size = new System.Drawing.Size(74, 17);
+            this.OptionButtonVoided.TabIndex = 15;
+            this.OptionButtonVoided.Text = "Devolvido";
+            this.OptionButtonVoided.UseVisualStyleBackColor = true;
             // 
-            // Denied
+            // OptionButtonDenied
             // 
-            this.Denied.AutoSize = true;
-            this.Denied.Location = new System.Drawing.Point(5, 42);
-            this.Denied.Name = "Denied";
-            this.Denied.Size = new System.Drawing.Size(74, 17);
-            this.Denied.TabIndex = 9;
-            this.Denied.Text = "Recusado";
-            this.Denied.UseVisualStyleBackColor = true;
-            // 
-            // OptionButtonApproved
-            // 
-            this.OptionButtonApproved.AutoSize = true;
-            this.OptionButtonApproved.Location = new System.Drawing.Point(125, 19);
-            this.OptionButtonApproved.Name = "OptionButtonApproved";
-            this.OptionButtonApproved.Size = new System.Drawing.Size(71, 17);
-            this.OptionButtonApproved.TabIndex = 8;
-            this.OptionButtonApproved.Text = "Aprovado";
-            this.OptionButtonApproved.UseVisualStyleBackColor = true;
+            this.OptionButtonDenied.AutoSize = true;
+            this.OptionButtonDenied.Location = new System.Drawing.Point(5, 43);
+            this.OptionButtonDenied.Name = "OptionButtonDenied";
+            this.OptionButtonDenied.Size = new System.Drawing.Size(75, 17);
+            this.OptionButtonDenied.TabIndex = 14;
+            this.OptionButtonDenied.Text = "Recusado";
+            this.OptionButtonDenied.UseVisualStyleBackColor = true;
             // 
             // OptionButtonCanceled
             // 
             this.OptionButtonCanceled.AutoSize = true;
-            this.OptionButtonCanceled.Location = new System.Drawing.Point(225, 19);
+            this.OptionButtonCanceled.Location = new System.Drawing.Point(223, 22);
             this.OptionButtonCanceled.Name = "OptionButtonCanceled";
-            this.OptionButtonCanceled.Size = new System.Drawing.Size(76, 17);
-            this.OptionButtonCanceled.TabIndex = 7;
+            this.OptionButtonCanceled.Size = new System.Drawing.Size(77, 17);
+            this.OptionButtonCanceled.TabIndex = 13;
             this.OptionButtonCanceled.Text = "Cancelado";
             this.OptionButtonCanceled.UseVisualStyleBackColor = true;
+            // 
+            // OptionButtonApproved
+            // 
+            this.OptionButtonApproved.AutoSize = true;
+            this.OptionButtonApproved.Location = new System.Drawing.Point(125, 21);
+            this.OptionButtonApproved.Name = "OptionButtonApproved";
+            this.OptionButtonApproved.Size = new System.Drawing.Size(72, 17);
+            this.OptionButtonApproved.TabIndex = 12;
+            this.OptionButtonApproved.Text = "Aprovado";
+            this.OptionButtonApproved.UseVisualStyleBackColor = true;
             // 
             // OptionButtonConfirmed
             // 
             this.OptionButtonConfirmed.AutoSize = true;
-            this.OptionButtonConfirmed.Location = new System.Drawing.Point(6, 19);
+            this.OptionButtonConfirmed.Location = new System.Drawing.Point(5, 20);
             this.OptionButtonConfirmed.Name = "OptionButtonConfirmed";
-            this.OptionButtonConfirmed.Size = new System.Drawing.Size(78, 17);
-            this.OptionButtonConfirmed.TabIndex = 6;
+            this.OptionButtonConfirmed.Size = new System.Drawing.Size(79, 17);
+            this.OptionButtonConfirmed.TabIndex = 11;
             this.OptionButtonConfirmed.Text = "Confirmado";
             this.OptionButtonConfirmed.UseVisualStyleBackColor = true;
             // 
@@ -186,16 +186,16 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RadioButton OptionButtonApproved;
-        private System.Windows.Forms.RadioButton OptionButtonCanceled;
-        private System.Windows.Forms.RadioButton OptionButtonConfirmed;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DateTimePicker beforeInput;
         private System.Windows.Forms.DateTimePicker afterInput;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.RadioButton Voided;
-        private System.Windows.Forms.RadioButton Denied;
+        private System.Windows.Forms.CheckBox OptionButtonVoided;
+        private System.Windows.Forms.CheckBox OptionButtonDenied;
+        private System.Windows.Forms.CheckBox OptionButtonCanceled;
+        private System.Windows.Forms.CheckBox OptionButtonApproved;
+        private System.Windows.Forms.CheckBox OptionButtonConfirmed;
     }
 }

@@ -26,8 +26,6 @@ namespace StarkBankExcel.Forms
         {
             JObject costCenter;
 
-            label2.Visible = false;
-
             Dictionary<string, object> query = new Dictionary<string, object>() { { "fields", "id, name, badgeCount" } };
 
             try
@@ -52,8 +50,6 @@ namespace StarkBankExcel.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             var worksheet = Globals.BoletoPayment;
-
-            label2.Visible = true;
 
             string teamId = comboBox1.SelectedItem.ToString();
             string pattern = @"(?<=id\s=\s)\d+";
@@ -127,7 +123,7 @@ namespace StarkBankExcel.Forms
 
                 boletoPaymentNumbers.Add(iteration);
 
-                if (iteration % 100 == 0 || row >= lastRow)
+                if (iteration % 10 == 0 || row >= lastRow)
                 {
 
                     if (boletoPaymentNumbers.Count == 0) goto nextIteration;
@@ -144,7 +140,7 @@ namespace StarkBankExcel.Forms
                         errorMessage = Utils.ParsingErrors(ex.Message, errorNum);
                     }
 
-                    errorNum += 100;
+                    errorNum += 10;
 
                 nextIteration:
                     initRow = row + 1;

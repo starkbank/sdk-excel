@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace StarkBankExcel
 {
@@ -20,6 +23,35 @@ namespace StarkBankExcel
         )
         {
             return bankCode + branchCode + accountNumber + name + taxID + amount.ToString();
+        }
+
+        public static Dictionary<string, string> ParseErrorDict(string element)
+        {
+            JObject json = JObject.Parse(element);
+
+            JArray errorsArray = (JArray)json["errors"];
+
+            var errorList = new List<Dictionary<string, string>>();
+
+            Dictionary<string, string> errorDict = new Dictionary<string, string>();
+
+            foreach (JObject error in errorsArray)
+            {
+                errorDict = new Dictionary<string, string>
+                {
+                    { "code", error["code"].ToString() },
+                    { "message", error["message"].ToString() }
+                };
+            }
+
+            return errorDict;
+        }
+
+        public static List<string> ParseError(string element)
+        {
+            Dictionary<string, string> obj = ParseErrorDict(element);
+
+            return new List<string>() { obj["code"], obj["message"] };
         }
 
         public static string ParsingErrors(string element, int number)
