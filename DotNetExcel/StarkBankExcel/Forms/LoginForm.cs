@@ -27,7 +27,7 @@ namespace StarkBankExcel
         {
             Environment.Items.Add("Produção");
             Environment.Items.Add("Ambiente Desenvolvedor");
-            // Environment.Items.Add("Development");
+            Environment.Items.Add("Development");
 
             Environment.Text = "Produção";
         }
@@ -71,7 +71,7 @@ namespace StarkBankExcel
 
             Dictionary<string, object> requestBody = new Dictionary<string, object>()
             {
-                { "platform", "web" },
+                { "platform", "spreadsheet" },
                 { "expiration", 604800 },
                 { "publicKey", publicKey.toPem() }
             };
