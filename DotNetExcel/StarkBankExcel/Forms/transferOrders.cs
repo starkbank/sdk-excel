@@ -109,7 +109,7 @@ namespace StarkBankExcel
                         warningMessage = "Aviso: Pedidos já enviados hoje não foram reenviados! \n \n";
                         MessageBox.Show(warningMessage);
                     }
-                    else
+                    if (calculatedExternalID != externalID)
                     {
                         Dictionary<string, object> payment = new Dictionary<string, object> {
                             { "amount", amount },
