@@ -19,7 +19,7 @@
     <PublishUrl>C:\StarkExcelInstaller\</PublishUrl>
     <InstallUrl />
     <TargetCulture>pt-BR</TargetCulture>
-    <ApplicationVersion>1.15.0.80</ApplicationVersion>
+    <ApplicationVersion>1.16.0.80</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>

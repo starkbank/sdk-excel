@@ -13,6 +13,12 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.6] - 2024-06-13
+### Added
+- new corporate card design
+### Fixed
+- ViewBoleto pdf download
+
 ## [3.1.5] - 2024-06-06
 ### Added
 - PaymentRequest accountType drop list
