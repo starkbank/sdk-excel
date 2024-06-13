@@ -20,6 +20,7 @@ namespace StarkBankExcel
     {
         private void Planilha18_Startup(object sender, System.EventArgs e)
         {
+            var worksheet = Globals.SendCards;
         }
 
         private void Planilha18_Shutdown(object sender, System.EventArgs e)
@@ -57,6 +58,7 @@ namespace StarkBankExcel
 
             JObject fetchedJson;
             JObject kitIdObjects;
+            Dictionary<string, string> kitIdDict = new Dictionary<string, string>();
 
             fetchedJson = Request.Fetch(
                 Request.Post,
@@ -70,6 +72,11 @@ namespace StarkBankExcel
                 Globals.Credentials.Range["B3"].Value,
                 "corporate-shop-kit?status=active"
             ).ToJson();
+
+            foreach (JObject kit in kitIdObjects["kits"])
+            {
+                kitIdDict.Add(kit["name"].ToString(), kit["id"].ToString());
+            }
 
             bool anySent = false;
 
@@ -108,8 +115,8 @@ namespace StarkBankExcel
                 for (int row = start; row <= end; row++)
                 {
                     string cartId = id;
-                    string kitId = (string)kitIdObjects["kits"][0]["id"];
                     string kitType = worksheet.Range["A" + row].Value?.ToString();
+                    string kitId = kitIdDict[kitType];
                     string displayName2 = worksheet.Range["B" + row].Value?.ToString();
                     string displayName1 = worksheet.Range["C" + row].Value?.ToString();
                     string holderName = worksheet.Range["C" + row].Value?.ToString();

@@ -113,9 +113,6 @@ namespace StarkBankExcel
                     {
                         validator = false;
                         string boletoId = worksheet.Range["M" + i].Value;
-                        string created = new StarkDateTime(worksheet.Range["A" + i].Value).Value.ToString();
-                        string value = worksheet.Range["E" + i].Value;
-                        string name = worksheet.Range["B" + i].Value;
 
                         try
                         {
