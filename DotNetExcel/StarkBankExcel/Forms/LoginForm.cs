@@ -71,7 +71,7 @@ namespace StarkBankExcel
 
             Dictionary<string, object> requestBody = new Dictionary<string, object>()
             {
-                { "platform", "web" },
+                { "platform", "spreadsheet" },
                 { "expiration", 604800 },
                 { "publicKey", publicKey.toPem() }
             };

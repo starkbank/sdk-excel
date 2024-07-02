@@ -13,6 +13,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.7] - 2024-07-02
+### Added
+- Parallel session
+
 ## [3.1.6] - 2024-06-13
 ### Added
 - new corporate card design
