@@ -118,15 +118,15 @@ namespace StarkBankExcel
                     string kitType = worksheet.Range["A" + row].Value?.ToString();
                     string kitId = kitIdDict[kitType];
                     string displayName2 = worksheet.Range["B" + row].Value?.ToString();
-                    string displayName1 = worksheet.Range["C" + row].Value?.ToString();
                     string holderName = worksheet.Range["C" + row].Value?.ToString();
-                    string shippingPhone = worksheet.Range["D" + row].Value?.ToString();
-                    string shippingStreetLine1 = worksheet.Range["E" + row].Value?.ToString();
-                    string shippingStreetLine2 = worksheet.Range["F" + row].Value?.ToString();
-                    string shippingDistrict = worksheet.Range["G" + row].Value?.ToString();
-                    string shippingCity = worksheet.Range["H" + row].Value?.ToString();
-                    string shippingStateCode = worksheet.Range["I" + row].Value?.ToString().Trim().ToUpper();
-                    string shippingZipCode = worksheet.Range["J" + row].Value?.Trim().ToString();
+                    string displayName1 = worksheet.Range["D" + row].Value?.ToString();
+                    string shippingPhone = worksheet.Range["E" + row].Value?.ToString();
+                    string shippingStreetLine1 = worksheet.Range["F" + row].Value?.ToString();
+                    string shippingStreetLine2 = worksheet.Range["G" + row].Value?.ToString();
+                    string shippingDistrict = worksheet.Range["H" + row].Value?.ToString();
+                    string shippingCity = worksheet.Range["I" + row].Value?.ToString();
+                    string shippingStateCode = worksheet.Range["J" + row].Value?.ToString().Trim().ToUpper();
+                    string shippingZipCode = worksheet.Range["K" + row].Value?.Trim().ToString();
                     string shippingCountryCode = "BRA";
 
                     bool hasError = false;
