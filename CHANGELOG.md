@@ -12,6 +12,8 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 - PATCH version when backwards compatible bug **fixes** are implemented.
 
 ## [Unreleased]
+### Added
+- displayName column to cardShop resource
 
 ## [3.1.7] - 2024-07-02
 ### Added
