@@ -258,8 +258,9 @@ namespace StarkBankExcel.Forms
             }
             if (deltaAmount > 0)
             {
-                double fine = (double.Parse((string)boleto["amount"]) / 100) * nominalAmount;
-                double interest = amount - fine - nominalAmount;
+
+                var interest = nominalAmount * ((double)boleto["interest"] / 100);
+                var fine = deltaAmount - interest;
 
                 Range fineCell = worksheet.Range["H" + row];
                 fineCell.Value = fine;
