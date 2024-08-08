@@ -12,6 +12,8 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 - PATCH version when backwards compatible bug **fixes** are implemented.
 
 ## [Unreleased]
+### Fixed
+- BoletoLogView fine and interest
 
 ## [3.1.7] - 2024-07-02
 ### Added
