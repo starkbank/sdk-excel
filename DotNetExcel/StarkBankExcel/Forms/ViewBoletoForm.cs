@@ -240,6 +240,22 @@ namespace StarkBankExcel.Forms
         {
             var worksheet = Globals.GetBoleto;
 
+            boleto["amount"] = 141047;
+            createdLog["boleto"]["amount"] = 137402;
+            boleto["fine"] = 2;
+
+            // Debug
+            Debug.WriteLine("----before----");
+            Debug.WriteLine("amount: " + createdLog["boleto"]["amount"].ToString());
+            Debug.WriteLine("finalAmount: " + boleto["amount"].ToString());
+            Debug.WriteLine("fine: " + boleto["fine"].ToString());
+            Debug.WriteLine("delta: " + ((int)boleto["amount"] - (int)createdLog["boleto"]["amount"]).ToString());
+            Debug.WriteLine("-----------------------------------------");
+            Debug.WriteLine("finalFine: " + "????");
+            Debug.WriteLine("finalInterest: " + "????");
+            Debug.WriteLine("----end before----");
+
+
             double amount = double.Parse((string)boleto["amount"]) / 100;
             worksheet.Range["J" + row].Value = new StarkDateTime((string)paidLog["created"]).ToString();
 
@@ -250,6 +266,12 @@ namespace StarkBankExcel.Forms
 
             worksheet.Range["F" + row].Value = nominalAmount;
 
+            Debug.WriteLine("----in progress----");
+            Debug.WriteLine("finalAmount: " + amount.ToString());
+            Debug.WriteLine("startAmount: " + nominalAmount.ToString());
+            Debug.WriteLine("DeltaAmount: " + deltaAmount.ToString());
+            Debug.WriteLine("----end progress----");
+
             if (deltaAmount < 0)
             {
                 Range discountCell = worksheet.Range["G" + row];
@@ -259,8 +281,8 @@ namespace StarkBankExcel.Forms
             if (deltaAmount > 0)
             {
 
-                var interest = nominalAmount * ((double)boleto["interest"] / 100);
-                var fine = deltaAmount - interest;
+                var fine = nominalAmount * ((double)boleto["fine"] / 100);
+                var interest = deltaAmount - fine;
 
                 Range fineCell = worksheet.Range["H" + row];
                 fineCell.Value = fine;
@@ -269,6 +291,11 @@ namespace StarkBankExcel.Forms
                 Range interestCell = worksheet.Range["I" + row];
                 interestCell.Value = interest;
                 interestCell.Font.Color = XlRgbColor.rgbRed;
+
+                Debug.WriteLine("------- result --------");
+                Debug.WriteLine("finalFine: " + fine.ToString());
+                Debug.WriteLine("finalInterest: " + interest.ToString());
+                Debug.WriteLine("------- result --------");
             }
         }
 
