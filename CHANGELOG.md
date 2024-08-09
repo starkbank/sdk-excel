@@ -13,6 +13,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.1.8]
+### Fixed
+- BoletoLogView fine and interest
+
 ## [3.1.7] - 2024-07-02
 ### Added
 - Parallel session
