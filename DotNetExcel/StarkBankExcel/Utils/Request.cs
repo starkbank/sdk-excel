@@ -22,7 +22,7 @@ namespace StarkBankExcel
         private static HttpClient makeClient()
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "App-StarkBank-Excel-v3.1.6b");
+            client.DefaultRequestHeaders.Add("User-Agent", "App-StarkBank-Excel-v3.1.9b");
             return client;
         }
 
@@ -98,7 +98,7 @@ namespace StarkBankExcel
             httpRequestMessage.Headers.TryAddWithoutValidation("Access-Signature", signature);
             httpRequestMessage.Headers.TryAddWithoutValidation("Content-Type", "application/json");
             httpRequestMessage.Headers.TryAddWithoutValidation("Platform-id", "excel");
-            httpRequestMessage.Headers.TryAddWithoutValidation("Platform-Version", "3.1.6");
+            httpRequestMessage.Headers.TryAddWithoutValidation("Platform-Version", "3.1.9");
             httpRequestMessage.Headers.TryAddWithoutValidation("Accept-Language", "pt-BR");
             if (headersChallenge != null)
             {
