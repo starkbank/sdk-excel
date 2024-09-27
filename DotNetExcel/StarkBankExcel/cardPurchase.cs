@@ -136,7 +136,7 @@ namespace StarkBankExcel
                                 }
                                 else
                                 {
-                                    File.WriteAllBytes(selectedPath + fileName + $" ({fileNumber})" + "." + extension, attachmentb64);
+                                    File.WriteAllBytes(selectedPath + "\\" + fileName + $" ({fileNumber})" + "." + extension, attachmentb64);
                                 }
                             }
                             fileNumber++;

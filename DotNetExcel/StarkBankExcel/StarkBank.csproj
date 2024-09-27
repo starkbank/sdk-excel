@@ -19,7 +19,7 @@
     <PublishUrl>C:\StarkExcelInstaller\</PublishUrl>
     <InstallUrl />
     <TargetCulture>pt-BR</TargetCulture>
-    <ApplicationVersion>1.19.0.80</ApplicationVersion>
+    <ApplicationVersion>1.20.0.81</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -671,28 +671,28 @@
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="StarkBank.xlsx" HostPackage="{3F2B7691-D1D1-402F-9370-2704A737CF60}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="XLS" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\root\Office16\excel.exe" DebugInfoCommandLine="/x &quot;[$OUTPUT]StarkBank.xlsx&quot;" />
-        <Host Name="Excel Document" Path=".\StarkBank.xlsx" GeneratedCodeNamespace="StarkBankExcel" PublishedHash="41EF3C4382ABEDC1A0066DE4B97B095D56323C90">
-          <HostItem Name="Planilha16" Code="BoletoPayment.cs" CanonicalName="Planilha16" PublishedHash="256B593754FD6466D059264151867ECC8DB2F3E6" DisplayName="Pagamento de Boleto" Blueprint="BoletoPayment.Designer.xml" GeneratedCode="BoletoPayment.Designer.cs" />
-          <HostItem Name="Planilha12" Code="cardPurchase.cs" CanonicalName="Planilha12" PublishedHash="AC51C0E9D63CF2E56743D82F4F8138DD8CFE2BC8" DisplayName="Compras Cartão" Blueprint="cardPurchase.Designer.xml" GeneratedCode="cardPurchase.Designer.cs" />
-          <HostItem Name="Planilha11" Code="cardStatement.cs" CanonicalName="Planilha11" PublishedHash="A9BB40E41E11AC912DD10E3F31D15C250DCF0AC9" DisplayName="Extrato Cartão" Blueprint="cardStatement.Designer.xml" GeneratedCode="cardStatement.Designer.cs" />
+        <Host Name="Excel Document" Path=".\StarkBank.xlsx" GeneratedCodeNamespace="StarkBankExcel" PublishedHash="074CA208D28F1BB05240C16476BC028805767AAB">
+          <HostItem Name="Planilha16" Code="BoletoPayment.cs" CanonicalName="Planilha16" PublishedHash="ED68CB691C5E564FE2AC5ECFC6764F01E7805735" DisplayName="Pagamento de Boleto" Blueprint="BoletoPayment.Designer.xml" GeneratedCode="BoletoPayment.Designer.cs" />
+          <HostItem Name="Planilha12" Code="cardPurchase.cs" CanonicalName="Planilha12" PublishedHash="2A5931A79317823B176C57BB08682B6073B9B6C2" DisplayName="Compras Cartão" Blueprint="cardPurchase.Designer.xml" GeneratedCode="cardPurchase.Designer.cs" />
+          <HostItem Name="Planilha11" Code="cardStatement.cs" CanonicalName="Planilha11" PublishedHash="E0EA308F9E8E741ED8E6AA58F09D3977D8C2346A" DisplayName="Extrato Cartão" Blueprint="cardStatement.Designer.xml" GeneratedCode="cardStatement.Designer.cs" />
           <HostItem Name="Planilha2" Code="Credentials.cs" CanonicalName="Planilha2" PublishedHash="E3CDD81391020BE41BFA678FAE93B66FB25E42DF" CanActivate="false" DisplayName="Credentials" Blueprint="Credentials.Designer.xml" GeneratedCode="Credentials.Designer.cs" />
-          <HostItem Name="Planilha8" Code="GetBoleto.cs" CanonicalName="Planilha8" PublishedHash="09A942ABEFD9C61B53A5C1622FBBFCE301BA9069" DisplayName="Consulta de Boletos Emitidos" Blueprint="GetBoleto.Designer.xml" GeneratedCode="GetBoleto.Designer.cs" />
-          <HostItem Name="Planilha9" Code="GetBoletoEvents.cs" CanonicalName="Planilha9" PublishedHash="B87DBCADD5F38958C58C102339757ECC648B3C0F" DisplayName="Histórico de Boletos Emitido" Blueprint="GetBoletoEvents.Designer.xml" GeneratedCode="GetBoletoEvents.Designer.cs" />
-          <HostItem Name="Planilha14" Code="GetBoletoPayment.cs" CanonicalName="Planilha14" PublishedHash="C6A20E6F19C32F5025BF3555A8B74DF9F6BD3661" DisplayName="Historico pagamento de Boletos" Blueprint="GetBoletoPayment.Designer.xml" GeneratedCode="GetBoletoPayment.Designer.cs" />
-          <HostItem Name="Planilha3" Code="getDictKeys.cs" CanonicalName="Planilha3" PublishedHash="B2D7856C2DBDCE5EA1C6DF14243AE46D4ED02958" DisplayName="Consulta de Chaves Pix" Blueprint="getDictKeys.Designer.xml" GeneratedCode="getDictKeys.Designer.cs" />
-          <HostItem Name="Planilha6" Code="GetInvoices.cs" CanonicalName="Planilha6" PublishedHash="0AD801EA7CD8705AAD0C7FCCF6AF348FC48E500F" DisplayName="Consulta de Invoice Emitidas" Blueprint="GetInvoices.Designer.xml" GeneratedCode="GetInvoices.Designer.cs" />
-          <HostItem Name="Planilha15" Code="GetPaymentApprove.cs" CanonicalName="Planilha15" PublishedHash="86116461795C8B94C9A1D27B26AEC4F544526546" DisplayName="Consulta de Aprovações" Blueprint="GetPaymentApprove.Designer.xml" GeneratedCode="GetPaymentApprove.Designer.cs" />
-          <HostItem Name="Planilha19" Code="GetSplit.cs" CanonicalName="Planilha19" DisplayName="Consultar Splits" Blueprint="GetSplit.Designer.xml" GeneratedCode="GetSplit.Designer.cs" />
-          <HostItem Name="Planilha7" Code="GetStatement.cs" CanonicalName="Planilha7" PublishedHash="4B936C339520FB89F3ABBA4964267244B41CB552" DisplayName="Extrato" Blueprint="GetStatement.Designer.xml" GeneratedCode="GetStatement.Designer.cs" />
-          <HostItem Name="Planilha17" Code="GetTransfers.cs" CanonicalName="Planilha17" PublishedHash="A85AD76612E467A5F09918715EBF457E2451D65B" DisplayName="Consulta de Transferencias" Blueprint="GetTransfers.Designer.xml" GeneratedCode="GetTransfers.Designer.cs" />
-          <HostItem Name="Planilha13" Code="InvoiceReversal.cs" CanonicalName="Planilha13" PublishedHash="23D8E77ED6C4593F966157CE1CBE09E425848273" DisplayName="Reversão de invoice" Blueprint="InvoiceReversal.Designer.xml" GeneratedCode="InvoiceReversal.Designer.cs" />
+          <HostItem Name="Planilha8" Code="GetBoleto.cs" CanonicalName="Planilha8" PublishedHash="8956969C3C0217A5A49503566BCD09890DC4A083" DisplayName="Consulta de Boletos Emitidos" Blueprint="GetBoleto.Designer.xml" GeneratedCode="GetBoleto.Designer.cs" />
+          <HostItem Name="Planilha9" Code="GetBoletoEvents.cs" CanonicalName="Planilha9" PublishedHash="E6177BCA55EED31447DBEB7CEA2DA6FCDDE003FC" DisplayName="Histórico de Boletos Emitido" Blueprint="GetBoletoEvents.Designer.xml" GeneratedCode="GetBoletoEvents.Designer.cs" />
+          <HostItem Name="Planilha14" Code="GetBoletoPayment.cs" CanonicalName="Planilha14" PublishedHash="0147C462F6839E8407782632A21642C2C3311EF9" DisplayName="Historico pagamento de Boletos" Blueprint="GetBoletoPayment.Designer.xml" GeneratedCode="GetBoletoPayment.Designer.cs" />
+          <HostItem Name="Planilha3" Code="getDictKeys.cs" CanonicalName="Planilha3" PublishedHash="73F17E23914C33A65F6BD4678E583F4FF21236FE" DisplayName="Consulta de Chaves Pix" Blueprint="getDictKeys.Designer.xml" GeneratedCode="getDictKeys.Designer.cs" />
+          <HostItem Name="Planilha6" Code="GetInvoices.cs" CanonicalName="Planilha6" PublishedHash="809313ED0EB8C14D2CE3B3BFF4A748C6E43E9D43" DisplayName="Consulta de Invoice Emitidas" Blueprint="GetInvoices.Designer.xml" GeneratedCode="GetInvoices.Designer.cs" />
+          <HostItem Name="Planilha15" Code="GetPaymentApprove.cs" CanonicalName="Planilha15" PublishedHash="05BE03AFB756E7A88C23A420026B93BA85D6DF6B" DisplayName="Consulta de Aprovações" Blueprint="GetPaymentApprove.Designer.xml" GeneratedCode="GetPaymentApprove.Designer.cs" />
+          <HostItem Name="Planilha19" Code="GetSplit.cs" CanonicalName="Planilha19" DisplayName="Consultar Splits" Blueprint="GetSplit.Designer.xml" GeneratedCode="GetSplit.Designer.cs" PublishedHash="3A85FEBE181DDB49CB6E40858A1869FC38C24851" />
+          <HostItem Name="Planilha7" Code="GetStatement.cs" CanonicalName="Planilha7" PublishedHash="830F5B235F937EC29023F114971671ABF97DE335" DisplayName="Extrato" Blueprint="GetStatement.Designer.xml" GeneratedCode="GetStatement.Designer.cs" />
+          <HostItem Name="Planilha17" Code="GetTransfers.cs" CanonicalName="Planilha17" PublishedHash="9AD26161E3B7EF5C4341CC79739D97EA6A7768E0" DisplayName="Consulta de Transferencias" Blueprint="GetTransfers.Designer.xml" GeneratedCode="GetTransfers.Designer.cs" />
+          <HostItem Name="Planilha13" Code="InvoiceReversal.cs" CanonicalName="Planilha13" PublishedHash="875FBD7A38278DF251FDF0475A151A5F36465607" DisplayName="Reversão de invoice" Blueprint="InvoiceReversal.Designer.xml" GeneratedCode="InvoiceReversal.Designer.cs" />
           <HostItem Name="Planilha1" Code="Main.cs" CanonicalName="Planilha1" PublishedHash="2A5DE5BBCB785C704C10FFA230F69F74732EBB0E" DisplayName="Principal" Blueprint="Main.Designer.xml" GeneratedCode="Main.Designer.cs" />
-          <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="FD735FB02BE573AE724DE83C21B01842BEE6AB1A" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
+          <HostItem Name="Planilha10" Code="SendBoleto.cs" CanonicalName="Planilha10" PublishedHash="197B6195AB0F02AD574C122550D97E6959254C4B" DisplayName="Emissão de Boleto" Blueprint="SendBoleto.Designer.xml" GeneratedCode="SendBoleto.Designer.cs" />
           <HostItem Name="Planilha18" Code="SendCards.cs" CanonicalName="Planilha18" PublishedHash="BF7427EC1DEAB1D9FA3D700B1912D60A6F92999C" DisplayName="Solicitações de Cartões" Blueprint="SendCards.Designer.xml" GeneratedCode="SendCards.Designer.cs" />
-          <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="9D4A3846B3C800B8C0B9D1BCB393BC48FE3F95C8" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
-          <HostItem Name="Planilha20" Code="SendReceiver.cs" CanonicalName="Planilha20" DisplayName="Criar Receivers" Blueprint="SendReceiver.Designer.xml" GeneratedCode="SendReceiver.Designer.cs" />
+          <HostItem Name="Planilha5" Code="SendInvoices.cs" CanonicalName="Planilha5" PublishedHash="67C76E6E838FAD195DBA082B6E6B966BD83B634B" DisplayName="Emissão de Invoice Pix" Blueprint="SendInvoices.Designer.xml" GeneratedCode="SendInvoices.Designer.cs" />
+          <HostItem Name="Planilha20" Code="SendReceiver.cs" CanonicalName="Planilha20" DisplayName="Criar Receivers" Blueprint="SendReceiver.Designer.xml" GeneratedCode="SendReceiver.Designer.cs" PublishedHash="50FF26E5953D96B74408DE8AE670170D0E35206A" />
           <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="0696E9ADD17201950E3FB0F452519D928CE01C11" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
-          <HostItem Name="Planilha4" Code="Transfers.cs" CanonicalName="Planilha4" PublishedHash="5C80118BB98EBBD69636C404E1D1BA61C8C6F926" DisplayName="Transferências Com Aprovação" Blueprint="Transfers.Designer.xml" GeneratedCode="Transfers.Designer.cs" />
+          <HostItem Name="Planilha4" Code="Transfers.cs" CanonicalName="Planilha4" PublishedHash="5790C1119B8AD9DFB9797BE7000B547AEA795467" DisplayName="Transferências Com Aprovação" Blueprint="Transfers.Designer.xml" GeneratedCode="Transfers.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>

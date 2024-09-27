@@ -13,6 +13,10 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+## [3.2.0]
+### Fixed
+- attachment path
+
 ## [3.1.9]
 ### Added
 - displayName column to cardShop resource
