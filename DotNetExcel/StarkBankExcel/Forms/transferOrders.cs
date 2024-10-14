@@ -146,7 +146,7 @@ namespace StarkBankExcel
 
                         if (due != null) { paymentRequestData.Add("due", new StarkDate(due).ToString());}
 
-                        if (tags != null) { paymentRequestData.Add("tags", payment["tags"] = tags.Split(','));}
+                        if (tags != null) { paymentRequestData.Add("tags", tags.Split(','));}
                         orders.Add(paymentRequestData);
 
                     }

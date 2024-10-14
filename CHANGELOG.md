@@ -13,15 +13,19 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
-## [3.2.0]
+## [3.2.1] - 2024-10-14
+### Fixed
+- sendOrder tags
+
+## [3.2.0] - 2024-09-27
 ### Fixed
 - attachment path
 
-## [3.1.9]
+## [3.1.9] - 2024-08-13
 ### Added
 - displayName column to cardShop resource
 
-## [3.1.8]
+## [3.1.8] - 2024-08-09
 ### Fixed
 - BoletoLogView fine and interest
 
