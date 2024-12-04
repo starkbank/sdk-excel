@@ -62,14 +62,15 @@ namespace StarkBankExcel
             worksheet.Range["K" + TableFormat.HeaderRow].Value = "Multa";
             worksheet.Range["L" + TableFormat.HeaderRow].Value = "Juro ao Mês";
             worksheet.Range["M" + TableFormat.HeaderRow].Value = "Dias para Baixa Automática";
-            worksheet.Range["N" + TableFormat.HeaderRow].Value = "Descrição 1";
-            worksheet.Range["O" + TableFormat.HeaderRow].Value = "Valor 1";
-            worksheet.Range["P" + TableFormat.HeaderRow].Value = "Descrição 2";
-            worksheet.Range["Q" + TableFormat.HeaderRow].Value = "Valor 2";
-            worksheet.Range["R" + TableFormat.HeaderRow].Value = "Descrição 3";
-            worksheet.Range["S" + TableFormat.HeaderRow].Value = "Valor 3";
-            worksheet.Range["T" + TableFormat.HeaderRow].Value = "Nome do Sacador Avalista";
-            worksheet.Range["U" + TableFormat.HeaderRow].Value = "CPF/CNPJ do Sacador Avalista";
+            worksheet.Range["N" + TableFormat.HeaderRow].Value = "Tags";
+            worksheet.Range["O" + TableFormat.HeaderRow].Value = "Descrição 1";
+            worksheet.Range["P" + TableFormat.HeaderRow].Value = "Valor 1";
+            worksheet.Range["Q" + TableFormat.HeaderRow].Value = "Descrição 2";
+            worksheet.Range["R" + TableFormat.HeaderRow].Value = "Valor 2";
+            worksheet.Range["S" + TableFormat.HeaderRow].Value = "Descrição 3";
+            worksheet.Range["T" + TableFormat.HeaderRow].Value = "Valor 3";
+            worksheet.Range["U" + TableFormat.HeaderRow].Value = "Nome do Sacador Avalista";
+            worksheet.Range["V" + TableFormat.HeaderRow].Value = "CPF/CNPJ do Sacador Avalista";
 
             string returnMessage = "";
             string warningMessage = "";
@@ -102,17 +103,19 @@ namespace StarkBankExcel
                 string fineString = worksheet.Range["K" + row].Value?.ToString();
                 string interestString = worksheet.Range["L" + row].Value?.ToString().Replace(",", ".");
                 string expirationString = worksheet.Range["M" + row].Value?.ToString().Replace(",", ".");
+                string[] tags = worksheet.Range["N" + row].Value?.ToString().Split(',');
+
 
                 List<Dictionary<string, object>> descriptions = new List<Dictionary<string, object>>();
 
-                string description1 = worksheet.Range["N" + row].Value?.ToString();
-                string value1 = worksheet.Range["O" + row].Value?.ToString();
-                string description2 = worksheet.Range["P" + row].Value?.ToString();
-                string value2 = worksheet.Range["Q" + row].Value?.ToString();
-                string description3 = worksheet.Range["R" + row].Value?.ToString();
-                string value3 = worksheet.Range["S" + row].Value?.ToString();
-                string receiverName = worksheet.Range["T" + row].Value?.ToString();
-                string receiverTaxId = worksheet.Range["U" + row].Value?.ToString();
+                string description1 = worksheet.Range["O" + row].Value?.ToString();
+                string value1 = worksheet.Range["P" + row].Value?.ToString();
+                string description2 = worksheet.Range["Q" + row].Value?.ToString();
+                string value2 = worksheet.Range["R" + row].Value?.ToString();
+                string description3 = worksheet.Range["S" + row].Value?.ToString();
+                string value3 = worksheet.Range["T" + row].Value?.ToString();
+                string receiverName = worksheet.Range["U" + row].Value?.ToString();
+                string receiverTaxId = worksheet.Range["V" + row].Value?.ToString();
 
                 if (description1 != null && value1 != null)
                 {
@@ -151,7 +154,8 @@ namespace StarkBankExcel
                     { "stateCode", stateCode },
                     { "zipCode", zipCode },
                     { "amount", amount },
-                    { "descriptions" , descriptions }
+                    { "descriptions" , descriptions },
+                    { "tags", tags }
                 };
 
                 if (receiverName != null) boleto.Add("receiverName", receiverName);
