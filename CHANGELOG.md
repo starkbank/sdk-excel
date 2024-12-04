@@ -13,6 +13,11 @@ Given a version number MAJOR.MINOR.PATCH, increment:
 
 ## [Unreleased]
 
+
+## [3.3.0] - 2024-12-04
+### Added
+- tags in boleto creation
+
 ## [3.2.1] - 2024-10-14
 ### Fixed
 - sendOrder tags

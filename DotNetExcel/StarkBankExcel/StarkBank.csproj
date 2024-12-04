@@ -19,7 +19,7 @@
     <PublishUrl>C:\StarkExcelInstaller\</PublishUrl>
     <InstallUrl />
     <TargetCulture>pt-BR</TargetCulture>
-    <ApplicationVersion>1.21.0.84</ApplicationVersion>
+    <ApplicationVersion>1.22.0.85</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -542,6 +542,7 @@
     <None Include="StarkBank.xlsx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="StarkBank_1_TemporaryKey.pfx" />
     <None Include="StarkBank_TemporaryKey.pfx" />
     <None Include="ThisWorkbook.Designer.xml">
       <DependentUpon>ThisWorkbook.cs</DependentUpon>
